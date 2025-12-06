@@ -10,12 +10,12 @@ import { Button } from '@/components/ui/button';
 import penguinCharacter from '@/assets/penguin-character.png';
 
 interface HomeProps {
-  tasks: Task[];
-  onToggleComplete: (taskId: string) => void;
-  onNavigate: (page: string) => void;
+  tasks?: Task[];
+  onToggleComplete?: (taskId: string) => void;
+  onNavigate?: (page: string) => void;
 }
 
-export const Home = ({ tasks, onToggleComplete, onNavigate }: HomeProps) => {
+export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () => {} }: HomeProps) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [notes, setNotes] = useState<Note[]>([]);
   const today = new Date();
