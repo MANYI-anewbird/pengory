@@ -1,9 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addDays } from 'date-fns';
-import { ChevronLeft, ChevronRight, Clock, MapPin, Calendar as CalendarIcon, StickyNote, Sparkles, CheckCircle2, Circle, Plus, ArrowRight, Bell } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, StickyNote, Sparkles, CheckCircle2, Circle, Plus, Bell } from 'lucide-react';
 import { Task } from '@/types/task';
-import { Note } from '@/types/note';
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -111,6 +110,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
 
   const completedToday = todaysTasks.filter(t => t.completed).length;
   const totalToday = todaysTasks.length;
+  const progressPercent = totalToday > 0 ? (completedToday / totalToday) * 100 : 0;
 
   const greeting = useMemo(() => {
     const hour = today.getHours();
@@ -120,7 +120,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
   }, []);
 
   // Task card component
-  const TaskCard = ({ task, showDate = false }: { task: Task; showDate?: boolean }) => (
+  const TaskCard = ({ task }: { task: Task }) => (
     <div className={cn(
       "flex items-center gap-3 p-3 rounded-xl border transition-all",
       task.completed 
@@ -257,16 +257,17 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             </div>
           </motion.div>
 
-          {/* Reminders */}
+          {/* Reminders - Larger */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5"
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex-1"
           >
             <div className="flex items-center gap-2 mb-4">
               <Bell className="h-5 w-5 text-amber-500" />
               <h2 className="font-semibold text-gray-900">Reminders</h2>
+              <span className="text-xs text-gray-400 ml-auto">{reminders.filter(r => !r.completed).length} active</span>
             </div>
             
             {/* Add reminder input */}
@@ -276,12 +277,12 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                 onChange={(e) => setNewReminder(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddReminder()}
                 placeholder="Add a reminder..."
-                className="flex-1 h-9 text-sm"
+                className="flex-1 h-10 text-sm"
               />
               <Button 
                 onClick={handleAddReminder}
                 size="sm"
-                className="h-9 bg-slate-800 hover:bg-slate-700"
+                className="h-10 px-4 bg-slate-800 hover:bg-slate-700"
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -289,12 +290,13 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
 
             {/* Reminders list */}
             {reminders.length === 0 ? (
-              <div className="text-center py-4">
-                <Bell className="h-8 w-8 text-gray-200 mx-auto mb-2" />
+              <div className="text-center py-8">
+                <Bell className="h-10 w-10 text-gray-200 mx-auto mb-3" />
                 <p className="text-sm text-gray-400">No reminders yet</p>
+                <p className="text-xs text-gray-300 mt-1">Add things you want to remember</p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-48 overflow-auto">
+              <div className="space-y-2 max-h-64 overflow-auto">
                 {reminders.map((reminder, index) => (
                   <motion.div
                     key={reminder.id}
@@ -319,7 +321,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                     </span>
                     <button
                       onClick={() => handleDeleteReminder(reminder.id)}
-                      className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
+                      className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all text-lg"
                     >
                       ×
                     </button>
@@ -328,44 +330,45 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               </div>
             )}
           </motion.div>
+        </div>
 
-          {/* Today's Progress */}
+        {/* Right Column - Progress + Today & Tomorrow Tasks */}
+        <div className="col-span-7 space-y-6">
+          {/* Today's Progress Bar - Full Width */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl shadow-lg p-6 text-white"
+            transition={{ delay: 0.15 }}
+            className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl shadow-lg p-5 text-white"
           >
-            <h2 className="text-lg font-medium mb-2">Today's Progress</h2>
-            <div className="flex items-end gap-4 mb-4">
-              <span className="text-5xl font-bold">{completedToday}</span>
-              <span className="text-xl opacity-80 mb-1">/ {totalToday} tasks</span>
-            </div>
-            {totalToday > 0 && (
-              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(completedToday / totalToday) * 100}%` }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                  className="h-full bg-white rounded-full"
-                />
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-medium">Today's Progress</h2>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-bold">{completedToday}</span>
+                <span className="text-lg opacity-70">/ {totalToday} tasks</span>
               </div>
-            )}
+            </div>
+            <div className="h-3 bg-white/20 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercent}%` }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="h-full bg-gradient-to-r from-sky-400 to-emerald-400 rounded-full"
+              />
+            </div>
             {totalToday === 0 && (
-              <p className="text-sm opacity-80">No tasks scheduled for today</p>
+              <p className="text-sm opacity-70 mt-2">No tasks scheduled for today</p>
             )}
           </motion.div>
-        </div>
 
-        {/* Right Column - Today & Tomorrow Tasks */}
-        <div className="col-span-7">
-          <div className="grid grid-cols-2 gap-6 h-full">
+          {/* Tasks Grid */}
+          <div className="grid grid-cols-2 gap-6">
             {/* Today's Tasks */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col"
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col min-h-[320px]"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-gray-900">Today's Tasks</h2>
@@ -373,7 +376,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               </div>
               
               {todaysTasks.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+                <div className="flex-1 flex flex-col items-center justify-center text-center">
                   <CheckCircle2 className="h-10 w-10 text-gray-200 mb-3" />
                   <p className="text-gray-400 text-sm">No tasks for today</p>
                   <Button 
@@ -406,7 +409,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col"
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col min-h-[320px]"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-gray-900">Tomorrow</h2>
@@ -414,7 +417,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               </div>
               
               {tomorrowsTasks.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+                <div className="flex-1 flex flex-col items-center justify-center text-center">
                   <Circle className="h-10 w-10 text-gray-200 mb-3" />
                   <p className="text-gray-400 text-sm">No tasks for tomorrow</p>
                   <Button 
