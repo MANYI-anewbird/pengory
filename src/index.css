@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Pompompurin theme - cream and soft yellow */
+    --background: 45 30% 96%;
+    --foreground: 30 20% 25%;
+
+    --card: 45 40% 98%;
+    --card-foreground: 30 20% 25%;
+
+    --popover: 45 40% 98%;
+    --popover-foreground: 30 20% 25%;
+
+    /* Primary - Pompompurin yellow */
+    --primary: 45 100% 70%;
+    --primary-foreground: 30 50% 30%;
+
+    /* Secondary - soft cream */
+    --secondary: 45 25% 92%;
+    --secondary-foreground: 30 20% 30%;
+
+    /* Muted - light cream */
+    --muted: 45 30% 94%;
+    --muted-foreground: 30 15% 50%;
+
+    /* Accent - soft yellow */
+    --accent: 45 80% 90%;
+    --accent-foreground: 30 50% 35%;
+
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders - Pompompurin brown and cream */
+    --border: 30 20% 85%;
+    --border-dark: 30 40% 50%;
+    --input: 30 20% 85%;
+    --ring: 45 100% 70%;
+
+    --radius: 0.5rem;
+
+    /* Task color palette - soft pastels */
+    --task-blue: 210 60% 90%;
+    --task-pink: 340 60% 92%;
+    --task-yellow: 50 85% 88%;
+    --task-green: 140 50% 88%;
+    --task-lavender: 270 50% 92%;
+    --task-peach: 20 70% 90%;
+    --task-mint: 160 45% 88%;
+    
+    /* Pompompurin theme colors - warm tones */
+    --pompom-yellow: 45 70% 75%;
+    --pompom-brown: 30 30% 25%;
+    --pompom-cream: 45 30% 96%;
+    
+    /* Refined shadow system for depth and hierarchy */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.04);
+    --shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.06);
+    --shadow-lg: 0 8px 16px -2px rgb(0 0 0 / 0.08);
+    --shadow-xl: 0 12px 24px -4px rgb(0 0 0 / 0.10);
+
+    /* Refined transitions for smooth interactions */
+    --transition-base: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 30 15% 15%;
+    --foreground: 45 25% 90%;
+    --card: 30 15% 18%;
+    --card-foreground: 45 25% 90%;
+    --popover: 30 15% 18%;
+    --popover-foreground: 45 25% 90%;
+    --primary: 45 90% 60%;
+    --primary-foreground: 30 30% 20%;
+    --secondary: 30 15% 22%;
+    --secondary-foreground: 45 25% 85%;
+    --muted: 30 15% 20%;
+    --muted-foreground: 45 15% 60%;
+    --accent: 45 60% 25%;
+    --accent-foreground: 45 90% 80%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 15% 25%;
+    --border-dark: 30 30% 40%;
+    --input: 30 15% 25%;
+    --ring: 45 90% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
