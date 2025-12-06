@@ -116,7 +116,11 @@ const Index = () => {
         />
         
         {activePage === 'home' ? (
-          <Home />
+          <Home 
+            tasks={tasks}
+            onToggleComplete={handleToggleComplete}
+            onNavigate={setActivePage}
+          />
         ) : activePage === 'tasks' ? (
           <Tasks 
             tasks={tasks}
