@@ -333,7 +333,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
         </div>
 
         {/* Right Column - Progress + Today & Tomorrow Tasks */}
-        <div className="col-span-7 space-y-6">
+        <div className="col-span-7 flex flex-col gap-6">
           {/* Today's Progress Bar - Full Width */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -362,13 +362,13 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
           </motion.div>
 
           {/* Tasks Grid */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6 flex-1">
             {/* Today's Tasks */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col min-h-[320px]"
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-gray-900">Today's Tasks</h2>
@@ -409,7 +409,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col min-h-[320px]"
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-gray-900">Tomorrow</h2>
