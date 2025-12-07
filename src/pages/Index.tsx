@@ -10,6 +10,7 @@ import { Notes } from './Notes';
 import { Home } from './Home';
 import { Tasks } from './Tasks';
 import { Meditation } from './Meditation';
+import { Learn } from './Learn';
 import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
@@ -135,7 +136,9 @@ const Index = () => {
           <div className="flex-1 flex flex-col overflow-hidden">
             <Meditation />
           </div>
-        ) : (
+        ) : activePage === 'learn' ? (
+          <Learn />
+        ) : activePage === 'calendar' ? (
           <div className="flex-1 flex flex-col overflow-hidden bg-white">
             <CompactHeader
               currentDate={currentDate}
@@ -156,17 +159,21 @@ const Index = () => {
               denseMode={denseMode}
             />
 
-          <TaskModal
-            isOpen={isModalOpen}
-            onClose={() => {
-              setIsModalOpen(false);
-              setEditingTask(undefined);
-            }}
-            onSave={handleSaveTask}
-            onDelete={handleDeleteTask}
-            initialDate={selectedDate}
-            editTask={editingTask}
-          />
+            <TaskModal
+              isOpen={isModalOpen}
+              onClose={() => {
+                setIsModalOpen(false);
+                setEditingTask(undefined);
+              }}
+              onSave={handleSaveTask}
+              onDelete={handleDeleteTask}
+              initialDate={selectedDate}
+              editTask={editingTask}
+            />
+          </div>
+        ) : (
+          <div className="flex-1 flex items-center justify-center text-gray-400">
+            Page not found
           </div>
         )}
       </div>
