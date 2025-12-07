@@ -16,8 +16,8 @@ interface SidebarProps {
 
 const mainItems = [
   { icon: Home, label: 'Home', page: 'home' },
-  { icon: List, label: 'Tasks', page: 'tasks' },
   { icon: Calendar, label: 'Calendar', page: 'calendar' },
+  { icon: List, label: 'Tasks', page: 'tasks' },
   { icon: StickyNote, label: 'Notes', page: 'notes' },
   { icon: Sparkles, label: 'Meditation', page: 'meditation' },
   { icon: Grid3x3, label: 'Apps', page: 'apps' },
