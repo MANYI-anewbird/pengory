@@ -38,11 +38,9 @@ export const Learn = () => {
     }
   }, []);
 
-  // Save sources to localStorage
+  // Save sources to localStorage whenever they change
   useEffect(() => {
-    if (sources.length > 0) {
-      localStorage.setItem(SOURCES_KEY, JSON.stringify(sources));
-    }
+    localStorage.setItem(SOURCES_KEY, JSON.stringify(sources));
   }, [sources]);
 
   const extractName = (url: string): string => {

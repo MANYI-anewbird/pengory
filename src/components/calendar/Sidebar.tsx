@@ -52,7 +52,7 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
                   src={penguinLogo} 
                   alt="Penguin Logo" 
                   className={cn(
-                    "h-10 w-10 object-contain transition-all duration-200 relative z-10"
+                    "h-14 w-14 object-contain transition-all duration-200 relative z-10"
                   )}
                 />
                 {isActive && (
