@@ -192,10 +192,10 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-3"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex-1 flex flex-col min-h-0"
           >
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="font-semibold text-sm text-gray-900">{format(currentMonth, 'MMMM yyyy')}</h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-semibold text-base text-gray-900">{format(currentMonth, 'MMMM yyyy')}</h2>
               <div className="flex gap-0.5">
                 <button 
                   onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
@@ -213,18 +213,18 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             </div>
 
             {/* Day headers */}
-            <div className="grid grid-cols-7 mb-1">
+            <div className="grid grid-cols-7 mb-2">
               {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                <div key={i} className="text-center text-2xs font-medium text-gray-400 py-0.5">
+                <div key={i} className="text-center text-xs font-medium text-gray-400 py-1">
                   {day}
                 </div>
               ))}
             </div>
 
             {/* Calendar grid */}
-            <div className="grid grid-cols-7 gap-0.5">
+            <div className="grid grid-cols-7 gap-1 flex-1">
               {calendarDays.map((day, i) => {
-                if (!day) return <div key={`empty-${i}`} className="h-7" />;
+                if (!day) return <div key={`empty-${i}`} className="aspect-square" />;
                 
                 const dateStr = format(day, 'yyyy-MM-dd');
                 const dayTasks = tasksByDate[dateStr] || [];
@@ -237,7 +237,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                     key={dateStr}
                     onClick={() => onNavigate('calendar')}
                     className={cn(
-                      "h-7 rounded text-xs relative flex items-center justify-center transition-all",
+                      "aspect-square rounded-lg text-sm relative flex items-center justify-center transition-all",
                       isCurrentMonth ? "text-gray-700" : "text-gray-300",
                       isToday 
                         ? "bg-sky-500 text-white font-semibold shadow-sm" 
@@ -262,12 +262,12 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex-1 flex flex-col min-h-0"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex-1 flex flex-col min-h-0"
           >
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-3">
               <Bell className="h-4 w-4 text-amber-500" />
-              <h2 className="font-semibold text-sm text-gray-900">Reminders</h2>
-              <span className="text-2xs text-gray-400 ml-auto">{reminders.filter(r => !r.completed).length} active</span>
+              <h2 className="font-semibold text-base text-gray-900">Reminders</h2>
+              <span className="text-xs text-gray-400 ml-auto">{reminders.filter(r => !r.completed).length} active</span>
             </div>
             
             {/* Add reminder input */}
@@ -342,7 +342,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl shadow-lg p-3 text-white"
           >
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-sm font-medium">Today's Progress</h2>
+              <h2 className="text-base font-medium">Today's Progress</h2>
               <div className="flex items-center gap-1.5">
                 <span className="text-xl font-bold">{completedToday}</span>
                 <span className="text-sm opacity-70">/ {totalToday} tasks</span>
@@ -368,11 +368,11 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col min-h-0"
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col min-h-0"
             >
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="font-semibold text-sm text-gray-900">Today's Tasks</h2>
-                <span className="text-2xs text-gray-400">{format(today, 'MMM d')}</span>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-semibold text-base text-gray-900">Today's Tasks</h2>
+                <span className="text-xs text-gray-400">{format(today, 'MMM d')}</span>
               </div>
               
               {todaysTasks.length === 0 ? (
@@ -409,11 +409,11 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col min-h-0"
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col min-h-0"
             >
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="font-semibold text-sm text-gray-900">Tomorrow</h2>
-                <span className="text-2xs text-gray-400">{format(addDays(today, 1), 'MMM d')}</span>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-semibold text-base text-gray-900">Tomorrow</h2>
+                <span className="text-xs text-gray-400">{format(addDays(today, 1), 'MMM d')}</span>
               </div>
               
               {tomorrowsTasks.length === 0 ? (
