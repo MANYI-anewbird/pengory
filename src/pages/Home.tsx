@@ -122,7 +122,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
   // Task card component
   const TaskCard = ({ task }: { task: Task }) => (
     <div className={cn(
-      "flex items-center gap-3 p-3 rounded-xl border transition-all",
+      "flex items-center gap-2 p-2 rounded-lg border transition-all",
       task.completed 
         ? "bg-gray-50 border-gray-100" 
         : "bg-white border-gray-200 hover:border-sky-200 hover:shadow-sm"
@@ -130,18 +130,18 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
       <Checkbox
         checked={task.completed}
         onCheckedChange={() => onToggleComplete(task.id)}
-        className="h-4 w-4 rounded border-2"
+        className="h-3.5 w-3.5 rounded border-2"
       />
       <div className="flex-1 min-w-0">
         <h4 className={cn(
-          "text-sm font-medium truncate",
+          "text-xs font-medium truncate",
           task.completed ? "text-gray-400 line-through" : "text-gray-800"
         )}>
           {task.title}
         </h4>
         {task.time && (
-          <span className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
-            <Clock className="h-3 w-3" />
+          <span className="flex items-center gap-1 text-2xs text-gray-400">
+            <Clock className="h-2.5 w-2.5" />
             {task.time}
           </span>
         )}
@@ -152,13 +152,13 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-br from-sky-50/80 via-white to-blue-50/50 overflow-auto">
       {/* Header */}
-      <div className="px-8 py-6 border-b border-gray-200/40 bg-white/60 backdrop-blur-sm">
-        <div className="flex items-start justify-between">
+      <div className="px-6 py-3 border-b border-gray-200/40 bg-white/60 backdrop-blur-sm">
+        <div className="flex items-center justify-between">
           <div>
             <motion.h1 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl font-semibold text-gray-900 mb-1"
+              className="text-xl font-semibold text-gray-900"
             >
               {greeting}! 🐧
             </motion.h1>
@@ -166,7 +166,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="text-gray-500"
+              className="text-xs text-gray-500"
             >
               Here is your agenda for today
             </motion.p>
@@ -175,56 +175,56 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="flex items-center gap-3 text-sm text-gray-600 bg-white/80 px-4 py-2 rounded-xl shadow-sm border border-gray-100"
+            className="flex items-center gap-2 text-xs text-gray-600 bg-white/80 px-3 py-1.5 rounded-lg shadow-sm border border-gray-100"
           >
-            <CalendarIcon className="h-4 w-4 text-sky-500" />
+            <CalendarIcon className="h-3 w-3 text-sky-500" />
             <span className="font-medium">{format(today, 'EEEE, MMMM d, yyyy')}</span>
           </motion.div>
         </div>
       </div>
 
       {/* Main Content Grid */}
-      <div className="flex-1 p-6 grid grid-cols-12 gap-6 auto-rows-min">
+      <div className="flex-1 p-4 grid grid-cols-12 gap-4 auto-rows-min">
         {/* Left Column - Calendar & Reminders */}
-        <div className="col-span-5 space-y-6">
+        <div className="col-span-5 space-y-4">
           {/* Mini Calendar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-3"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-gray-900">{format(currentMonth, 'MMMM yyyy')}</h2>
-              <div className="flex gap-1">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-semibold text-sm text-gray-900">{format(currentMonth, 'MMMM yyyy')}</h2>
+              <div className="flex gap-0.5">
                 <button 
                   onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-1 rounded hover:bg-gray-100 transition-colors"
                 >
-                  <ChevronLeft className="h-4 w-4 text-gray-600" />
+                  <ChevronLeft className="h-3.5 w-3.5 text-gray-600" />
                 </button>
                 <button 
                   onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-1 rounded hover:bg-gray-100 transition-colors"
                 >
-                  <ChevronRight className="h-4 w-4 text-gray-600" />
+                  <ChevronRight className="h-3.5 w-3.5 text-gray-600" />
                 </button>
               </div>
             </div>
 
             {/* Day headers */}
-            <div className="grid grid-cols-7 mb-2">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-center text-xs font-medium text-gray-400 py-1">
+            <div className="grid grid-cols-7 mb-1">
+              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+                <div key={i} className="text-center text-2xs font-medium text-gray-400 py-0.5">
                   {day}
                 </div>
               ))}
             </div>
 
             {/* Calendar grid */}
-            <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-0.5">
               {calendarDays.map((day, i) => {
-                if (!day) return <div key={`empty-${i}`} className="h-9" />;
+                if (!day) return <div key={`empty-${i}`} className="h-7" />;
                 
                 const dateStr = format(day, 'yyyy-MM-dd');
                 const dayTasks = tasksByDate[dateStr] || [];
@@ -237,17 +237,17 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                     key={dateStr}
                     onClick={() => onNavigate('calendar')}
                     className={cn(
-                      "h-9 rounded-lg text-sm relative flex items-center justify-center transition-all",
+                      "h-7 rounded text-xs relative flex items-center justify-center transition-all",
                       isCurrentMonth ? "text-gray-700" : "text-gray-300",
                       isToday 
-                        ? "bg-sky-500 text-white font-semibold shadow-md" 
+                        ? "bg-sky-500 text-white font-semibold shadow-sm" 
                         : "hover:bg-gray-100",
                     )}
                   >
                     {format(day, 'd')}
                     {dayTasks.length > 0 && !isToday && (
                       <span className={cn(
-                        "absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full",
+                        "absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full",
                         hasIncompleteTasks ? "bg-sky-400" : "bg-green-400"
                       )} />
                     )}
@@ -257,46 +257,46 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             </div>
           </motion.div>
 
-          {/* Reminders - Larger */}
+          {/* Reminders */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex-1"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex-1"
           >
-            <div className="flex items-center gap-2 mb-4">
-              <Bell className="h-5 w-5 text-amber-500" />
-              <h2 className="font-semibold text-gray-900">Reminders</h2>
-              <span className="text-xs text-gray-400 ml-auto">{reminders.filter(r => !r.completed).length} active</span>
+            <div className="flex items-center gap-2 mb-2">
+              <Bell className="h-4 w-4 text-amber-500" />
+              <h2 className="font-semibold text-sm text-gray-900">Reminders</h2>
+              <span className="text-2xs text-gray-400 ml-auto">{reminders.filter(r => !r.completed).length} active</span>
             </div>
             
             {/* Add reminder input */}
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-1.5 mb-2">
               <Input
                 value={newReminder}
                 onChange={(e) => setNewReminder(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddReminder()}
                 placeholder="Add a reminder..."
-                className="flex-1 h-10 text-sm"
+                className="flex-1 h-8 text-xs"
               />
               <Button 
                 onClick={handleAddReminder}
                 size="sm"
-                className="h-10 px-4 bg-slate-800 hover:bg-slate-700"
+                className="h-8 px-3 bg-slate-800 hover:bg-slate-700"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-3.5 w-3.5" />
               </Button>
             </div>
 
             {/* Reminders list */}
             {reminders.length === 0 ? (
-              <div className="text-center py-8">
-                <Bell className="h-10 w-10 text-gray-200 mx-auto mb-3" />
-                <p className="text-sm text-gray-400">No reminders yet</p>
-                <p className="text-xs text-gray-300 mt-1">Add things you want to remember</p>
+              <div className="text-center py-4">
+                <Bell className="h-8 w-8 text-gray-200 mx-auto mb-2" />
+                <p className="text-xs text-gray-400">No reminders yet</p>
+                <p className="text-2xs text-gray-300 mt-0.5">Add things you want to remember</p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-64 overflow-auto">
+              <div className="space-y-1.5 max-h-40 overflow-auto">
                 {reminders.map((reminder, index) => (
                   <motion.div
                     key={reminder.id}
@@ -304,24 +304,24 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
                     className={cn(
-                      "flex items-center gap-3 p-3 rounded-xl transition-colors group",
+                      "flex items-center gap-2 p-2 rounded-lg transition-colors group",
                       reminder.completed ? "bg-gray-50" : "bg-amber-50/50"
                     )}
                   >
                     <Checkbox
                       checked={reminder.completed}
                       onCheckedChange={() => handleToggleReminder(reminder.id)}
-                      className="h-4 w-4 rounded border-2"
+                      className="h-3.5 w-3.5 rounded border-2"
                     />
                     <span className={cn(
-                      "flex-1 text-sm",
+                      "flex-1 text-xs",
                       reminder.completed ? "text-gray-400 line-through" : "text-gray-700"
                     )}>
                       {reminder.text}
                     </span>
                     <button
                       onClick={() => handleDeleteReminder(reminder.id)}
-                      className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all text-lg"
+                      className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all text-sm"
                     >
                       ×
                     </button>
@@ -333,22 +333,22 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
         </div>
 
         {/* Right Column - Progress + Today & Tomorrow Tasks */}
-        <div className="col-span-7 flex flex-col gap-6">
+        <div className="col-span-7 flex flex-col gap-4">
           {/* Today's Progress Bar - Full Width */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl shadow-lg p-5 text-white"
+            className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl shadow-lg p-3 text-white"
           >
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-medium">Today's Progress</h2>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold">{completedToday}</span>
-                <span className="text-lg opacity-70">/ {totalToday} tasks</span>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-medium">Today's Progress</h2>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-bold">{completedToday}</span>
+                <span className="text-sm opacity-70">/ {totalToday} tasks</span>
               </div>
             </div>
-            <div className="h-3 bg-white/20 rounded-full overflow-hidden">
+            <div className="h-2 bg-white/20 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progressPercent}%` }}
@@ -357,39 +357,39 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               />
             </div>
             {totalToday === 0 && (
-              <p className="text-sm opacity-70 mt-2">No tasks scheduled for today</p>
+              <p className="text-xs opacity-70 mt-1">No tasks scheduled for today</p>
             )}
           </motion.div>
 
           {/* Tasks Grid */}
-          <div className="grid grid-cols-2 gap-6 flex-1">
+          <div className="grid grid-cols-2 gap-4 flex-1">
             {/* Today's Tasks */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col"
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold text-gray-900">Today's Tasks</h2>
-                <span className="text-xs text-gray-400">{format(today, 'MMM d')}</span>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="font-semibold text-sm text-gray-900">Today's Tasks</h2>
+                <span className="text-2xs text-gray-400">{format(today, 'MMM d')}</span>
               </div>
               
               {todaysTasks.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center">
-                  <CheckCircle2 className="h-10 w-10 text-gray-200 mb-3" />
-                  <p className="text-gray-400 text-sm">No tasks for today</p>
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-4">
+                  <CheckCircle2 className="h-8 w-8 text-gray-200 mb-2" />
+                  <p className="text-gray-400 text-xs">No tasks for today</p>
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={() => onNavigate('calendar')}
-                    className="mt-2 text-sky-600"
+                    className="mt-1 text-sky-600 text-xs h-7"
                   >
                     Add a task
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2 flex-1 overflow-auto">
+                <div className="space-y-1.5 flex-1 overflow-auto max-h-36">
                   {todaysTasks.map((task, index) => (
                     <motion.div
                       key={task.id}
@@ -409,28 +409,28 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col"
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold text-gray-900">Tomorrow</h2>
-                <span className="text-xs text-gray-400">{format(addDays(today, 1), 'MMM d')}</span>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="font-semibold text-sm text-gray-900">Tomorrow</h2>
+                <span className="text-2xs text-gray-400">{format(addDays(today, 1), 'MMM d')}</span>
               </div>
               
               {tomorrowsTasks.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center">
-                  <Circle className="h-10 w-10 text-gray-200 mb-3" />
-                  <p className="text-gray-400 text-sm">No tasks for tomorrow</p>
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-4">
+                  <Circle className="h-8 w-8 text-gray-200 mb-2" />
+                  <p className="text-gray-400 text-xs">No tasks for tomorrow</p>
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={() => onNavigate('calendar')}
-                    className="mt-2 text-sky-600"
+                    className="mt-1 text-sky-600 text-xs h-7"
                   >
                     Plan ahead
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2 flex-1 overflow-auto">
+                <div className="space-y-1.5 flex-1 overflow-auto max-h-36">
                   {tomorrowsTasks.map((task, index) => (
                     <motion.div
                       key={task.id}
@@ -453,38 +453,38 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="px-6 pb-6"
+        className="px-4 pb-3"
       >
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-gray-500 mr-2">Quick Actions</span>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-2.5">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium text-gray-500 mr-1">Quick Actions</span>
             <button
               onClick={() => onNavigate('calendar')}
-              className="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all flex-1"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
             >
-              <Plus className="h-4 w-4 text-white" />
-              <span className="text-sm font-medium text-white">New Task</span>
+              <Plus className="h-3.5 w-3.5 text-white" />
+              <span className="text-xs font-medium text-white">New Task</span>
             </button>
             <button
               onClick={() => onNavigate('notes')}
-              className="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all flex-1"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
             >
-              <StickyNote className="h-4 w-4 text-white" />
-              <span className="text-sm font-medium text-white">New Note</span>
+              <StickyNote className="h-3.5 w-3.5 text-white" />
+              <span className="text-xs font-medium text-white">New Note</span>
             </button>
             <button
               onClick={() => onNavigate('meditation')}
-              className="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all flex-1"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
             >
-              <Sparkles className="h-4 w-4 text-white" />
-              <span className="text-sm font-medium text-white">Meditate</span>
+              <Sparkles className="h-3.5 w-3.5 text-white" />
+              <span className="text-xs font-medium text-white">Meditate</span>
             </button>
             <button
               onClick={() => onNavigate('tasks')}
-              className="flex items-center gap-3 px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all flex-1"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
             >
-              <CheckCircle2 className="h-4 w-4 text-white" />
-              <span className="text-sm font-medium text-white">View Tasks</span>
+              <CheckCircle2 className="h-3.5 w-3.5 text-white" />
+              <span className="text-xs font-medium text-white">View Tasks</span>
             </button>
           </div>
         </div>
