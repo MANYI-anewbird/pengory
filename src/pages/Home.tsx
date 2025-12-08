@@ -184,9 +184,9 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
       </div>
 
       {/* Main Content Grid */}
-      <div className="flex-1 p-4 grid grid-cols-12 gap-4 auto-rows-min">
+      <div className="flex-1 p-4 grid grid-cols-12 gap-4 min-h-0">
         {/* Left Column - Calendar & Reminders */}
-        <div className="col-span-5 space-y-4">
+        <div className="col-span-5 flex flex-col gap-4 min-h-0">
           {/* Mini Calendar */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -262,7 +262,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex-1"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex-1 flex flex-col min-h-0"
           >
             <div className="flex items-center gap-2 mb-2">
               <Bell className="h-4 w-4 text-amber-500" />
@@ -290,13 +290,13 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
 
             {/* Reminders list */}
             {reminders.length === 0 ? (
-              <div className="text-center py-4">
-                <Bell className="h-8 w-8 text-gray-200 mx-auto mb-2" />
+              <div className="text-center py-4 flex-1 flex flex-col items-center justify-center">
+                <Bell className="h-8 w-8 text-gray-200 mb-2" />
                 <p className="text-xs text-gray-400">No reminders yet</p>
                 <p className="text-2xs text-gray-300 mt-0.5">Add things you want to remember</p>
               </div>
             ) : (
-              <div className="space-y-1.5 max-h-40 overflow-auto">
+              <div className="space-y-1.5 flex-1 overflow-auto">
                 {reminders.map((reminder, index) => (
                   <motion.div
                     key={reminder.id}
@@ -333,7 +333,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
         </div>
 
         {/* Right Column - Progress + Today & Tomorrow Tasks */}
-        <div className="col-span-7 flex flex-col gap-4">
+        <div className="col-span-7 flex flex-col gap-4 min-h-0">
           {/* Today's Progress Bar - Full Width */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -362,13 +362,13 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
           </motion.div>
 
           {/* Tasks Grid */}
-          <div className="grid grid-cols-2 gap-4 flex-1">
+          <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
             {/* Today's Tasks */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col"
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col min-h-0"
             >
               <div className="flex items-center justify-between mb-2">
                 <h2 className="font-semibold text-sm text-gray-900">Today's Tasks</h2>
@@ -389,7 +389,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-1.5 flex-1 overflow-auto max-h-36">
+                <div className="space-y-1.5 flex-1 overflow-auto">
                   {todaysTasks.map((task, index) => (
                     <motion.div
                       key={task.id}
@@ -409,7 +409,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col"
+              className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 flex flex-col min-h-0"
             >
               <div className="flex items-center justify-between mb-2">
                 <h2 className="font-semibold text-sm text-gray-900">Tomorrow</h2>
@@ -430,7 +430,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-1.5 flex-1 overflow-auto max-h-36">
+                <div className="space-y-1.5 flex-1 overflow-auto">
                   {tomorrowsTasks.map((task, index) => (
                     <motion.div
                       key={task.id}
