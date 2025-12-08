@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Plus, Trash2, ExternalLink, Globe, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { BookOpen, Plus, Trash2, ExternalLink, Globe, RefreshCw, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,8 @@ const DEFAULT_SOURCES: NewsSource[] = [
 export const Learn = () => {
   const [sources, setSources] = useState<NewsSource[]>([]);
   const [newUrl, setNewUrl] = useState('');
+  const [activeSource, setActiveSource] = useState<NewsSource | null>(null);
+  const [iframeKey, setIframeKey] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Load sources from localStorage
@@ -31,8 +33,10 @@ export const Learn = () => {
     if (saved) {
       const parsed = JSON.parse(saved);
       setSources(parsed);
+      if (parsed.length > 0) setActiveSource(parsed[0]);
     } else {
       setSources(DEFAULT_SOURCES);
+      setActiveSource(DEFAULT_SOURCES[0]);
     }
   }, []);
 
@@ -68,11 +72,19 @@ export const Learn = () => {
     const updated = [...sources, source];
     setSources(updated);
     setNewUrl('');
+    if (!activeSource) setActiveSource(source);
   };
 
   const handleDeleteSource = (id: string) => {
     const updated = sources.filter(s => s.id !== id);
     setSources(updated);
+    if (activeSource?.id === id) {
+      setActiveSource(updated[0] || null);
+    }
+  };
+
+  const handleRefresh = () => {
+    setIframeKey(prev => prev + 1);
   };
 
   const openInNewTab = (url: string) => {
@@ -156,8 +168,8 @@ export const Learn = () => {
                 </div>
               </div>
 
-              {/* Sources List as Link Cards */}
-              <div className="flex-1 overflow-auto p-3">
+              {/* Sources List */}
+              <div className="flex-1 overflow-auto p-2">
                 {sources.length === 0 ? (
                   <div className="text-center py-6">
                     <Globe className="h-8 w-8 text-gray-200 mx-auto mb-2" />
@@ -165,40 +177,36 @@ export const Learn = () => {
                     <p className="text-xs text-gray-300 mt-1">Add your favorite news sites</p>
                   </div>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {sources.map((source, index) => (
                       <motion.div
                         key={source.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="group relative"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.03 }}
                       >
                         <button
-                          onClick={() => openInNewTab(source.url)}
-                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 hover:border-sky-200 hover:bg-sky-50/50 transition-all text-left shadow-sm hover:shadow-md"
+                          onClick={() => setActiveSource(source)}
+                          className={cn(
+                            "w-full flex items-center gap-3 p-2.5 rounded-lg transition-all group text-left",
+                            activeSource?.id === source.id
+                              ? "bg-sky-100 text-sky-900"
+                              : "hover:bg-gray-100 text-gray-700"
+                          )}
                         >
-                          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-sky-100 to-blue-100 flex items-center justify-center flex-shrink-0">
-                            <Globe className="h-5 w-5 text-sky-600" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <span className="block text-sm font-medium text-gray-900 capitalize truncate">
-                              {source.name}
-                            </span>
-                            <span className="block text-xs text-gray-400 truncate">
-                              {source.url}
-                            </span>
-                          </div>
-                          <ExternalLink className="h-4 w-4 text-gray-300 group-hover:text-sky-500 transition-colors flex-shrink-0" />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteSource(source.id);
-                          }}
-                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-white/80 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Globe className="h-4 w-4 flex-shrink-0" />
+                          <span className="flex-1 truncate text-sm font-medium capitalize">
+                            {source.name}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteSource(source.id);
+                            }}
+                            className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </button>
                       </motion.div>
                     ))}
@@ -209,46 +217,57 @@ export const Learn = () => {
           )}
         </AnimatePresence>
 
-        {/* Main Content - Link Cards Grid */}
-        <div className="flex-1 flex flex-col bg-gradient-to-br from-gray-50/50 to-white overflow-auto p-6">
-          {sources.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {sources.map((source, index) => (
-                <motion.div
-                  key={source.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -4 }}
-                  className="group"
-                >
-                  <button
-                    onClick={() => openInNewTab(source.url)}
-                    className="w-full h-full p-5 rounded-2xl bg-white border border-gray-100 hover:border-sky-200 transition-all text-left shadow-sm hover:shadow-lg flex flex-col"
+        {/* Main Content - iframe */}
+        <div className="flex-1 flex flex-col bg-white">
+          {activeSource ? (
+            <>
+              {/* Toolbar */}
+              <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-gray-50">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Globe className="h-4 w-4" />
+                  <span className="font-medium capitalize">{activeSource.name}</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-400 truncate max-w-md">{activeSource.url}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRefresh}
+                    className="h-8 px-3 text-gray-600"
                   >
-                    <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-sky-100 to-blue-100 flex items-center justify-center mb-4">
-                      <Globe className="h-6 w-6 text-sky-600" />
-                    </div>
-                    <h3 className="text-base font-semibold text-gray-900 capitalize mb-1">
-                      {source.name}
-                    </h3>
-                    <p className="text-xs text-gray-400 truncate mb-4">
-                      {source.url}
-                    </p>
-                    <div className="mt-auto flex items-center gap-2 text-sky-600 text-sm font-medium">
-                      <span>Open site</span>
-                      <ExternalLink className="h-4 w-4" />
-                    </div>
-                  </button>
-                </motion.div>
-              ))}
-            </div>
+                    <RefreshCw className="h-4 w-4 mr-1" />
+                    Refresh
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => openInNewTab(activeSource.url)}
+                    className="h-8 px-3 text-gray-600"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-1" />
+                    Open in new tab
+                  </Button>
+                </div>
+              </div>
+
+              {/* iframe */}
+              <div className="flex-1 relative">
+                <iframe
+                  key={iframeKey}
+                  src={activeSource.url}
+                  className="absolute inset-0 w-full h-full border-0"
+                  title={activeSource.name}
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                />
+              </div>
+            </>
           ) : (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <BookOpen className="h-16 w-16 text-gray-200 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-400">No sources yet</h3>
-                <p className="text-sm text-gray-300 mt-1">Add your favorite news sites to get started</p>
+                <h3 className="text-lg font-medium text-gray-400">No source selected</h3>
+                <p className="text-sm text-gray-300 mt-1">Add a news source to get started</p>
               </div>
             </div>
           )}
