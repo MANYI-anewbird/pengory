@@ -192,7 +192,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex-1 flex flex-col min-h-0"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-4"
           >
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-semibold text-base text-gray-900">{format(currentMonth, 'MMMM yyyy')}</h2>
@@ -213,7 +213,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             </div>
 
             {/* Day headers */}
-            <div className="grid grid-cols-7 mb-2">
+            <div className="grid grid-cols-7 mb-1">
               {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
                 <div key={i} className="text-center text-xs font-medium text-gray-400 py-1">
                   {day}
@@ -222,9 +222,9 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
             </div>
 
             {/* Calendar grid */}
-            <div className="grid grid-cols-7 gap-1 flex-1">
+            <div className="grid grid-cols-7 gap-1">
               {calendarDays.map((day, i) => {
-                if (!day) return <div key={`empty-${i}`} className="aspect-square" />;
+                if (!day) return <div key={`empty-${i}`} className="h-8" />;
                 
                 const dateStr = format(day, 'yyyy-MM-dd');
                 const dayTasks = tasksByDate[dateStr] || [];
@@ -237,7 +237,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
                     key={dateStr}
                     onClick={() => onNavigate('calendar')}
                     className={cn(
-                      "aspect-square rounded-lg text-sm relative flex items-center justify-center transition-all",
+                      "h-8 rounded-lg text-sm relative flex items-center justify-center transition-all",
                       isCurrentMonth ? "text-gray-700" : "text-gray-300",
                       isToday 
                         ? "bg-sky-500 text-white font-semibold shadow-sm" 
