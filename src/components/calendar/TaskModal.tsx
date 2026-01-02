@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -109,6 +110,9 @@ export const TaskModal = ({
           <DialogTitle className="text-base font-semibold">
             {editTask ? 'Edit Task' : 'New Task'}
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            {editTask ? 'Edit your task details' : 'Create a new task'}
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-3 py-3">
