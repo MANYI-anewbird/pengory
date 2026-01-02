@@ -92,8 +92,6 @@ export const TaskModal = ({
       repeat,
       location: location.trim() || undefined,
     });
-
-    onClose();
   };
 
   const handleDelete = () => {
@@ -104,7 +102,12 @@ export const TaskModal = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className="sm:max-w-[450px] bg-card border-border/40 shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-base font-semibold">
