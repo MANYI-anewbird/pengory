@@ -221,6 +221,7 @@ export const TaskModal = ({
         <div className="flex justify-between gap-2 pt-2">
           {editTask && onDelete ? (
             <Button
+              type="button"
               variant="ghost"
               onClick={handleDelete}
               className="rounded-md h-8 px-3 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -232,10 +233,11 @@ export const TaskModal = ({
             <div />
           )}
           <div className="flex gap-2">
-            <Button variant="ghost" onClick={onClose} className="rounded-md h-8 px-3 text-xs">
+            <Button type="button" variant="ghost" onClick={onClose} className="rounded-md h-8 px-3 text-xs">
               Cancel
             </Button>
             <Button
+              type="button"
               onClick={handleSave}
               disabled={!title.trim() || !date}
               className="rounded-md h-8 px-3 text-xs bg-pompom-yellow hover:bg-pompom-yellow/90 text-pompom-brown"
