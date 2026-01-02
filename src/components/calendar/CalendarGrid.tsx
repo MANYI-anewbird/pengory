@@ -1,6 +1,6 @@
 import { Task } from '@/types/task';
 import { DayCell } from './DayCell';
-
+import { getBostonNow, formatInBoston } from '@/lib/timezone';
 interface CalendarGridProps {
   currentDate: Date;
   tasks: Task[];
@@ -42,7 +42,7 @@ const getDaysInMonth = (date: Date) => {
 };
 
 const formatDateKey = (date: Date) => {
-  return date.toISOString().split('T')[0];
+  return formatInBoston(date, 'yyyy-MM-dd');
 };
 
 export const CalendarGrid = ({
@@ -53,7 +53,7 @@ export const CalendarGrid = ({
   onToggleComplete,
 }: CalendarGridProps) => {
   const days = getDaysInMonth(currentDate);
-  const today = new Date();
+  const today = getBostonNow();
   const todayKey = formatDateKey(today);
   
   const tasksByDate = tasks.reduce((acc, task) => {

@@ -1,6 +1,7 @@
 import { Task } from '@/types/task';
 import { CompactDayCell } from './CompactDayCell';
 import { cn } from '@/lib/utils';
+import { getBostonNow, formatInBoston } from '@/lib/timezone';
 
 interface CompactCalendarGridProps {
   currentDate: Date;
@@ -45,7 +46,7 @@ const getDaysInMonth = (date: Date) => {
 };
 
 const formatDateKey = (date: Date) => {
-  return date.toISOString().split('T')[0];
+  return formatInBoston(date, 'yyyy-MM-dd');
 };
 
 export const CompactCalendarGrid = ({
@@ -58,7 +59,7 @@ export const CompactCalendarGrid = ({
   denseMode,
 }: CompactCalendarGridProps) => {
   const days = getDaysInMonth(currentDate);
-  const today = new Date();
+  const today = getBostonNow();
   const todayKey = formatDateKey(today);
   
   const tasksByDate = tasks.reduce((acc, task) => {
