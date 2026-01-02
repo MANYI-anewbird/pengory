@@ -140,7 +140,7 @@ const Index = () => {
         ) : activePage === 'learn' ? (
           <Learn />
         ) : activePage === 'calendar' ? (
-          <div className="flex-1 flex flex-col overflow-hidden bg-white">
+          <div className="flex-1 flex flex-col overflow-hidden bg-background">
             <CompactHeader
               currentDate={currentDate}
               onPrevMonth={handlePrevMonth}
@@ -159,25 +159,26 @@ const Index = () => {
               onDeleteTask={handleDeleteTask}
               denseMode={denseMode}
             />
-
-            <TaskModal
-              isOpen={isModalOpen}
-              onClose={() => {
-                setIsModalOpen(false);
-                setEditingTask(undefined);
-              }}
-              onSave={handleSaveTask}
-              onDelete={handleDeleteTask}
-              initialDate={selectedDate}
-              editTask={editingTask}
-            />
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
+          <div className="flex-1 flex items-center justify-center text-muted-foreground">
             Page not found
           </div>
         )}
       </div>
+      
+      {/* Task Modal - rendered outside conditional to avoid unmounting issues */}
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingTask(undefined);
+        }}
+        onSave={handleSaveTask}
+        onDelete={handleDeleteTask}
+        initialDate={selectedDate}
+        editTask={editingTask}
+      />
     </PompomBorder>
   );
 };
