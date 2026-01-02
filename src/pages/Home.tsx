@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
+import { getBostonNow, getBostonTodayStr, getBostonHour, formatInBoston } from '@/lib/timezone';
 interface Reminder {
   id: string;
   text: string;
@@ -24,12 +24,12 @@ interface HomeProps {
 const REMINDERS_KEY = 'dashboard-reminders';
 
 export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () => {} }: HomeProps) => {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(getBostonNow());
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [newReminder, setNewReminder] = useState('');
-  const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
-  const tomorrowStr = addDays(today, 1).toISOString().split('T')[0];
+  const today = getBostonNow();
+  const todayStr = getBostonTodayStr();
+  const tomorrowStr = formatInBoston(addDays(today, 1), 'yyyy-MM-dd');
 
   // Load reminders from localStorage
   useEffect(() => {
@@ -113,7 +113,7 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
   const progressPercent = totalToday > 0 ? (completedToday / totalToday) * 100 : 0;
 
   const greeting = useMemo(() => {
-    const hour = today.getHours();
+    const hour = getBostonHour();
     if (hour < 12) return 'Good morning';
     if (hour < 18) return 'Good afternoon';
     return 'Good evening';

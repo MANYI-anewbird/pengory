@@ -12,9 +12,10 @@ import { Tasks } from './Tasks';
 import { Meditation } from './Meditation';
 import { Learn } from './Learn';
 import { useToast } from '@/hooks/use-toast';
+import { getBostonNow } from '@/lib/timezone';
 
 const Index = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(getBostonNow());
   const [tasks, setTasks] = useState<Task[]>(sampleTasks);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
@@ -32,7 +33,7 @@ const Index = () => {
   };
 
   const handleToday = () => {
-    setCurrentDate(new Date());
+    setCurrentDate(getBostonNow());
   };
 
   const handleDayClick = (date: Date) => {
