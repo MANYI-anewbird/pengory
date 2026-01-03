@@ -116,29 +116,33 @@ const Index = () => {
   };
 
   const handleSaveTask = (taskData: Omit<Task, 'id'>) => {
-    if (editingTask) {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === editingTask.id ? { ...taskData, id: task.id } : task
-        )
-      );
-      toast({
-        title: 'Task updated',
-        description: taskData.title,
-      });
-    } else {
-      const newTask: Task = {
-        ...taskData,
-        id: Date.now().toString(),
-      };
-      setTasks((prev) => [...prev, newTask]);
-      toast({
-        title: 'Task created',
-        description: taskData.title,
-      });
-    }
-
+    // Close the modal first, then mutate the calendar DOM on the next frame.
+    // This avoids a Radix (Dialog/ScrollLock) cleanup race that can throw "removeChild".
     closeTaskModal();
+
+    requestAnimationFrame(() => {
+      if (editingTask) {
+        setTasks((prev) =>
+          prev.map((task) =>
+            task.id === editingTask.id ? { ...taskData, id: task.id } : task
+          )
+        );
+        toast({
+          title: 'Task updated',
+          description: taskData.title,
+        });
+      } else {
+        const newTask: Task = {
+          ...taskData,
+          id: Date.now().toString(),
+        };
+        setTasks((prev) => [...prev, newTask]);
+        toast({
+          title: 'Task created',
+          description: taskData.title,
+        });
+      }
+    });
   };
 
   const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
