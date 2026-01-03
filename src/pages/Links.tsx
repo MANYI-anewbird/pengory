@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ExternalLink, Trash2, Globe, Pencil, Check, X, FolderPlus } from 'lucide-react';
+import { Plus, ExternalLink, Trash2, Globe, Pencil, Check, X, FolderPlus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -61,6 +61,7 @@ export const Links = () => {
   const [editingLinkId, setEditingLinkId] = useState<string | null>(null);
   const [editLinkTitle, setEditLinkTitle] = useState('');
   const [editLinkDescription, setEditLinkDescription] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     try {
@@ -178,78 +179,104 @@ export const Links = () => {
 
   const totalLinks = categories.reduce((acc, cat) => acc + cat.links.length, 0);
 
+  // Filter categories and links based on search
+  const filteredCategories = searchQuery.trim()
+    ? categories
+        .map(cat => ({
+          ...cat,
+          links: cat.links.filter(link =>
+            link.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            link.url.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            link.description.toLowerCase().includes(searchQuery.toLowerCase())
+          ),
+        }))
+        .filter(cat => cat.links.length > 0 || cat.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : categories;
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 min-h-screen">
       {/* Header */}
-      <div className="px-6 py-4 bg-white border-b border-slate-200 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-md">
-            <Globe className="h-5 w-5 text-white" />
+      <div className="px-4 py-3 bg-white border-b border-slate-200 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg">
+            <Globe className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Link Archive</h1>
-            <p className="text-xs text-slate-500">
-              {categories.length} categor{categories.length !== 1 ? 'ies' : 'y'}, {totalLinks} link{totalLinks !== 1 ? 's' : ''}
-            </p>
+            <h1 className="text-base font-bold text-slate-900">Links</h1>
           </div>
         </div>
+        
+        {/* Search Bar */}
+        <div className="flex-1 max-w-md relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Input
+            placeholder="Search links..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 h-8 text-sm"
+          />
+        </div>
+
         <Button
           onClick={() => setIsAddCategoryModalOpen(true)}
           size="sm"
-          className="gap-1.5 bg-slate-800 hover:bg-slate-700 text-white"
+          className="gap-1 bg-slate-800 hover:bg-slate-700 text-white h-8 text-xs"
         >
-          <FolderPlus className="h-4 w-4" />
+          <FolderPlus className="h-3.5 w-3.5" />
           Add Category
         </Button>
       </div>
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="p-6 space-y-6">
-          {categories.length === 0 ? (
+        <div className="p-4 space-y-3">
+          {filteredCategories.length === 0 && !searchQuery ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center justify-center py-20 rounded-2xl border-2 border-dashed border-slate-200 bg-white"
+              className="flex flex-col items-center justify-center py-16 rounded-xl border-2 border-dashed border-slate-200 bg-white"
             >
-              <div className="p-5 rounded-2xl mb-5 shadow-lg bg-slate-100">
-                <Globe className="h-10 w-10 text-slate-400" />
+              <div className="p-4 rounded-xl mb-4 bg-slate-100">
+                <Globe className="h-8 w-8 text-slate-400" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">No Categories Yet</h3>
-              <p className="text-sm text-slate-500 mb-6 text-center max-w-xs">
+              <h3 className="text-lg font-bold text-slate-900 mb-1">No Categories Yet</h3>
+              <p className="text-sm text-slate-500 mb-4 text-center max-w-xs">
                 Create a category to start organizing your links
               </p>
               <Button
                 onClick={() => setIsAddCategoryModalOpen(true)}
-                className="gap-2 px-6 shadow-lg bg-slate-800 hover:bg-slate-700 text-white"
+                className="gap-2 px-4 shadow-md bg-slate-800 hover:bg-slate-700 text-white text-sm"
               >
                 <FolderPlus className="h-4 w-4" />
-                Create Your First Category
+                Create Category
               </Button>
             </motion.div>
+          ) : filteredCategories.length === 0 && searchQuery ? (
+            <div className="text-center py-12 text-slate-500">
+              No links found for "{searchQuery}"
+            </div>
           ) : (
             <AnimatePresence>
-              {categories.map((category, catIndex) => (
+              {filteredCategories.map((category, catIndex) => (
                 <motion.div
                   key={category.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ delay: catIndex * 0.05 }}
-                  className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ delay: catIndex * 0.03 }}
+                  className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
                 >
                   {/* Category Header */}
                   <div
-                    className="px-5 py-4 flex items-center justify-between"
-                    style={{ backgroundColor: `${category.color}15` }}
+                    className="px-3 py-2 flex items-center justify-between"
+                    style={{ backgroundColor: `${category.color}10` }}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <div
-                        className="w-3 h-3 rounded-full"
+                        className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: category.color }}
                       />
                       {editingCategoryId === category.id ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           <input
                             type="text"
                             value={editCategoryName}
@@ -259,47 +286,47 @@ export const Links = () => {
                               if (e.key === 'Escape') setEditingCategoryId(null);
                             }}
                             autoFocus
-                            className="text-base font-semibold bg-white border border-slate-200 rounded px-2 py-1 outline-none focus:border-slate-400"
+                            className="text-sm font-semibold bg-white border border-slate-200 rounded px-2 py-0.5 outline-none focus:border-slate-400"
                           />
                           <button
                             onClick={handleSaveEditCategory}
-                            className="p-1 rounded hover:bg-white/50 text-green-600"
+                            className="p-0.5 rounded hover:bg-white/50 text-green-600"
                           >
-                            <Check className="h-4 w-4" />
+                            <Check className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => setEditingCategoryId(null)}
-                            className="p-1 rounded hover:bg-white/50 text-slate-400"
+                            className="p-0.5 rounded hover:bg-white/50 text-slate-400"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       ) : (
-                        <h3 className="text-base font-semibold text-slate-900">{category.name}</h3>
+                        <h3 className="text-sm font-semibold text-slate-900">{category.name}</h3>
                       )}
                       <span className="text-xs text-slate-400">
-                        ({category.links.length} link{category.links.length !== 1 ? 's' : ''})
+                        ({category.links.length})
                       </span>
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5">
                       <button
                         onClick={() => handleStartEditCategory(category)}
-                        className="p-1.5 rounded-lg hover:bg-white/50 text-slate-400 hover:text-slate-600 transition-colors"
+                        className="p-1 rounded hover:bg-white/50 text-slate-400 hover:text-slate-600 transition-colors"
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteCategory(category.id)}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                        className="p-1 rounded hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
 
                   {/* Links */}
-                  <div className="p-5">
-                    <div className="flex flex-wrap gap-3 items-start">
+                  <div className="px-3 py-2">
+                    <div className="flex flex-wrap gap-2 items-center">
                       {category.links.map((link) => (
                         <TooltipProvider key={link.id} delayDuration={300}>
                           <Tooltip>
@@ -309,11 +336,11 @@ export const Links = () => {
                                   href={link.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90 hover:shadow-md"
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-white transition-all hover:opacity-90 hover:shadow-sm"
                                   style={{ backgroundColor: category.color }}
                                 >
                                   {link.title}
-                                  <ExternalLink className="h-3 w-3" />
+                                  <ExternalLink className="h-2.5 w-2.5" />
                                 </a>
                                 <div className="absolute -right-1 -top-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                   <button
@@ -322,16 +349,16 @@ export const Links = () => {
                                       e.stopPropagation();
                                       handleDeleteLink(category.id, link.id);
                                     }}
-                                    className="p-1 rounded-full bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors"
+                                    className="p-0.5 rounded-full bg-red-500 text-white shadow-sm hover:bg-red-600 transition-colors"
                                   >
-                                    <X className="h-3 w-3" />
+                                    <X className="h-2.5 w-2.5" />
                                   </button>
                                 </div>
                               </div>
                             </TooltipTrigger>
                             {link.description && (
                               <TooltipContent side="bottom" className="max-w-xs">
-                                <p className="text-sm">{link.description}</p>
+                                <p className="text-xs">{link.description}</p>
                               </TooltipContent>
                             )}
                           </Tooltip>
@@ -341,9 +368,9 @@ export const Links = () => {
                       {/* Add Link Button */}
                       <button
                         onClick={() => openAddLinkModal(category.id)}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all text-sm text-slate-400 hover:text-slate-600"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all text-xs text-slate-400 hover:text-slate-600"
                       >
-                        <Plus className="h-3.5 w-3.5" />
+                        <Plus className="h-3 w-3" />
                         Add
                       </button>
                     </div>
@@ -354,15 +381,15 @@ export const Links = () => {
           )}
 
           {/* Add Category Button at bottom */}
-          {categories.length > 0 && (
+          {categories.length > 0 && !searchQuery && (
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               onClick={() => setIsAddCategoryModalOpen(true)}
-              className="w-full py-5 rounded-xl border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-white transition-all flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 hover:text-slate-600"
+              className="w-full py-3 rounded-lg border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-white transition-all flex items-center justify-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-600"
             >
-              <FolderPlus className="h-4 w-4" />
-              Add Another Category
+              <FolderPlus className="h-3.5 w-3.5" />
+              Add Category
             </motion.button>
           )}
         </div>
