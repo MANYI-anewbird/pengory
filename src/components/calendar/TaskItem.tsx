@@ -35,7 +35,9 @@ export const TaskItem = ({ task, onToggleComplete, onClick }: TaskItemProps) => 
           onCheckedChange={() => onToggleComplete(task.id)}
           className={cn(
             "h-4 w-4 rounded border-2",
-            task.priority === 'high' && task.completed && "data-[state=checked]:bg-rose-500 data-[state=checked]:border-rose-500"
+            task.priority === 'high' 
+              ? "border-rose-400 data-[state=checked]:bg-rose-500 data-[state=checked]:border-rose-500"
+              : ""
           )}
         />
       </div>

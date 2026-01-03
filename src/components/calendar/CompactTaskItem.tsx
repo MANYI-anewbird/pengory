@@ -49,11 +49,10 @@ export const CompactTaskItem = ({
               checked={task.completed}
               onCheckedChange={() => onToggleComplete(task.id)}
               className={cn(
-                'rounded-sm border border-muted-foreground/60',
-                'h-3.5 w-3.5',
-                task.priority === 'high' && task.completed 
-                  ? 'data-[state=checked]:bg-rose-500 data-[state=checked]:border-rose-500 data-[state=checked]:text-white'
-                  : 'data-[state=checked]:bg-black data-[state=checked]:border-black data-[state=checked]:text-white'
+                'rounded-sm h-3.5 w-3.5',
+                task.priority === 'high' 
+                  ? 'border-rose-400 data-[state=checked]:bg-rose-500 data-[state=checked]:border-rose-500 data-[state=checked]:text-white'
+                  : 'border border-muted-foreground/60 data-[state=checked]:bg-black data-[state=checked]:border-black data-[state=checked]:text-white'
               )}
             />
           </div>
