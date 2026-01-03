@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Heart, Brain, Palette, TrendingUp } from 'lucide-react';
+import { Plus, Heart, Brain, Palette, TrendingUp, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { GrowthPlan, GrowthCategory, CATEGORY_LABELS } from '@/types/growth';
@@ -10,29 +10,52 @@ import { cn } from '@/lib/utils';
 
 const GROWTH_STORAGE_KEY = 'pompom_growth_plans_v1';
 
+// Vibrant blue theme colors for each category
 const CATEGORY_CONFIG: Record<GrowthCategory, {
   icon: any;
-  color: string;
+  // Active button color
+  activeBtn: string;
+  // Icon/accent color
+  accent: string;
+  // Light background for content area
   lightBg: string;
+  // Gradient for empty state
+  emptyGradient: string;
+  // Border color
   border: string;
+  // Dot/ring color
+  dotColor: string;
+  ringStroke: string;
 }> = {
   health: {
     icon: Heart,
-    color: 'text-slate-700',
-    lightBg: 'bg-slate-50',
-    border: 'border-slate-200',
+    activeBtn: 'bg-indigo-700 text-white',
+    accent: 'text-indigo-600',
+    lightBg: 'bg-indigo-50/50',
+    emptyGradient: 'from-indigo-100 to-indigo-50',
+    border: 'border-indigo-200',
+    dotColor: 'bg-indigo-600',
+    ringStroke: 'stroke-indigo-600',
   },
   skills: {
     icon: Brain,
-    color: 'text-teal-600',
-    lightBg: 'bg-teal-50',
-    border: 'border-teal-200',
+    activeBtn: 'bg-cyan-600 text-white',
+    accent: 'text-cyan-600',
+    lightBg: 'bg-cyan-50/50',
+    emptyGradient: 'from-cyan-100 to-cyan-50',
+    border: 'border-cyan-200',
+    dotColor: 'bg-cyan-500',
+    ringStroke: 'stroke-cyan-500',
   },
   hobby: {
     icon: Palette,
-    color: 'text-sky-500',
-    lightBg: 'bg-sky-50',
+    activeBtn: 'bg-sky-500 text-white',
+    accent: 'text-sky-500',
+    lightBg: 'bg-sky-50/50',
+    emptyGradient: 'from-sky-100 to-sky-50',
     border: 'border-sky-200',
+    dotColor: 'bg-sky-400',
+    ringStroke: 'stroke-sky-400',
   },
 };
 
@@ -87,50 +110,57 @@ export const PersonalGrowth = () => {
   const activeConfig = CATEGORY_CONFIG[activeCategory];
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-white min-h-screen">
+    <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100 min-h-screen">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-200/30 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-cyan-200/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-20 w-60 h-60 bg-sky-200/25 rounded-full blur-3xl" />
+      </div>
+
       {/* Hero Header */}
-      <div className="px-6 pt-8 pb-6 border-b border-slate-100">
+      <div className="relative px-6 pt-8 pb-6 border-b border-slate-200/50 bg-white/60 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-slate-900 rounded-xl">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl shadow-lg shadow-indigo-200">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
               Personal Growth
             </h1>
           </div>
-          <p className="text-slate-500 text-sm ml-12">
+          <p className="text-slate-500 text-sm ml-[52px]">
             Build better habits. Track your progress. Achieve your goals.
           </p>
           
-          {/* Quick Stats */}
-          {totalPlans > 0 && (
-            <div className="flex gap-6 mt-6 ml-12">
-              <div>
-                <span className="text-2xl font-bold text-slate-900">{totalPlans}</span>
-                <span className="text-slate-500 text-sm ml-1.5">Plans</span>
-              </div>
-              <div className="w-px bg-slate-200" />
-              <div>
-                <span className="text-2xl font-bold text-slate-900">{completedSteps}</span>
-                <span className="text-slate-500 text-sm ml-1.5">/ {totalSteps} Steps</span>
-              </div>
-              <div className="w-px bg-slate-200" />
-              <div>
-                <span className="text-2xl font-bold text-slate-900">
-                  {totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0}%
-                </span>
-                <span className="text-slate-500 text-sm ml-1.5">Complete</span>
-              </div>
+          {/* Quick Stats with visual enhancement */}
+          <div className="flex gap-6 mt-6 ml-[52px]">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
+                {totalPlans}
+              </span>
+              <span className="text-slate-500 text-sm">Plans</span>
             </div>
-          )}
+            <div className="w-px bg-slate-200 self-stretch" />
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-bold text-slate-900">{completedSteps}</span>
+              <span className="text-slate-500 text-sm">/ {totalSteps} Steps</span>
+            </div>
+            <div className="w-px bg-slate-200 self-stretch" />
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-3xl font-bold bg-gradient-to-r from-cyan-500 to-sky-500 bg-clip-text text-transparent">
+                {totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0}%
+              </span>
+              <span className="text-slate-500 text-sm">Complete</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Category Navigation */}
-      <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100">
+      {/* Category Navigation with colored active states */}
+      <div className="relative px-6 py-4 bg-white/40 backdrop-blur-sm border-b border-slate-200/50">
         <div className="max-w-3xl mx-auto">
-          <div className="flex gap-1 p-1 bg-white rounded-xl border border-slate-200 shadow-sm">
+          <div className="flex gap-1.5 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-sm">
             {categories.map((cat) => {
               const config = CATEGORY_CONFIG[cat];
               const Icon = config.icon;
@@ -138,13 +168,15 @@ export const PersonalGrowth = () => {
               const count = plans.filter((p) => p.category === cat).length;
               
               return (
-                <button
+                <motion.button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
+                  whileHover={{ scale: isActive ? 1 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   className={cn(
-                    'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium',
+                    'flex-1 flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-xl transition-all duration-300 text-sm font-semibold',
                     isActive
-                      ? cn('bg-slate-900 text-white shadow-md')
+                      ? cn(config.activeBtn, 'shadow-lg')
                       : 'text-slate-600 hover:bg-slate-50'
                   )}
                 >
@@ -152,30 +184,43 @@ export const PersonalGrowth = () => {
                   <span className="hidden sm:inline">{CATEGORY_LABELS[cat]}</span>
                   {count > 0 && (
                     <span className={cn(
-                      'text-xs px-2 py-0.5 rounded-full font-medium',
-                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                      'text-xs px-2 py-0.5 rounded-full font-bold',
+                      isActive ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'
                     )}>
                       {count}
                     </span>
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>
         </div>
       </div>
 
-      {/* Content Area */}
-      <ScrollArea className="flex-1">
+      {/* Content Area with category-specific styling */}
+      <ScrollArea className="flex-1 relative">
         <div className="px-6 py-6">
           <div className="max-w-3xl mx-auto">
+            {/* Category-colored decorative line */}
+            <motion.div 
+              key={activeCategory + '-line'}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              className={cn(
+                'h-1 rounded-full mb-6 origin-left',
+                activeCategory === 'health' && 'bg-gradient-to-r from-indigo-500 to-indigo-300',
+                activeCategory === 'skills' && 'bg-gradient-to-r from-cyan-500 to-cyan-300',
+                activeCategory === 'hobby' && 'bg-gradient-to-r from-sky-500 to-sky-300'
+              )}
+            />
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeCategory}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15 }}
+                transition={{ duration: 0.2 }}
                 className="space-y-4"
               >
                 {filteredPlans.length === 0 ? (
@@ -183,30 +228,40 @@ export const PersonalGrowth = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className={cn(
-                      'flex flex-col items-center justify-center py-20 rounded-2xl border-2 border-dashed',
+                      'flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed relative overflow-hidden',
                       activeConfig.border,
-                      activeConfig.lightBg
+                      'bg-gradient-to-br',
+                      activeConfig.emptyGradient
                     )}
                   >
+                    {/* Decorative sparkles */}
+                    <Sparkles className={cn('absolute top-6 right-8 h-6 w-6 opacity-40', activeConfig.accent)} />
+                    <Sparkles className={cn('absolute bottom-8 left-10 h-5 w-5 opacity-30', activeConfig.accent)} />
+                    
                     <div className={cn(
-                      'p-4 rounded-2xl mb-5',
-                      'bg-white shadow-sm border',
+                      'p-5 rounded-2xl mb-5 shadow-lg',
+                      'bg-white border',
                       activeConfig.border
                     )}>
                       {(() => {
                         const Icon = activeConfig.icon;
-                        return <Icon className={cn('h-8 w-8', activeConfig.color)} />;
+                        return <Icon className={cn('h-10 w-10', activeConfig.accent)} />;
                       })()}
                     </div>
-                    <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                    <h3 className="text-xl font-bold text-slate-900 mb-2">
                       No {CATEGORY_LABELS[activeCategory]} Plans
                     </h3>
                     <p className="text-sm text-slate-500 mb-6 text-center max-w-xs">
-                      Start your journey by creating your first plan in this category
+                      Start your journey by creating your first plan
                     </p>
                     <Button
                       onClick={() => setIsNewPlanModalOpen(true)}
-                      className="gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6"
+                      className={cn(
+                        'gap-2 px-6 shadow-lg transition-transform hover:scale-105',
+                        activeCategory === 'health' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200',
+                        activeCategory === 'skills' && 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-200',
+                        activeCategory === 'hobby' && 'bg-sky-500 hover:bg-sky-600 shadow-sky-200'
+                      )}
                     >
                       <Plus className="h-4 w-4" />
                       Create Plan
@@ -214,20 +269,26 @@ export const PersonalGrowth = () => {
                   </motion.div>
                 ) : (
                   <>
-                    {filteredPlans.map((plan, index) => (
-                      <motion.div
-                        key={plan.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <GrowthPlanCard
-                          plan={plan}
-                          onUpdate={(updates) => handleUpdatePlan(plan.id, updates)}
-                          onDelete={() => handleDeletePlan(plan.id)}
-                        />
-                      </motion.div>
-                    ))}
+                    {/* Plans container with subtle background */}
+                    <div className={cn(
+                      'rounded-2xl p-4 space-y-4',
+                      activeConfig.lightBg
+                    )}>
+                      {filteredPlans.map((plan, index) => (
+                        <motion.div
+                          key={plan.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <GrowthPlanCard
+                            plan={plan}
+                            onUpdate={(updates) => handleUpdatePlan(plan.id, updates)}
+                            onDelete={() => handleDeletePlan(plan.id)}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
                     
                     {/* Add New Plan Button */}
                     <motion.button
@@ -237,9 +298,11 @@ export const PersonalGrowth = () => {
                       onClick={() => setIsNewPlanModalOpen(true)}
                       className={cn(
                         'w-full py-4 rounded-xl border-2 border-dashed transition-all duration-200',
-                        'flex items-center justify-center gap-2 text-sm font-medium',
-                        'hover:border-slate-400 hover:bg-slate-50',
-                        'border-slate-200 text-slate-500'
+                        'flex items-center justify-center gap-2 text-sm font-semibold',
+                        'hover:scale-[1.01]',
+                        activeCategory === 'health' && 'border-indigo-300 text-indigo-600 hover:bg-indigo-50',
+                        activeCategory === 'skills' && 'border-cyan-300 text-cyan-600 hover:bg-cyan-50',
+                        activeCategory === 'hobby' && 'border-sky-300 text-sky-500 hover:bg-sky-50'
                       )}
                     >
                       <Plus className="h-4 w-4" />
@@ -257,7 +320,12 @@ export const PersonalGrowth = () => {
       <div className="fixed bottom-6 right-6 sm:hidden">
         <Button
           onClick={() => setIsNewPlanModalOpen(true)}
-          className="h-14 w-14 rounded-full shadow-lg bg-slate-900 hover:bg-slate-800"
+          className={cn(
+            'h-14 w-14 rounded-full shadow-xl',
+            activeCategory === 'health' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-300',
+            activeCategory === 'skills' && 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-300',
+            activeCategory === 'hobby' && 'bg-sky-500 hover:bg-sky-600 shadow-sky-300'
+          )}
         >
           <Plus className="h-6 w-6" />
         </Button>
