@@ -24,7 +24,18 @@ export const PersonalGrowth = () => {
       const raw = localStorage.getItem(CATEGORIES_STORAGE_KEY);
       if (!raw) return DEFAULT_CATEGORIES;
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_CATEGORIES;
+      if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_CATEGORIES;
+      
+      // Update default categories with new colors if they exist
+      const defaultColorMap: Record<string, string> = {};
+      DEFAULT_CATEGORIES.forEach(dc => { defaultColorMap[dc.id] = dc.color; });
+      
+      return parsed.map(cat => {
+        if (defaultColorMap[cat.id]) {
+          return { ...cat, color: defaultColorMap[cat.id] };
+        }
+        return cat;
+      });
     } catch {
       return DEFAULT_CATEGORIES;
     }
