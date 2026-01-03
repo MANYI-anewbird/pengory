@@ -196,7 +196,6 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     'transition-all duration-300',
                     plan.category === 'health' && 'stroke-rose-500',
                     plan.category === 'skills' && 'stroke-blue-500',
-                    plan.category === 'language' && 'stroke-emerald-500',
                     plan.category === 'hobby' && 'stroke-amber-500'
                   )}
                 />

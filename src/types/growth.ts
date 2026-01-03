@@ -1,4 +1,4 @@
-export type GrowthCategory = 'health' | 'skills' | 'language' | 'hobby';
+export type GrowthCategory = 'health' | 'skills' | 'hobby';
 
 export interface LinkButton {
   id: string;
@@ -29,13 +29,11 @@ export interface GrowthPlan {
 export const CATEGORY_LABELS: Record<GrowthCategory, string> = {
   health: 'Health & Fitness',
   skills: 'Skills Learning',
-  language: 'Language Growth',
   hobby: 'Hobby Development',
 };
 
 export const CATEGORY_COLORS: Record<GrowthCategory, string> = {
   health: 'bg-rose-500',
   skills: 'bg-blue-500',
-  language: 'bg-emerald-500',
   hobby: 'bg-amber-500',
 };
