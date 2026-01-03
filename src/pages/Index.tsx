@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Task } from '@/types/task';
 import { sampleTasks } from '@/data/sampleTasks';
 import { PompomBorder } from '@/components/calendar/PompomBorder';
@@ -11,6 +12,7 @@ import { Home } from './Home';
 import { PersonalGrowth } from './PersonalGrowth';
 import { Links } from './Links';
 import { Learn } from './Learn';
+import Profile from './Profile';
 import { toast as sonnerToast } from '@/components/ui/sonner';
 import { getBostonNow } from '@/lib/timezone';
 const TASKS_STORAGE_KEY = 'pompom_tasks_v1';
@@ -22,6 +24,7 @@ type ToastOptions = {
 };
 
 const Index = () => {
+  const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(getBostonNow());
   const [tasks, setTasks] = useState<Task[]>(() => {
     try {
@@ -160,7 +163,13 @@ const Index = () => {
       <div className="flex h-full">
         <Sidebar 
           denseMode={denseMode} 
-          onNavigate={setActivePage}
+          onNavigate={(page) => {
+            if (page === 'login') {
+              navigate('/auth');
+            } else {
+              setActivePage(page);
+            }
+          }}
           activePage={activePage}
         />
         
@@ -180,6 +189,8 @@ const Index = () => {
           <Links />
         ) : activePage === 'learn' ? (
           <Learn />
+        ) : activePage === 'profile' ? (
+          <Profile />
         ) : activePage === 'calendar' ? (
           <div className="flex-1 flex flex-col overflow-hidden bg-background">
             <CompactHeader
