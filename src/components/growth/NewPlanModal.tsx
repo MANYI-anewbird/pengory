@@ -18,7 +18,6 @@ interface NewPlanModalProps {
 const CATEGORY_ICONS: Record<GrowthCategory, any> = {
   health: Heart,
   skills: Brain,
-  language: Languages,
   hobby: Palette,
 };
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Heart, Brain, Languages, Palette } from 'lucide-react';
+import { Plus, Heart, Brain, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { GrowthPlan, GrowthCategory, CATEGORY_LABELS } from '@/types/growth';
@@ -13,21 +13,18 @@ const GROWTH_STORAGE_KEY = 'pompom_growth_plans_v1';
 const CATEGORY_ICONS: Record<GrowthCategory, any> = {
   health: Heart,
   skills: Brain,
-  language: Languages,
   hobby: Palette,
 };
 
 const CATEGORY_BG: Record<GrowthCategory, string> = {
   health: 'from-rose-500/10 to-rose-500/5',
   skills: 'from-blue-500/10 to-blue-500/5',
-  language: 'from-emerald-500/10 to-emerald-500/5',
   hobby: 'from-amber-500/10 to-amber-500/5',
 };
 
 const CATEGORY_ACCENT: Record<GrowthCategory, string> = {
   health: 'text-rose-600 bg-rose-100',
   skills: 'text-blue-600 bg-blue-100',
-  language: 'text-emerald-600 bg-emerald-100',
   hobby: 'text-amber-600 bg-amber-100',
 };
 
@@ -75,7 +72,7 @@ export const PersonalGrowth = () => {
     setPlans((prev) => prev.filter((p) => p.id !== planId));
   };
 
-  const categories: GrowthCategory[] = ['health', 'skills', 'language', 'hobby'];
+  const categories: GrowthCategory[] = ['health', 'skills', 'hobby'];
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-background">
