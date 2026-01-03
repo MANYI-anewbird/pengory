@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Link as LinkIcon, ExternalLink, Trash2, FolderPlus, 
-  BookOpen, Gamepad2, Wrench, Sparkles, Globe, ChevronDown, ChevronUp 
+  BookOpen, Gamepad2, Wrench, Sparkles, Globe, ChevronDown, ChevronUp, Pencil 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -41,6 +41,8 @@ export const Links = () => {
   const [newLinkTitle, setNewLinkTitle] = useState('');
   const [newLinkDescription, setNewLinkDescription] = useState('');
   const [expandedLinks, setExpandedLinks] = useState<Set<string>>(new Set());
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [editingCategoryName, setEditingCategoryName] = useState('');
 
   useEffect(() => {
     try {
@@ -76,6 +78,27 @@ export const Links = () => {
       const remaining = categories.filter(c => c.id !== categoryId);
       setActiveCategory(remaining[0]?.id || 'learning');
     }
+  };
+
+  const handleStartRenameCategory = (categoryId: string, currentName: string) => {
+    setEditingCategoryId(categoryId);
+    setEditingCategoryName(currentName);
+  };
+
+  const handleSaveRenameCategory = () => {
+    if (!editingCategoryId || !editingCategoryName.trim()) {
+      setEditingCategoryId(null);
+      return;
+    }
+    setCategories(prev =>
+      prev.map(cat =>
+        cat.id === editingCategoryId
+          ? { ...cat, name: editingCategoryName.trim() }
+          : cat
+      )
+    );
+    setEditingCategoryId(null);
+    setEditingCategoryName('');
   };
 
   const handleAddLink = () => {
@@ -184,17 +207,52 @@ export const Links = () => {
                     onClick={() => setActiveCategory(cat.id)}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4" />
-                        <span className="text-sm font-medium">{cat.name}</span>
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <Icon className="h-4 w-4 flex-shrink-0" />
+                        {editingCategoryId === cat.id ? (
+                          <input
+                            type="text"
+                            value={editingCategoryName}
+                            onChange={(e) => setEditingCategoryName(e.target.value)}
+                            onBlur={handleSaveRenameCategory}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleSaveRenameCategory();
+                              if (e.key === 'Escape') setEditingCategoryId(null);
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            autoFocus
+                            className={cn(
+                              'text-sm font-medium bg-transparent border-b outline-none w-full',
+                              activeCategory === cat.id
+                                ? 'border-white/50 text-white placeholder:text-white/50'
+                                : 'border-slate-300 text-slate-900'
+                            )}
+                          />
+                        ) : (
+                          <span className="text-sm font-medium truncate">{cat.name}</span>
+                        )}
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <span className={cn(
                           'text-xs px-1.5 py-0.5 rounded-full font-medium',
                           activeCategory === cat.id ? 'bg-white/25' : 'bg-slate-100'
                         )}>
                           {cat.links.length}
                         </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStartRenameCategory(cat.id, cat.name);
+                          }}
+                          className={cn(
+                            'opacity-0 group-hover:opacity-100 p-1 rounded transition-all',
+                            activeCategory === cat.id
+                              ? 'hover:bg-white/20'
+                              : 'hover:bg-slate-100 text-slate-400'
+                          )}
+                        >
+                          <Pencil className="h-3 w-3" />
+                        </button>
                         {!isDefaultCategory(cat.id) && (
                           <button
                             onClick={(e) => {
