@@ -24,14 +24,14 @@ const CATEGORY_CONFIG: Record<GrowthCategory, {
 }> = {
   health: {
     icon: Heart,
-    activeBtn: 'bg-rose-500 text-white',
-    accent: 'text-rose-500',
-    lightBg: 'bg-rose-50/50',
-    emptyGradient: 'from-rose-100 to-rose-50',
-    border: 'border-rose-200',
-    dotColor: 'bg-rose-500',
-    ringStroke: 'stroke-rose-500',
-    gradient: 'from-rose-500 to-rose-400',
+    activeBtn: 'bg-pink-300 text-white',
+    accent: 'text-pink-400',
+    lightBg: 'bg-pink-50/50',
+    emptyGradient: 'from-pink-100 to-purple-50',
+    border: 'border-pink-200',
+    dotColor: 'bg-pink-300',
+    ringStroke: 'stroke-pink-300',
+    gradient: 'from-pink-300 to-purple-200',
   },
   skills: {
     icon: Brain,
