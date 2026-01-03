@@ -135,7 +135,11 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!goal.trim()}>
+          <Button 
+            onClick={handleSave} 
+            disabled={!goal.trim()}
+            className="bg-gray-900 hover:bg-gray-800 text-white"
+          >
             Create Plan
           </Button>
         </div>

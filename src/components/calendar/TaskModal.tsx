@@ -145,15 +145,15 @@ export const TaskModal = ({
           <div className="bg-white/60 rounded-xl p-4 space-y-4 border border-stone-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                  <Calendar className="h-4 w-4 text-blue-600" />
+                <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center">
+                  <Calendar className="h-4 w-4 text-white" />
                 </div>
                 <Label className="text-sm font-medium text-stone-700">All Day</Label>
               </div>
               <Switch 
                 checked={allDay} 
                 onCheckedChange={setAllDay} 
-                className="data-[state=checked]:bg-blue-600"
+                className="data-[state=checked]:bg-gray-900"
               />
             </div>
 
@@ -188,23 +188,23 @@ export const TaskModal = ({
             {/* Repeat Toggle */}
             <div className="bg-white/60 rounded-xl p-3.5 border border-stone-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-md bg-amber-50 flex items-center justify-center">
-                  <Repeat className="h-3.5 w-3.5 text-amber-600" />
+                <div className="w-7 h-7 rounded-md bg-gray-900 flex items-center justify-center">
+                  <Repeat className="h-3.5 w-3.5 text-white" />
                 </div>
                 <Label className="text-sm font-medium text-stone-700">Repeat</Label>
               </div>
               <Switch 
                 checked={repeat} 
                 onCheckedChange={setRepeat}
-                className="scale-90 data-[state=checked]:bg-amber-500"
+                className="scale-90 data-[state=checked]:bg-gray-900"
               />
             </div>
 
             {/* Availability */}
             <div className="bg-white/60 rounded-xl p-3.5 border border-stone-100">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-md bg-emerald-50 flex items-center justify-center">
-                  <Briefcase className="h-3.5 w-3.5 text-emerald-600" />
+                <div className="w-7 h-7 rounded-md bg-gray-900 flex items-center justify-center">
+                  <Briefcase className="h-3.5 w-3.5 text-white" />
                 </div>
                 <Label className="text-sm font-medium text-stone-700">Status</Label>
               </div>
@@ -252,8 +252,8 @@ export const TaskModal = ({
 
           {/* Location */}
           <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center">
-              <MapPin className="h-4 w-4 text-violet-500" />
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center">
+              <MapPin className="h-4 w-4 text-white" />
             </div>
             <Input
               placeholder="Add location (optional)"
