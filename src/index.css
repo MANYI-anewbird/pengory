@@ -18,9 +18,9 @@ All colors MUST be HSL.
     --popover: 45 40% 98%;
     --popover-foreground: 30 20% 25%;
 
-    /* Primary - Pompompurin yellow */
-    --primary: 45 100% 70%;
-    --primary-foreground: 30 50% 30%;
+    /* Primary - Dark blue theme */
+    --primary: 220 25% 25%;
+    --primary-foreground: 0 0% 100%;
 
     /* Secondary - soft cream */
     --secondary: 45 25% 92%;
@@ -30,9 +30,9 @@ All colors MUST be HSL.
     --muted: 45 30% 94%;
     --muted-foreground: 30 15% 50%;
 
-    /* Accent - soft yellow */
-    --accent: 45 80% 90%;
-    --accent-foreground: 30 50% 35%;
+    /* Accent - soft blue */
+    --accent: 210 30% 92%;
+    --accent-foreground: 220 25% 30%;
 
     --destructive: 0 70% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -79,14 +79,14 @@ All colors MUST be HSL.
     --card-foreground: 45 25% 90%;
     --popover: 30 15% 18%;
     --popover-foreground: 45 25% 90%;
-    --primary: 45 90% 60%;
-    --primary-foreground: 30 30% 20%;
+    --primary: 220 30% 35%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 30 15% 22%;
     --secondary-foreground: 45 25% 85%;
     --muted: 30 15% 20%;
     --muted-foreground: 45 15% 60%;
-    --accent: 45 60% 25%;
-    --accent-foreground: 45 90% 80%;
+    --accent: 210 20% 25%;
+    --accent-foreground: 210 30% 85%;
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 30 15% 25%;
