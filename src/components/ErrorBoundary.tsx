@@ -7,6 +7,8 @@ type ErrorBoundaryProps = {
 type ErrorBoundaryState = {
   hasError: boolean;
   error?: Error;
+  componentStack?: string;
+  errorStack?: string;
 };
 
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -20,6 +22,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     // Ensure we always get something useful in console even if the UI goes blank.
     console.error("[ErrorBoundary] Caught error:", error);
     console.error("[ErrorBoundary] Component stack:", info.componentStack);
+
+    this.setState({
+      componentStack: info.componentStack,
+      errorStack: error.stack,
+    });
   }
 
   render() {
@@ -31,7 +38,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
           <header className="mb-4">
             <h1 className="text-2xl font-semibold tracking-tight">页面遇到错误</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              我们已经捕获到一次运行时异常（不会再白屏）。请把控制台里的报错发我，我就能精准定位修复。
+              我们已经捕获到一次运行时异常（不会再白屏）。请展开下方“错误详情”并把截图发我，我就能精准定位修复。
             </p>
           </header>
 
@@ -49,14 +56,24 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               </button>
             </div>
 
-            {this.state.error?.message ? (
-              <details className="mt-4 rounded-md bg-muted/40 p-3">
-                <summary className="cursor-pointer text-sm font-medium">错误详情</summary>
+            <details className="mt-4 rounded-md bg-muted/40 p-3">
+              <summary className="cursor-pointer text-sm font-medium">错误详情</summary>
+              {this.state.error?.message ? (
                 <pre className="mt-2 whitespace-pre-wrap break-words text-xs text-muted-foreground">
                   {this.state.error.message}
                 </pre>
-              </details>
-            ) : null}
+              ) : null}
+              {this.state.componentStack ? (
+                <pre className="mt-3 whitespace-pre-wrap break-words text-xs text-muted-foreground">
+                  {this.state.componentStack}
+                </pre>
+              ) : null}
+              {this.state.errorStack ? (
+                <pre className="mt-3 whitespace-pre-wrap break-words text-xs text-muted-foreground">
+                  {this.state.errorStack}
+                </pre>
+              ) : null}
+            </details>
           </div>
         </section>
       </main>
