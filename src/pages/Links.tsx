@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ExternalLink, Trash2, Globe, Pencil, Check, X } from 'lucide-react';
+import { Plus, ExternalLink, Trash2, Globe, Pencil, Check, X, FolderPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -13,13 +13,30 @@ interface LinkItem {
   url: string;
   title: string;
   description: string;
-  createdAt: string;
 }
 
-const LINKS_STORAGE_KEY = 'pompom_links_v2';
+interface LinkCategory {
+  id: string;
+  name: string;
+  color: string;
+  links: LinkItem[];
+}
+
+const BLUE_COLORS = [
+  '#1e3a5f', // dark navy
+  '#1e40af', // blue 800
+  '#2563eb', // blue 600
+  '#3b82f6', // blue 500
+  '#0369a1', // sky 700
+  '#0284c7', // sky 600
+  '#0891b2', // cyan 600
+  '#0d9488', // teal 600
+];
+
+const LINKS_STORAGE_KEY = 'pompom_links_v3';
 
 export const Links = () => {
-  const [links, setLinks] = useState<LinkItem[]>(() => {
+  const [categories, setCategories] = useState<LinkCategory[]>(() => {
     try {
       const raw = localStorage.getItem(LINKS_STORAGE_KEY);
       if (!raw) return [];
@@ -30,70 +47,135 @@ export const Links = () => {
     }
   });
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
+  const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryColor, setNewCategoryColor] = useState(BLUE_COLORS[0]);
   const [newUrl, setNewUrl] = useState('');
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editDescription, setEditDescription] = useState('');
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [editCategoryName, setEditCategoryName] = useState('');
+  const [editingLinkId, setEditingLinkId] = useState<string | null>(null);
+  const [editLinkTitle, setEditLinkTitle] = useState('');
+  const [editLinkDescription, setEditLinkDescription] = useState('');
 
   useEffect(() => {
     try {
-      localStorage.setItem(LINKS_STORAGE_KEY, JSON.stringify(links));
+      localStorage.setItem(LINKS_STORAGE_KEY, JSON.stringify(categories));
     } catch {
       // ignore
     }
-  }, [links]);
+  }, [categories]);
+
+  const handleAddCategory = () => {
+    if (!newCategoryName.trim()) return;
+    const newCategory: LinkCategory = {
+      id: Date.now().toString(),
+      name: newCategoryName.trim(),
+      color: newCategoryColor,
+      links: [],
+    };
+    setCategories(prev => [...prev, newCategory]);
+    setNewCategoryName('');
+    setNewCategoryColor(BLUE_COLORS[Math.floor(Math.random() * BLUE_COLORS.length)]);
+    setIsAddCategoryModalOpen(false);
+  };
+
+  const handleDeleteCategory = (categoryId: string) => {
+    setCategories(prev => prev.filter(c => c.id !== categoryId));
+  };
+
+  const handleStartEditCategory = (category: LinkCategory) => {
+    setEditingCategoryId(category.id);
+    setEditCategoryName(category.name);
+  };
+
+  const handleSaveEditCategory = () => {
+    if (!editingCategoryId || !editCategoryName.trim()) {
+      setEditingCategoryId(null);
+      return;
+    }
+    setCategories(prev =>
+      prev.map(cat =>
+        cat.id === editingCategoryId
+          ? { ...cat, name: editCategoryName.trim() }
+          : cat
+      )
+    );
+    setEditingCategoryId(null);
+    setEditCategoryName('');
+  };
+
+  const openAddLinkModal = (categoryId: string) => {
+    setActiveCategoryId(categoryId);
+    setIsAddLinkModalOpen(true);
+  };
 
   const handleAddLink = () => {
-    if (!newUrl.trim() || !newTitle.trim()) return;
+    if (!activeCategoryId || !newUrl.trim() || !newTitle.trim()) return;
     const newLink: LinkItem = {
       id: Date.now().toString(),
       url: newUrl.trim(),
       title: newTitle.trim(),
       description: newDescription.trim(),
-      createdAt: new Date().toISOString(),
     };
-    setLinks(prev => [...prev, newLink]);
+    setCategories(prev =>
+      prev.map(cat =>
+        cat.id === activeCategoryId
+          ? { ...cat, links: [...cat.links, newLink] }
+          : cat
+      )
+    );
     setNewUrl('');
     setNewTitle('');
     setNewDescription('');
-    setIsAddModalOpen(false);
+    setIsAddLinkModalOpen(false);
+    setActiveCategoryId(null);
   };
 
-  const handleDeleteLink = (linkId: string) => {
-    setLinks(prev => prev.filter(l => l.id !== linkId));
-  };
-
-  const handleStartEdit = (link: LinkItem) => {
-    setEditingId(link.id);
-    setEditTitle(link.title);
-    setEditDescription(link.description);
-  };
-
-  const handleSaveEdit = () => {
-    if (!editingId || !editTitle.trim()) {
-      setEditingId(null);
-      return;
-    }
-    setLinks(prev =>
-      prev.map(link =>
-        link.id === editingId
-          ? { ...link, title: editTitle.trim(), description: editDescription.trim() }
-          : link
+  const handleDeleteLink = (categoryId: string, linkId: string) => {
+    setCategories(prev =>
+      prev.map(cat =>
+        cat.id === categoryId
+          ? { ...cat, links: cat.links.filter(l => l.id !== linkId) }
+          : cat
       )
     );
-    setEditingId(null);
-    setEditTitle('');
-    setEditDescription('');
   };
 
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditTitle('');
-    setEditDescription('');
+  const handleStartEditLink = (link: LinkItem) => {
+    setEditingLinkId(link.id);
+    setEditLinkTitle(link.title);
+    setEditLinkDescription(link.description);
   };
+
+  const handleSaveEditLink = (categoryId: string) => {
+    if (!editingLinkId || !editLinkTitle.trim()) {
+      setEditingLinkId(null);
+      return;
+    }
+    setCategories(prev =>
+      prev.map(cat =>
+        cat.id === categoryId
+          ? {
+              ...cat,
+              links: cat.links.map(link =>
+                link.id === editingLinkId
+                  ? { ...link, title: editLinkTitle.trim(), description: editLinkDescription.trim() }
+                  : link
+              ),
+            }
+          : cat
+      )
+    );
+    setEditingLinkId(null);
+    setEditLinkTitle('');
+    setEditLinkDescription('');
+  };
+
+  const totalLinks = categories.reduce((acc, cat) => acc + cat.links.length, 0);
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 min-h-screen">
@@ -105,23 +187,25 @@ export const Links = () => {
           </div>
           <div>
             <h1 className="text-lg font-bold text-slate-900">Link Archive</h1>
-            <p className="text-xs text-slate-500">{links.length} link{links.length !== 1 ? 's' : ''} saved</p>
+            <p className="text-xs text-slate-500">
+              {categories.length} categor{categories.length !== 1 ? 'ies' : 'y'}, {totalLinks} link{totalLinks !== 1 ? 's' : ''}
+            </p>
           </div>
         </div>
         <Button
-          onClick={() => setIsAddModalOpen(true)}
+          onClick={() => setIsAddCategoryModalOpen(true)}
           size="sm"
           className="gap-1.5 bg-slate-800 hover:bg-slate-700 text-white"
         >
-          <Plus className="h-4 w-4" />
-          Add Link
+          <FolderPlus className="h-4 w-4" />
+          Add Category
         </Button>
       </div>
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="p-6">
-          {links.length === 0 ? (
+        <div className="p-6 space-y-6">
+          {categories.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -130,119 +214,250 @@ export const Links = () => {
               <div className="p-5 rounded-2xl mb-5 shadow-lg bg-slate-100">
                 <Globe className="h-10 w-10 text-slate-400" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">No Links Yet</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">No Categories Yet</h3>
               <p className="text-sm text-slate-500 mb-6 text-center max-w-xs">
-                Start saving useful links for quick access
+                Create a category to start organizing your links
               </p>
               <Button
-                onClick={() => setIsAddModalOpen(true)}
+                onClick={() => setIsAddCategoryModalOpen(true)}
                 className="gap-2 px-6 shadow-lg bg-slate-800 hover:bg-slate-700 text-white"
               >
-                <Plus className="h-4 w-4" />
-                Add Your First Link
+                <FolderPlus className="h-4 w-4" />
+                Create Your First Category
               </Button>
             </motion.div>
           ) : (
-            <div className="space-y-3">
-              <AnimatePresence>
-                {links.map((link, index) => (
-                  <motion.div
-                    key={link.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ delay: index * 0.03 }}
-                    className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow p-4"
+            <AnimatePresence>
+              {categories.map((category, catIndex) => (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: catIndex * 0.05 }}
+                  className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+                >
+                  {/* Category Header */}
+                  <div
+                    className="px-5 py-4 flex items-center justify-between"
+                    style={{ backgroundColor: `${category.color}15` }}
                   >
-                    {editingId === link.id ? (
-                      // Edit mode
-                      <div className="space-y-3">
-                        <Input
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          placeholder="Link title"
-                          autoFocus
-                        />
-                        <Textarea
-                          value={editDescription}
-                          onChange={(e) => setEditDescription(e.target.value)}
-                          placeholder="Description (optional)"
-                          rows={2}
-                        />
-                        <div className="flex gap-2 justify-end">
-                          <Button variant="ghost" size="sm" onClick={handleCancelEdit}>
-                            <X className="h-4 w-4 mr-1" />
-                            Cancel
-                          </Button>
-                          <Button size="sm" onClick={handleSaveEdit} className="bg-slate-800 hover:bg-slate-700">
-                            <Check className="h-4 w-4 mr-1" />
-                            Save
-                          </Button>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: category.color }}
+                      />
+                      {editingCategoryId === category.id ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={editCategoryName}
+                            onChange={(e) => setEditCategoryName(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleSaveEditCategory();
+                              if (e.key === 'Escape') setEditingCategoryId(null);
+                            }}
+                            autoFocus
+                            className="text-base font-semibold bg-white border border-slate-200 rounded px-2 py-1 outline-none focus:border-slate-400"
+                          />
+                          <button
+                            onClick={handleSaveEditCategory}
+                            className="p-1 rounded hover:bg-white/50 text-green-600"
+                          >
+                            <Check className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => setEditingCategoryId(null)}
+                            className="p-1 rounded hover:bg-white/50 text-slate-400"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
                         </div>
-                      </div>
-                    ) : (
-                      // Display mode
-                      <div className="flex items-start gap-4">
-                        {/* Link Button */}
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors font-medium text-sm border border-sky-100"
+                      ) : (
+                        <h3 className="text-base font-semibold text-slate-900">{category.name}</h3>
+                      )}
+                      <span className="text-xs text-slate-400">
+                        ({category.links.length} link{category.links.length !== 1 ? 's' : ''})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleStartEditCategory(category)}
+                        className="p-1.5 rounded-lg hover:bg-white/50 text-slate-400 hover:text-slate-600 transition-colors"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCategory(category.id)}
+                        className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Links Grid */}
+                  <div className="p-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {category.links.map((link) => (
+                        <div
+                          key={link.id}
+                          className="group relative"
                         >
-                          {link.title}
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </a>
-
-                        {/* Description */}
-                        <div className="flex-1 min-w-0 pt-1">
-                          <p className={cn(
-                            "text-sm text-slate-600",
-                            !link.description && "text-slate-400 italic"
-                          )}>
-                            {link.description || "No description"}
-                          </p>
+                          {editingLinkId === link.id ? (
+                            <div className="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                              <Input
+                                value={editLinkTitle}
+                                onChange={(e) => setEditLinkTitle(e.target.value)}
+                                placeholder="Link title"
+                                autoFocus
+                                className="text-sm"
+                              />
+                              <Textarea
+                                value={editLinkDescription}
+                                onChange={(e) => setEditLinkDescription(e.target.value)}
+                                placeholder="Description"
+                                rows={2}
+                                className="text-sm"
+                              />
+                              <div className="flex gap-2 justify-end">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setEditingLinkId(null)}
+                                  className="h-7 text-xs"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleSaveEditLink(category.id)}
+                                  className="h-7 text-xs bg-slate-800 hover:bg-slate-700"
+                                >
+                                  Save
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-3 rounded-xl border border-slate-100 hover:border-slate-200 hover:shadow-sm transition-all bg-white">
+                              <div className="flex items-start gap-3">
+                                <a
+                                  href={link.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
+                                  style={{ backgroundColor: category.color }}
+                                >
+                                  {link.title}
+                                  <ExternalLink className="h-3 w-3" />
+                                </a>
+                                <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 transition-opacity">
+                                  <button
+                                    onClick={() => handleStartEditLink(link)}
+                                    className="p-1 rounded hover:bg-slate-100 text-slate-400"
+                                  >
+                                    <Pencil className="h-3 w-3" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteLink(category.id, link.id)}
+                                    className="p-1 rounded hover:bg-red-50 text-slate-400 hover:text-red-500"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </button>
+                                </div>
+                              </div>
+                              {link.description && (
+                                <p className="mt-2 text-xs text-slate-500 line-clamp-2">
+                                  {link.description}
+                                </p>
+                              )}
+                            </div>
+                          )}
                         </div>
+                      ))}
 
-                        {/* Actions */}
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          <button
-                            onClick={() => handleStartEdit(link)}
-                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteLink(link.id)}
-                            className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                      {/* Add Link Button */}
+                      <button
+                        onClick={() => openAddLinkModal(category.id)}
+                        className="p-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-slate-600 min-h-[60px]"
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Link
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          )}
 
-              {/* Add More Button */}
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: links.length * 0.03 }}
-                onClick={() => setIsAddModalOpen(true)}
-                className="w-full py-4 rounded-xl border-2 border-dashed border-slate-200 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 hover:text-slate-600 hover:border-slate-300 hover:bg-white/50"
-              >
-                <Plus className="h-4 w-4" />
-                Add Another Link
-              </motion.button>
-            </div>
+          {/* Add Category Button at bottom */}
+          {categories.length > 0 && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={() => setIsAddCategoryModalOpen(true)}
+              className="w-full py-5 rounded-xl border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-white transition-all flex items-center justify-center gap-2 text-sm font-semibold text-slate-400 hover:text-slate-600"
+            >
+              <FolderPlus className="h-4 w-4" />
+              Add Another Category
+            </motion.button>
           )}
         </div>
       </ScrollArea>
 
+      {/* Add Category Modal */}
+      <Dialog open={isAddCategoryModalOpen} onOpenChange={setIsAddCategoryModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Create New Category</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div>
+              <label className="text-sm font-medium text-slate-700 mb-1.5 block">Category Name</label>
+              <Input
+                placeholder="e.g., Learning Resources"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-slate-700 mb-1.5 block">Color</label>
+              <div className="flex flex-wrap gap-2">
+                {BLUE_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setNewCategoryColor(color)}
+                    className={cn(
+                      'w-8 h-8 rounded-full transition-all',
+                      newCategoryColor === color
+                        ? 'ring-2 ring-offset-2 ring-slate-400 scale-110'
+                        : 'hover:scale-105'
+                    )}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => setIsAddCategoryModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAddCategory}
+                disabled={!newCategoryName.trim()}
+                style={{ backgroundColor: newCategoryColor }}
+                className="text-white"
+              >
+                Create Category
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Add Link Modal */}
-      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+      <Dialog open={isAddLinkModalOpen} onOpenChange={setIsAddLinkModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add New Link</DialogTitle>
@@ -257,9 +472,9 @@ export const Links = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-1.5 block">Title</label>
+              <label className="text-sm font-medium text-slate-700 mb-1.5 block">Button Title</label>
               <Input
-                placeholder="Link title (displayed on button)"
+                placeholder="Link name (displayed on button)"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
               />
@@ -270,11 +485,11 @@ export const Links = () => {
                 placeholder="What is this link about?"
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
-                rows={3}
+                rows={2}
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
-              <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+              <Button variant="outline" onClick={() => setIsAddLinkModalOpen(false)}>
                 Cancel
               </Button>
               <Button
