@@ -9,7 +9,7 @@ import { TaskModal } from '@/components/calendar/TaskModal';
 import { Notes } from './Notes';
 import { Home } from './Home';
 import { PersonalGrowth } from './PersonalGrowth';
-import { Meditation } from './Meditation';
+import { Links } from './Links';
 import { Learn } from './Learn';
 import { toast as sonnerToast } from '@/components/ui/sonner';
 import { getBostonNow } from '@/lib/timezone';
@@ -176,10 +176,8 @@ const Index = () => {
           <div className="flex-1 flex flex-col overflow-hidden">
             <Notes />
           </div>
-        ) : activePage === 'meditation' ? (
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <Meditation />
-          </div>
+        ) : activePage === 'links' ? (
+          <Links />
         ) : activePage === 'learn' ? (
           <Learn />
         ) : activePage === 'calendar' ? (
