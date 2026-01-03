@@ -41,7 +41,7 @@ All colors MUST be HSL.
     --border: 30 20% 85%;
     --border-dark: 30 40% 50%;
     --input: 30 20% 85%;
-    --ring: 45 100% 70%;
+    --ring: 220 20% 20%;
 
     --radius: 0.5rem;
 
@@ -92,7 +92,7 @@ All colors MUST be HSL.
     --border: 30 15% 25%;
     --border-dark: 30 30% 40%;
     --input: 30 15% 25%;
-    --ring: 45 90% 60%;
+    --ring: 220 20% 30%;
   }
 }
 
