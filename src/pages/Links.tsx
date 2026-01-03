@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
 interface LinkItem {
@@ -296,93 +297,54 @@ export const Links = () => {
                     </div>
                   </div>
 
-                  {/* Links Grid */}
+                  {/* Links */}
                   <div className="p-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="flex flex-wrap gap-3 items-start">
                       {category.links.map((link) => (
-                        <div
-                          key={link.id}
-                          className="group relative"
-                        >
-                          {editingLinkId === link.id ? (
-                            <div className="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
-                              <Input
-                                value={editLinkTitle}
-                                onChange={(e) => setEditLinkTitle(e.target.value)}
-                                placeholder="Link title"
-                                autoFocus
-                                className="text-sm"
-                              />
-                              <Textarea
-                                value={editLinkDescription}
-                                onChange={(e) => setEditLinkDescription(e.target.value)}
-                                placeholder="Description"
-                                rows={2}
-                                className="text-sm"
-                              />
-                              <div className="flex gap-2 justify-end">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => setEditingLinkId(null)}
-                                  className="h-7 text-xs"
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  onClick={() => handleSaveEditLink(category.id)}
-                                  className="h-7 text-xs bg-slate-800 hover:bg-slate-700"
-                                >
-                                  Save
-                                </Button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="p-3 rounded-xl border border-slate-100 hover:border-slate-200 hover:shadow-sm transition-all bg-white">
-                              <div className="flex items-start gap-3">
+                        <TooltipProvider key={link.id} delayDuration={300}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="group relative inline-flex items-center">
                                 <a
                                   href={link.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
+                                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90 hover:shadow-md"
                                   style={{ backgroundColor: category.color }}
                                 >
                                   {link.title}
                                   <ExternalLink className="h-3 w-3" />
                                 </a>
-                                <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 transition-opacity">
+                                <div className="absolute -right-1 -top-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                   <button
-                                    onClick={() => handleStartEditLink(link)}
-                                    className="p-1 rounded hover:bg-slate-100 text-slate-400"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleDeleteLink(category.id, link.id);
+                                    }}
+                                    className="p-1 rounded-full bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors"
                                   >
-                                    <Pencil className="h-3 w-3" />
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteLink(category.id, link.id)}
-                                    className="p-1 rounded hover:bg-red-50 text-slate-400 hover:text-red-500"
-                                  >
-                                    <Trash2 className="h-3 w-3" />
+                                    <X className="h-3 w-3" />
                                   </button>
                                 </div>
                               </div>
-                              {link.description && (
-                                <p className="mt-2 text-xs text-slate-500 line-clamp-2">
-                                  {link.description}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
+                            </TooltipTrigger>
+                            {link.description && (
+                              <TooltipContent side="bottom" className="max-w-xs">
+                                <p className="text-sm">{link.description}</p>
+                              </TooltipContent>
+                            )}
+                          </Tooltip>
+                        </TooltipProvider>
                       ))}
 
                       {/* Add Link Button */}
                       <button
                         onClick={() => openAddLinkModal(category.id)}
-                        className="p-3 rounded-xl border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-slate-600 min-h-[60px]"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all text-sm text-slate-400 hover:text-slate-600"
                       >
-                        <Plus className="h-4 w-4" />
-                        Add Link
+                        <Plus className="h-3.5 w-3.5" />
+                        Add
                       </button>
                     </div>
                   </div>
