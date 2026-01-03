@@ -336,22 +336,22 @@ export const Links = () => {
                                   href={link.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-white transition-all hover:opacity-90 hover:shadow-sm"
+                                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90 hover:shadow-md"
                                   style={{ backgroundColor: category.color }}
                                 >
                                   {link.title}
-                                  <ExternalLink className="h-2.5 w-2.5" />
+                                  <ExternalLink className="h-3.5 w-3.5" />
                                 </a>
-                                <div className="absolute -right-1 -top-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute -right-1.5 -top-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                                   <button
                                     onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
                                       handleDeleteLink(category.id, link.id);
                                     }}
-                                    className="p-0.5 rounded-full bg-red-500 text-white shadow-sm hover:bg-red-600 transition-colors"
+                                    className="p-1 rounded-full bg-red-500 text-white shadow-sm hover:bg-red-600 transition-colors"
                                   >
-                                    <X className="h-2.5 w-2.5" />
+                                    <X className="h-3 w-3" />
                                   </button>
                                 </div>
                               </div>
@@ -368,9 +368,9 @@ export const Links = () => {
                       {/* Add Link Button */}
                       <button
                         onClick={() => openAddLinkModal(category.id)}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all text-xs text-slate-400 hover:text-slate-600"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all text-sm text-slate-400 hover:text-slate-600"
                       >
-                        <Plus className="h-3 w-3" />
+                        <Plus className="h-4 w-4" />
                         Add
                       </button>
                     </div>
