@@ -87,7 +87,7 @@ export const CompactTaskItem = ({
           }}
         >
           <span className="mr-2 text-sm">✏️</span>
-          编辑任务
+          Edit Task
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
