@@ -106,13 +106,18 @@ const Index = () => {
 
   const handleDeleteTask = (taskId: string) => {
     const task = tasks.find((t) => t.id === taskId);
-    setTasks((prev) => prev.filter((task) => task.id !== taskId));
-    if (task) {
-      toast({
-        title: 'Task deleted',
-        description: task.title,
-      });
-    }
+
+    // Avoid Radix Dialog cleanup races (focus guards / scroll lock) by mutating task DOM on next frame.
+    (document.activeElement as HTMLElement | null)?.blur?.();
+    requestAnimationFrame(() => {
+      setTasks((prev) => prev.filter((t) => t.id !== taskId));
+      if (task) {
+        toast({
+          title: 'Task deleted',
+          description: task.title,
+        });
+      }
+    });
   };
 
   const handleSaveTask = (taskData: Omit<Task, 'id'>) => {

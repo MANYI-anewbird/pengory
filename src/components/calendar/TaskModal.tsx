@@ -96,8 +96,9 @@ export const TaskModal = ({
 
   const handleDelete = () => {
     if (editTask && onDelete) {
-      onDelete(editTask.id);
+      // Close first to let Dialog cleanup run; delete on the next frame to avoid DOM cleanup races.
       onClose();
+      requestAnimationFrame(() => onDelete(editTask.id));
     }
   };
 
