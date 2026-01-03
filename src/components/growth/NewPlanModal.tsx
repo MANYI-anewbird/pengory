@@ -4,9 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { GrowthPlan, GrowthCategory, CATEGORY_LABELS, CATEGORY_COLORS } from '@/types/growth';
-import { cn } from '@/lib/utils';
-import { Heart, Brain, Languages, Palette } from 'lucide-react';
+import { GrowthPlan, GrowthCategory } from '@/types/growth';
 
 interface NewPlanModalProps {
   isOpen: boolean;
@@ -14,12 +12,6 @@ interface NewPlanModalProps {
   onSave: (plan: Omit<GrowthPlan, 'id' | 'createdAt'>) => void;
   defaultCategory: GrowthCategory;
 }
-
-const CATEGORY_ICONS: Record<GrowthCategory, any> = {
-  health: Heart,
-  skills: Brain,
-  hobby: Palette,
-};
 
 export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPlanModalProps) => {
   const [goal, setGoal] = useState('');
@@ -54,91 +46,113 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white border-slate-200">
         <DialogHeader>
-          <DialogTitle>Create Growth Plan</DialogTitle>
+          <DialogTitle className="text-slate-900 text-lg font-semibold">Create New Plan</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="space-y-5 py-4">
 
           {/* Goal */}
-          <div>
-            <Label htmlFor="goal">Goal *</Label>
+          <div className="space-y-2">
+            <Label htmlFor="goal" className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Goal *
+            </Label>
             <Input
               id="goal"
-              placeholder="e.g., Lose 5kg, Learn Python, etc."
+              placeholder="What do you want to achieve?"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
+              className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
             />
           </div>
 
           {/* Duration */}
-          <div>
-            <Label htmlFor="duration">Duration</Label>
+          <div className="space-y-2">
+            <Label htmlFor="duration" className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Duration
+            </Label>
             <Input
               id="duration"
               placeholder="e.g., 2 months, 6 weeks"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
+              className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
             />
           </div>
 
           {/* Dates */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="startDate">Start Date</Label>
+            <div className="space-y-2">
+              <Label htmlFor="startDate" className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                Start
+              </Label>
               <Input
                 id="startDate"
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
+                className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
               />
             </div>
-            <div>
-              <Label htmlFor="endDate">End Date</Label>
+            <div className="space-y-2">
+              <Label htmlFor="endDate" className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                End
+              </Label>
               <Input
                 id="endDate"
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
+                className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
               />
             </div>
           </div>
 
           {/* Notes */}
-          <div>
-            <Label htmlFor="notes">Notes & Reminders</Label>
+          <div className="space-y-2">
+            <Label htmlFor="notes" className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Notes
+            </Label>
             <Textarea
               id="notes"
               placeholder="Important things to remember..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
+              className="bg-slate-50 border-slate-200 focus:bg-white resize-none"
             />
           </div>
 
           {/* Expected Result */}
-          <div>
-            <Label htmlFor="result">Expected Result</Label>
+          <div className="space-y-2">
+            <Label htmlFor="result" className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Expected Result
+            </Label>
             <Textarea
               id="result"
-              placeholder="What do you want to achieve?"
+              placeholder="Describe your success criteria..."
               value={expectedResult}
               onChange={(e) => setExpectedResult(e.target.value)}
               rows={2}
+              className="bg-slate-50 border-slate-200 focus:bg-white resize-none"
             />
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex justify-end gap-3 pt-2">
+          <Button 
+            variant="ghost" 
+            onClick={onClose}
+            className="text-slate-500 hover:text-slate-700"
+          >
             Cancel
           </Button>
           <Button 
             onClick={handleSave} 
             disabled={!goal.trim()}
-            className="bg-gray-900 hover:bg-gray-800 text-white"
+            className="bg-slate-900 hover:bg-slate-800 text-white px-6"
           >
             Create Plan
           </Button>
