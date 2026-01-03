@@ -17,15 +17,15 @@ const CATEGORY_ICONS: Record<GrowthCategory, any> = {
 };
 
 const CATEGORY_BG: Record<GrowthCategory, string> = {
-  health: 'from-rose-500/10 to-rose-500/5',
-  skills: 'from-blue-500/10 to-blue-500/5',
-  hobby: 'from-amber-500/10 to-amber-500/5',
+  health: 'from-slate-500/10 to-slate-500/5',
+  skills: 'from-slate-500/10 to-slate-500/5',
+  hobby: 'from-slate-500/10 to-slate-500/5',
 };
 
 const CATEGORY_ACCENT: Record<GrowthCategory, string> = {
-  health: 'text-rose-600 bg-rose-100',
-  skills: 'text-blue-600 bg-blue-100',
-  hobby: 'text-amber-600 bg-amber-100',
+  health: 'text-slate-700 bg-slate-100',
+  skills: 'text-slate-700 bg-slate-100',
+  hobby: 'text-slate-700 bg-slate-100',
 };
 
 export const PersonalGrowth = () => {
