@@ -25,7 +25,7 @@ import {
 import { Plus, Trash2, ChevronDown, FolderPlus, Save, Edit2, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Note, Notebook } from '@/types/note';
-import { useToast } from '@/hooks/use-toast';
+import { toast as sonnerToast } from '@/components/ui/sonner';
 
 const STORAGE_KEYS = {
   NOTEBOOKS: 'notebooks',
@@ -35,7 +35,22 @@ const STORAGE_KEYS = {
 };
 
 export const Notes = () => {
-  const { toast } = useToast();
+  const toast = ({
+    title,
+    description,
+    variant,
+  }: {
+    title: string;
+    description?: string;
+    variant?: 'destructive';
+  }) => {
+    if (variant === 'destructive') {
+      sonnerToast.error(title, { description });
+      return;
+    }
+    sonnerToast(title, { description });
+  };
+
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [activeNotebookId, setActiveNotebookId] = useState<string>('');

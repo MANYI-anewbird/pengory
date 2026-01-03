@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Task } from '@/types/task';
 import { sampleTasks } from '@/data/sampleTasks';
 import { PompomBorder } from '@/components/calendar/PompomBorder';
@@ -11,18 +11,50 @@ import { Home } from './Home';
 import { Tasks } from './Tasks';
 import { Meditation } from './Meditation';
 import { Learn } from './Learn';
-import { useToast } from '@/hooks/use-toast';
+import { toast as sonnerToast } from '@/components/ui/sonner';
 import { getBostonNow } from '@/lib/timezone';
+
+const TASKS_STORAGE_KEY = 'pompom_tasks_v1';
+
+type ToastOptions = {
+  title: string;
+  description?: string;
+  variant?: 'destructive';
+};
 
 const Index = () => {
   const [currentDate, setCurrentDate] = useState(getBostonNow());
-  const [tasks, setTasks] = useState<Task[]>(sampleTasks);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+      if (!raw) return sampleTasks;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? (parsed as Task[]) : sampleTasks;
+    } catch {
+      return sampleTasks;
+    }
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [editingTask, setEditingTask] = useState<Task | undefined>();
   const [denseMode, setDenseMode] = useState(false);
   const [activePage, setActivePage] = useState('calendar');
-  const { toast } = useToast();
+
+  const toast = ({ title, description, variant }: ToastOptions) => {
+    if (variant === 'destructive') {
+      sonnerToast.error(title, { description });
+      return;
+    }
+    sonnerToast(title, { description });
+  };
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+    } catch {
+      // ignore
+    }
+  }, [tasks]);
 
   const handlePrevMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
