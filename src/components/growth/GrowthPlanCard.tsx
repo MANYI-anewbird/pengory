@@ -11,7 +11,7 @@ import {
   Target,
   FileText,
   CheckCircle2,
-  Circle,
+  Pencil,
   Link as LinkIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -34,6 +34,10 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
   const [newLinkTitle, setNewLinkTitle] = useState('');
   const [addingLinkToStep, setAddingLinkToStep] = useState<string | null>(null);
   const [draggedLink, setDraggedLink] = useState<LinkButton | null>(null);
+  const [editingNotes, setEditingNotes] = useState(false);
+  const [editingResult, setEditingResult] = useState(false);
+  const [notesValue, setNotesValue] = useState(plan.notes);
+  const [resultValue, setResultValue] = useState(plan.expectedResult);
 
   const completedSteps = plan.executionSteps.filter((s) => s.completed).length;
   const totalSteps = plan.executionSteps.length;
@@ -381,30 +385,72 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
               </div>
 
               {/* Notes */}
-              {plan.notes && (
-                <div>
-                  <h4 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     Notes
                   </h4>
-                  <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-                    {plan.notes}
-                  </p>
+                  <button
+                    onClick={() => {
+                      if (editingNotes) {
+                        onUpdate({ notes: notesValue });
+                      }
+                      setEditingNotes(!editingNotes);
+                    }}
+                    className="p-1 text-muted-foreground hover:text-primary rounded"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                 </div>
-              )}
+                {editingNotes ? (
+                  <Textarea
+                    value={notesValue}
+                    onChange={(e) => setNotesValue(e.target.value)}
+                    placeholder="Add notes..."
+                    className="text-sm"
+                    rows={3}
+                  />
+                ) : (
+                  <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3 min-h-[40px]">
+                    {plan.notes || 'No notes yet'}
+                  </p>
+                )}
+              </div>
 
               {/* Expected Result */}
-              {plan.expectedResult && (
-                <div>
-                  <h4 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
                     <Target className="h-4 w-4" />
                     Expected Result
                   </h4>
-                  <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-                    {plan.expectedResult}
-                  </p>
+                  <button
+                    onClick={() => {
+                      if (editingResult) {
+                        onUpdate({ expectedResult: resultValue });
+                      }
+                      setEditingResult(!editingResult);
+                    }}
+                    className="p-1 text-muted-foreground hover:text-primary rounded"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                 </div>
-              )}
+                {editingResult ? (
+                  <Textarea
+                    value={resultValue}
+                    onChange={(e) => setResultValue(e.target.value)}
+                    placeholder="What do you want to achieve?"
+                    className="text-sm"
+                    rows={3}
+                  />
+                ) : (
+                  <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3 min-h-[40px]">
+                    {plan.expectedResult || 'No expected result set'}
+                  </p>
+                )}
+              </div>
 
               {/* Delete Plan */}
               <div className="pt-2 border-t">
