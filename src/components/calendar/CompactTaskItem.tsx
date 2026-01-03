@@ -2,11 +2,6 @@ import { Task } from '@/types/task';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
@@ -41,56 +36,47 @@ export const CompactTaskItem = ({
 
   return (
     <ContextMenu>
-      <Tooltip delayDuration={300}>
-        <ContextMenuTrigger asChild>
-          <TooltipTrigger asChild>
-            <div
-              onClick={handleTaskClick}
+      <ContextMenuTrigger asChild>
+        <div
+          title={fullText}
+          onClick={handleTaskClick}
+          className={cn(
+            'group flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:bg-gray-100/80 hover:shadow-xs hover:scale-[1.01] rounded-sm px-1 py-0.5 leading-none'
+          )}
+        >
+          <div onClick={handleCheckboxClick} className="flex-shrink-0">
+            <Checkbox
+              checked={task.completed}
+              onCheckedChange={() => onToggleComplete(task.id)}
               className={cn(
-                'group flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:bg-gray-100/80 hover:shadow-xs hover:scale-[1.01] rounded-sm px-1 py-0.5 leading-none'
+                'rounded-sm border border-muted-foreground/60',
+                'data-[state=checked]:bg-black data-[state=checked]:border-black data-[state=checked]:text-white',
+                'h-3.5 w-3.5'
+              )}
+            />
+          </div>
+          <div className={cn('flex-1 min-w-0 flex items-baseline gap-1', task.completed && 'opacity-60')}>
+            {task.time && !task.allDay && (
+              <span
+                className={cn(
+                  'text-2xs text-gray-400 flex-shrink-0 leading-none',
+                  task.completed && 'line-through'
+                )}
+              >
+                {task.time}
+              </span>
+            )}
+            <span
+              className={cn(
+                'font-normal truncate block leading-none text-xs',
+                task.completed ? 'line-through text-muted-foreground/60' : 'text-foreground'
               )}
             >
-              <div onClick={handleCheckboxClick} className="flex-shrink-0">
-                <Checkbox
-                  checked={task.completed}
-                  onCheckedChange={() => onToggleComplete(task.id)}
-                  className={cn(
-                    'rounded-sm border border-muted-foreground/60',
-                    'data-[state=checked]:bg-black data-[state=checked]:border-black data-[state=checked]:text-white',
-                    'h-3.5 w-3.5'
-                  )}
-                />
-              </div>
-              <div
-                className={cn('flex-1 min-w-0 flex items-baseline gap-1', task.completed && 'opacity-60')}
-              >
-                {task.time && !task.allDay && (
-                  <span
-                    className={cn(
-                      'text-2xs text-gray-400 flex-shrink-0 leading-none',
-                      task.completed && 'line-through'
-                    )}
-                  >
-                    {task.time}
-                  </span>
-                )}
-                <span
-                  className={cn(
-                    'font-normal truncate block leading-none text-xs',
-                    task.completed ? 'line-through text-muted-foreground/60' : 'text-foreground'
-                  )}
-                >
-                  {task.title}
-                </span>
-              </div>
-            </div>
-          </TooltipTrigger>
-        </ContextMenuTrigger>
-
-        <TooltipContent side="top" className="max-w-xs">
-          <p className="font-arial text-sm">{fullText}</p>
-        </TooltipContent>
-      </Tooltip>
+              {task.title}
+            </span>
+          </div>
+        </div>
+      </ContextMenuTrigger>
 
       <ContextMenuContent className="w-48 bg-white shadow-xl border border-gray-200/60 z-50">
         <ContextMenuItem
@@ -107,4 +93,5 @@ export const CompactTaskItem = ({
     </ContextMenu>
   );
 };
+
 

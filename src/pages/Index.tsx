@@ -40,6 +40,15 @@ const Index = () => {
   const [denseMode, setDenseMode] = useState(false);
   const [activePage, setActivePage] = useState('calendar');
 
+  const closeTaskModal = () => {
+    // Ensure Radix portals (select/dialog) have a chance to clean up before we unmount.
+    (document.activeElement as HTMLElement | null)?.blur?.();
+    requestAnimationFrame(() => {
+      setIsModalOpen(false);
+      setEditingTask(undefined);
+    });
+  };
+
   const toast = ({ title, description, variant }: ToastOptions) => {
     if (variant === 'destructive') {
       sonnerToast.error(title, { description });
@@ -128,8 +137,8 @@ const Index = () => {
         description: taskData.title,
       });
     }
-    setIsModalOpen(false);
-    setEditingTask(undefined);
+
+    closeTaskModal();
   };
 
   const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
@@ -202,10 +211,7 @@ const Index = () => {
       {/* Task Modal - rendered outside conditional to avoid unmounting issues */}
       <TaskModal
         isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingTask(undefined);
-        }}
+        onClose={closeTaskModal}
         onSave={handleSaveTask}
         onDelete={handleDeleteTask}
         initialDate={selectedDate}
