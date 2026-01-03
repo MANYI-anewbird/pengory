@@ -24,6 +24,7 @@ interface GrowthPlanCardProps {
   plan: GrowthPlan;
   onUpdate: (updates: Partial<GrowthPlan>) => void;
   onDelete: () => void;
+  customColor?: string;
 }
 
 const CATEGORY_STYLES = {
@@ -53,7 +54,16 @@ const CATEGORY_STYLES = {
   },
 };
 
-export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps) => {
+const DEFAULT_STYLE = {
+  dot: 'bg-slate-500',
+  ring: 'stroke-slate-500',
+  accent: 'text-slate-500',
+  accentBg: 'bg-slate-500',
+  lightBg: 'bg-slate-50',
+  border: 'border-slate-200',
+};
+
+export const GrowthPlanCard = ({ plan, onUpdate, onDelete, customColor }: GrowthPlanCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [newStepTitle, setNewStepTitle] = useState('');
   const [newLinkUrl, setNewLinkUrl] = useState('');
@@ -68,7 +78,10 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
   const completedSteps = plan.executionSteps.filter((s) => s.completed).length;
   const totalSteps = plan.executionSteps.length;
   const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
-  const styles = CATEGORY_STYLES[plan.category];
+  
+  // Use customColor if provided, otherwise fall back to predefined styles
+  const styles = customColor ? null : (CATEGORY_STYLES[plan.category as keyof typeof CATEGORY_STYLES] || DEFAULT_STYLE);
+  const color = customColor || '#64748b';
 
   const handleAddStep = () => {
     if (!newStepTitle.trim()) return;
@@ -174,13 +187,14 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
   return (
     <motion.div
       layout
-      className={cn(
-        'bg-white rounded-xl border shadow-sm overflow-hidden hover:shadow-md transition-all duration-300',
-        styles.border
-      )}
+      className="bg-white rounded-xl border shadow-sm overflow-hidden hover:shadow-md transition-all duration-300"
+      style={customColor ? { borderColor: `${color}30` } : {}}
     >
       {/* Colored top accent bar */}
-      <div className={cn('h-1', styles.accentBg)} />
+      <div 
+        className="h-1"
+        style={{ backgroundColor: color }}
+      />
       
       {/* Header */}
       <div
@@ -190,7 +204,10 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-2">
-              <div className={cn('w-3 h-3 rounded-full shadow-sm', styles.dot)} />
+              <div 
+                className="w-3 h-3 rounded-full shadow-sm"
+                style={{ backgroundColor: color }}
+              />
               <h3 className="font-bold text-slate-900 text-base truncate">{plan.goal}</h3>
             </div>
             <div className="flex items-center gap-4 text-xs text-slate-500 ml-6">
@@ -227,10 +244,14 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     strokeDasharray={125.6}
                     strokeDashoffset={125.6 - (progress / 100) * 125.6}
                     strokeLinecap="round"
-                    className={cn('transition-all duration-500', styles.ring)}
+                    className="transition-all duration-500"
+                    style={{ stroke: color }}
                   />
                 </svg>
-                <span className={cn('absolute inset-0 flex items-center justify-center text-sm font-bold', styles.accent)}>
+                <span 
+                  className="absolute inset-0 flex items-center justify-center text-sm font-bold"
+                  style={{ color }}
+                >
                   {Math.round(progress)}%
                 </span>
               </div>
@@ -257,26 +278,37 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className={cn('px-5 pb-5 space-y-5 border-t', styles.border)}>
+            <div 
+              className="px-5 pb-5 space-y-5 border-t"
+              style={{ borderColor: `${color}30` }}
+            >
               {/* Timeline */}
               <div className="pt-5 flex gap-8 text-sm">
                 <div className="flex items-center gap-2">
-                  <span className={cn('text-xs font-semibold uppercase tracking-wide', styles.accent)}>Start</span>
-                  <span className={cn('font-medium text-slate-700 px-3 py-1.5 rounded-lg', styles.lightBg)}>
+                  <span className="text-xs font-semibold uppercase tracking-wide" style={{ color }}>Start</span>
+                  <span 
+                    className="font-medium text-slate-700 px-3 py-1.5 rounded-lg"
+                    style={{ backgroundColor: `${color}15` }}
+                  >
                     {plan.startDate}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={cn('text-xs font-semibold uppercase tracking-wide', styles.accent)}>End</span>
-                  <span className={cn('font-medium text-slate-700 px-3 py-1.5 rounded-lg', styles.lightBg)}>
+                  <span className="text-xs font-semibold uppercase tracking-wide" style={{ color }}>End</span>
+                  <span 
+                    className="font-medium text-slate-700 px-3 py-1.5 rounded-lg"
+                    style={{ backgroundColor: `${color}15` }}
+                  >
                     {plan.endDate}
                   </span>
                 </div>
               </div>
 
-              {/* Execution Steps */}
               <div>
-                <h4 className={cn('text-xs font-bold uppercase tracking-wide mb-3 flex items-center gap-2', styles.accent)}>
+                <h4 
+                  className="text-xs font-bold uppercase tracking-wide mb-3 flex items-center gap-2"
+                  style={{ color }}
+                >
                   <CheckCircle2 className="h-4 w-4" />
                   Steps
                 </h4>
@@ -290,11 +322,11 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     <Reorder.Item
                       key={step.id}
                       value={step}
-                      className={cn(
-                        'rounded-lg p-3 cursor-grab active:cursor-grabbing border border-transparent transition-all',
-                        styles.lightBg,
-                        draggedLink && styles.border
-                      )}
+                      className="rounded-lg p-3 cursor-grab active:cursor-grabbing border border-transparent transition-all"
+                      style={{ 
+                        backgroundColor: `${color}10`,
+                        borderColor: draggedLink ? `${color}30` : 'transparent'
+                      }}
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop(step.id)}
                     >
@@ -304,12 +336,14 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                         {/* Custom Checkbox */}
                         <button
                           onClick={() => handleToggleStep(step.id)}
-                          className={cn(
-                            'h-5 w-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5',
-                            step.completed 
-                              ? cn(styles.accentBg, styles.border)
-                              : cn('border-slate-300 hover:border-slate-400 bg-white')
-                          )}
+                          className="h-5 w-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5"
+                          style={step.completed ? { 
+                            backgroundColor: color, 
+                            borderColor: color 
+                          } : { 
+                            borderColor: '#cbd5e1',
+                            backgroundColor: 'white'
+                          }}
                         >
                           {step.completed && <Check className="h-3 w-3 text-white" />}
                         </button>
@@ -332,18 +366,16 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                                   key={link.id}
                                   draggable
                                   onDragStart={() => handleDragStart(link, step.id)}
-                                  className={cn(
-                                    'group flex items-center gap-1.5 bg-white border rounded-md px-2 py-1 text-xs cursor-move transition-colors',
-                                    styles.border,
-                                    'hover:shadow-sm'
-                                  )}
+                                  className="group flex items-center gap-1.5 bg-white border rounded-md px-2 py-1 text-xs cursor-move transition-colors hover:shadow-sm"
+                                  style={{ borderColor: `${color}30` }}
                                 >
-                                  <LinkIcon className={cn('h-3 w-3', styles.accent)} />
+                                  <LinkIcon className="h-3 w-3" style={{ color }} />
                                   <a
                                     href={link.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={cn('hover:underline', styles.accent)}
+                                    className="hover:underline"
+                                    style={{ color }}
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     {link.title}
@@ -367,19 +399,22 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                                 placeholder="URL"
                                 value={newLinkUrl}
                                 onChange={(e) => setNewLinkUrl(e.target.value)}
-                                className={cn('h-8 text-sm bg-white', styles.border)}
+                                className="h-8 text-sm bg-white"
+                                style={{ borderColor: `${color}30` }}
                               />
                               <Input
                                 placeholder="Title (optional)"
                                 value={newLinkTitle}
                                 onChange={(e) => setNewLinkTitle(e.target.value)}
-                                className={cn('h-8 text-sm bg-white', styles.border)}
+                                className="h-8 text-sm bg-white"
+                                style={{ borderColor: `${color}30` }}
                               />
                               <div className="flex gap-2">
                                 <Button
                                   size="sm"
                                   onClick={() => handleAddLink(step.id)}
-                                  className={cn('h-7 text-xs', styles.accentBg, 'hover:opacity-90')}
+                                  className="h-7 text-xs text-white hover:opacity-90"
+                                  style={{ backgroundColor: color }}
                                 >
                                   Add Link
                                 </Button>
@@ -400,7 +435,8 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                           ) : (
                             <button
                               onClick={() => setAddingLinkToStep(step.id)}
-                              className={cn('mt-2 text-xs flex items-center gap-1 opacity-60 hover:opacity-100', styles.accent)}
+                              className="mt-2 text-xs flex items-center gap-1 opacity-60 hover:opacity-100"
+                              style={{ color }}
                             >
                               <Plus className="h-3 w-3" />
                               Add link
@@ -425,12 +461,14 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     value={newStepTitle}
                     onChange={(e) => setNewStepTitle(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddStep()}
-                    className={cn('h-10 text-sm bg-white', styles.border)}
+                    className="h-10 text-sm bg-white"
+                    style={{ borderColor: `${color}30` }}
                   />
                   <Button 
                     size="sm" 
                     onClick={handleAddStep} 
-                    className={cn('h-10 px-4', styles.accentBg, 'hover:opacity-90')}
+                    className="h-10 px-4 text-white hover:opacity-90"
+                    style={{ backgroundColor: color }}
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
@@ -440,7 +478,10 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
               {/* Notes */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className={cn('text-xs font-bold uppercase tracking-wide flex items-center gap-2', styles.accent)}>
+                  <h4 
+                    className="text-xs font-bold uppercase tracking-wide flex items-center gap-2"
+                    style={{ color }}
+                  >
                     <FileText className="h-4 w-4" />
                     Notes
                   </h4>
@@ -451,7 +492,8 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                       }
                       setEditingNotes(!editingNotes);
                     }}
-                    className={cn('p-1.5 hover:bg-slate-100 rounded-md transition-colors', styles.accent)}
+                    className="p-1.5 hover:bg-slate-100 rounded-md transition-colors"
+                    style={{ color }}
                   >
                     <Pencil className="h-3.5 w-3.5" />
                   </button>
@@ -461,11 +503,15 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     value={notesValue}
                     onChange={(e) => setNotesValue(e.target.value)}
                     placeholder="Add notes..."
-                    className={cn('text-sm bg-white', styles.border)}
+                    className="text-sm bg-white"
+                    style={{ borderColor: `${color}30` }}
                     rows={3}
                   />
                 ) : (
-                  <p className={cn('text-sm text-slate-600 rounded-lg p-3 min-h-[48px]', styles.lightBg)}>
+                  <p 
+                    className="text-sm text-slate-600 rounded-lg p-3 min-h-[48px]"
+                    style={{ backgroundColor: `${color}10` }}
+                  >
                     {plan.notes || 'No notes yet'}
                   </p>
                 )}
@@ -474,7 +520,10 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
               {/* Expected Result */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className={cn('text-xs font-bold uppercase tracking-wide flex items-center gap-2', styles.accent)}>
+                  <h4 
+                    className="text-xs font-bold uppercase tracking-wide flex items-center gap-2"
+                    style={{ color }}
+                  >
                     <Target className="h-4 w-4" />
                     Expected Result
                   </h4>
@@ -485,7 +534,8 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                       }
                       setEditingResult(!editingResult);
                     }}
-                    className={cn('p-1.5 hover:bg-slate-100 rounded-md transition-colors', styles.accent)}
+                    className="p-1.5 hover:bg-slate-100 rounded-md transition-colors"
+                    style={{ color }}
                   >
                     <Pencil className="h-3.5 w-3.5" />
                   </button>
@@ -495,18 +545,25 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     value={resultValue}
                     onChange={(e) => setResultValue(e.target.value)}
                     placeholder="What do you want to achieve?"
-                    className={cn('text-sm bg-white', styles.border)}
+                    className="text-sm bg-white"
+                    style={{ borderColor: `${color}30` }}
                     rows={3}
                   />
                 ) : (
-                  <p className={cn('text-sm text-slate-600 rounded-lg p-3 min-h-[48px]', styles.lightBg)}>
+                  <p 
+                    className="text-sm text-slate-600 rounded-lg p-3 min-h-[48px]"
+                    style={{ backgroundColor: `${color}10` }}
+                  >
                     {plan.expectedResult || 'No expected result set'}
                   </p>
                 )}
               </div>
 
               {/* Delete Plan */}
-              <div className={cn('pt-3 border-t', styles.border)}>
+              <div 
+                className="pt-3 border-t"
+                style={{ borderColor: `${color}30` }}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
