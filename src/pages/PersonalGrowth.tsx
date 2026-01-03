@@ -97,10 +97,10 @@ export const PersonalGrowth = () => {
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 text-sm font-medium',
+                  'flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium',
                   isActive
-                    ? CATEGORY_ACCENT[cat]
-                    : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                    ? 'bg-gray-900 text-white shadow-md'
+                    : 'bg-transparent text-muted-foreground hover:bg-muted/50'
                 )}
               >
                 <Icon className="h-4 w-4" />
@@ -108,7 +108,7 @@ export const PersonalGrowth = () => {
                 {count > 0 && (
                   <span className={cn(
                     'text-xs px-1.5 py-0.5 rounded-full',
-                    isActive ? 'bg-white/50' : 'bg-background'
+                    isActive ? 'bg-white/20' : 'bg-muted'
                   )}>
                     {count}
                   </span>
