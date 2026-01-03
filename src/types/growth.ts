@@ -34,8 +34,8 @@ export interface GrowthPlan {
 }
 
 export const DEFAULT_CATEGORIES: CustomCategory[] = [
-  { id: 'health', name: 'Health & Fitness', color: '#f472b6' },
-  { id: 'skills', name: 'Skills Learning', color: '#8b5cf6' },
+  { id: 'health', name: 'Health & Fitness', color: '#1e3a5f' },
+  { id: 'skills', name: 'Skills Learning', color: '#2563eb' },
   { id: 'hobby', name: 'Hobby Development', color: '#38bdf8' },
 ];
 
@@ -65,7 +65,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  health: '#f472b6',
-  skills: '#8b5cf6',
+  health: '#1e3a5f',
+  skills: '#2563eb',
   hobby: '#38bdf8',
 };
