@@ -41,12 +41,10 @@ const Index = () => {
   const [activePage, setActivePage] = useState('calendar');
 
   const closeTaskModal = () => {
-    // Ensure Radix portals (select/dialog) have a chance to clean up before we unmount.
+    // Close immediately; other mutations (save/delete) are already deferred to avoid Radix cleanup races.
     (document.activeElement as HTMLElement | null)?.blur?.();
-    requestAnimationFrame(() => {
-      setIsModalOpen(false);
-      setEditingTask(undefined);
-    });
+    setIsModalOpen(false);
+    setEditingTask(undefined);
   };
 
   const toast = ({ title, description, variant }: ToastOptions) => {
