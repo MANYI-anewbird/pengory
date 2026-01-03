@@ -192,12 +192,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                   strokeDasharray={100}
                   strokeDashoffset={100 - progress}
                   strokeLinecap="round"
-                  className={cn(
-                    'transition-all duration-300',
-                    plan.category === 'health' && 'stroke-rose-500',
-                    plan.category === 'skills' && 'stroke-blue-500',
-                    plan.category === 'hobby' && 'stroke-amber-500'
-                  )}
+                  className="transition-all duration-300 stroke-slate-700"
                 />
               </svg>
               <span className="absolute inset-0 flex items-center justify-center text-xs font-medium">

@@ -33,7 +33,7 @@ export const CATEGORY_LABELS: Record<GrowthCategory, string> = {
 };
 
 export const CATEGORY_COLORS: Record<GrowthCategory, string> = {
-  health: 'bg-rose-500',
-  skills: 'bg-blue-500',
-  hobby: 'bg-amber-500',
+  health: 'bg-slate-700',
+  skills: 'bg-slate-700',
+  hobby: 'bg-slate-700',
 };
