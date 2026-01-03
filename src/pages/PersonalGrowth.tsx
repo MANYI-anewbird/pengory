@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Heart, Brain, Palette, TrendingUp, Sparkles } from 'lucide-react';
+import { Plus, Heart, Brain, Palette, TrendingUp, Sparkles, Target, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { GrowthPlan, GrowthCategory, CATEGORY_LABELS } from '@/types/growth';
@@ -13,19 +13,14 @@ const GROWTH_STORAGE_KEY = 'pompom_growth_plans_v1';
 // Vibrant theme colors for each category
 const CATEGORY_CONFIG: Record<GrowthCategory, {
   icon: any;
-  // Active button color
   activeBtn: string;
-  // Icon/accent color
   accent: string;
-  // Light background for content area
   lightBg: string;
-  // Gradient for empty state
   emptyGradient: string;
-  // Border color
   border: string;
-  // Dot/ring color
   dotColor: string;
   ringStroke: string;
+  gradient: string;
 }> = {
   health: {
     icon: Heart,
@@ -36,6 +31,7 @@ const CATEGORY_CONFIG: Record<GrowthCategory, {
     border: 'border-rose-200',
     dotColor: 'bg-rose-500',
     ringStroke: 'stroke-rose-500',
+    gradient: 'from-rose-500 to-rose-400',
   },
   skills: {
     icon: Brain,
@@ -46,6 +42,7 @@ const CATEGORY_CONFIG: Record<GrowthCategory, {
     border: 'border-indigo-200',
     dotColor: 'bg-indigo-600',
     ringStroke: 'stroke-indigo-600',
+    gradient: 'from-indigo-600 to-indigo-500',
   },
   hobby: {
     icon: Palette,
@@ -56,6 +53,7 @@ const CATEGORY_CONFIG: Record<GrowthCategory, {
     border: 'border-sky-200',
     dotColor: 'bg-sky-400',
     ringStroke: 'stroke-sky-400',
+    gradient: 'from-sky-500 to-sky-400',
   },
 };
 
@@ -85,6 +83,7 @@ export const PersonalGrowth = () => {
   const totalPlans = plans.length;
   const completedSteps = plans.reduce((acc, p) => acc + p.executionSteps.filter(s => s.completed).length, 0);
   const totalSteps = plans.reduce((acc, p) => acc + p.executionSteps.length, 0);
+  const progressPercent = totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0;
 
   const handleAddPlan = (plan: Omit<GrowthPlan, 'id' | 'createdAt'>) => {
     const newPlan: GrowthPlan = {
@@ -110,110 +109,168 @@ export const PersonalGrowth = () => {
   const activeConfig = CATEGORY_CONFIG[activeCategory];
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100 min-h-screen">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-rose-200/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-indigo-200/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-60 h-60 bg-sky-200/25 rounded-full blur-3xl" />
-      </div>
-
-      {/* Hero Header */}
-      <div className="relative px-6 pt-8 pb-6 border-b border-slate-200/50 bg-white/60 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto">
+    <div className="flex-1 flex overflow-hidden bg-slate-50 min-h-screen">
+      {/* Left Sidebar - Dashboard */}
+      <div className="w-72 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
+        {/* Header */}
+        <div className="p-5 border-b border-slate-100">
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-2.5 bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-lg shadow-slate-300">
+            <div className="p-2 bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-md">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-              Personal Growth
-            </h1>
-          </div>
-          <p className="text-slate-500 text-sm ml-[52px]">
-            Build better habits. Track your progress. Achieve your goals.
-          </p>
-          
-          {/* Quick Stats with visual enhancement */}
-          <div className="flex gap-6 mt-6 ml-[52px]">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold bg-gradient-to-r from-slate-700 to-slate-600 bg-clip-text text-transparent">
-                {totalPlans}
-              </span>
-              <span className="text-slate-500 text-sm">Plans</span>
-            </div>
-            <div className="w-px bg-slate-200 self-stretch" />
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold text-slate-900">{completedSteps}</span>
-              <span className="text-slate-500 text-sm">/ {totalSteps} Steps</span>
-            </div>
-            <div className="w-px bg-slate-200 self-stretch" />
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-sky-500 bg-clip-text text-transparent">
-                {totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0}%
-              </span>
-              <span className="text-slate-500 text-sm">Complete</span>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">Personal Growth</h1>
+              <p className="text-xs text-slate-500">Track your goals</p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Category Navigation with colored active states */}
-      <div className="relative px-6 py-4 bg-white/40 backdrop-blur-sm border-b border-slate-200/50">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex gap-1.5 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        {/* Stats Cards */}
+        <div className="p-4 space-y-3">
+          <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Overview</span>
+              <Target className="h-4 w-4 text-slate-400" />
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-600">Total Plans</span>
+                <span className="text-xl font-bold text-slate-900">{totalPlans}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-600">Steps Done</span>
+                <span className="text-sm font-semibold text-slate-700">{completedSteps}/{totalSteps}</span>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-sm text-slate-600">Progress</span>
+                  <span className="text-sm font-bold text-indigo-600">{progressPercent}%</span>
+                </div>
+                <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-indigo-500 to-sky-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Category Stats */}
+          <div className="space-y-2">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide px-1">By Category</span>
             {categories.map((cat) => {
               const config = CATEGORY_CONFIG[cat];
               const Icon = config.icon;
-              const isActive = activeCategory === cat;
-              const count = plans.filter((p) => p.category === cat).length;
+              const catPlans = plans.filter(p => p.category === cat);
+              const catSteps = catPlans.reduce((acc, p) => acc + p.executionSteps.length, 0);
+              const catCompleted = catPlans.reduce((acc, p) => acc + p.executionSteps.filter(s => s.completed).length, 0);
+              const catProgress = catSteps > 0 ? Math.round((catCompleted / catSteps) * 100) : 0;
               
               return (
-                <motion.button
+                <div 
                   key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  whileHover={{ scale: isActive ? 1 : 1.02 }}
-                  whileTap={{ scale: 0.98 }}
                   className={cn(
-                    'flex-1 flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-xl transition-all duration-300 text-sm font-semibold',
-                    isActive
-                      ? cn(config.activeBtn, 'shadow-lg')
-                      : 'text-slate-600 hover:bg-slate-50'
+                    'p-3 rounded-lg border transition-all cursor-pointer',
+                    activeCategory === cat 
+                      ? cn('bg-gradient-to-r', config.gradient, 'border-transparent text-white shadow-md')
+                      : 'bg-white border-slate-200 hover:border-slate-300'
                   )}
+                  onClick={() => setActiveCategory(cat)}
                 >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{CATEGORY_LABELS[cat]}</span>
-                  {count > 0 && (
-                    <span className={cn(
-                      'text-xs px-2 py-0.5 rounded-full font-bold',
-                      isActive ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'
-                    )}>
-                      {count}
-                    </span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Icon className="h-4 w-4" />
+                      <span className="text-sm font-medium">{CATEGORY_LABELS[cat]}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={cn(
+                        'text-xs px-1.5 py-0.5 rounded-full font-medium',
+                        activeCategory === cat ? 'bg-white/25' : 'bg-slate-100'
+                      )}>
+                        {catPlans.length}
+                      </span>
+                    </div>
+                  </div>
+                  {catSteps > 0 && (
+                    <div className="mt-2">
+                      <div className={cn(
+                        'h-1 rounded-full overflow-hidden',
+                        activeCategory === cat ? 'bg-white/30' : 'bg-slate-100'
+                      )}>
+                        <div 
+                          className={cn(
+                            'h-full rounded-full transition-all',
+                            activeCategory === cat ? 'bg-white' : config.dotColor
+                          )}
+                          style={{ width: `${catProgress}%` }}
+                        />
+                      </div>
+                    </div>
                   )}
-                </motion.button>
+                </div>
               );
             })}
           </div>
         </div>
+
+        {/* Add Plan Button */}
+        <div className="mt-auto p-4 border-t border-slate-100">
+          <Button
+            onClick={() => setIsNewPlanModalOpen(true)}
+            className={cn(
+              'w-full gap-2 shadow-md transition-transform hover:scale-[1.02]',
+              'bg-gradient-to-r',
+              activeConfig.gradient
+            )}
+          >
+            <Plus className="h-4 w-4" />
+            New Plan
+          </Button>
+        </div>
       </div>
 
-      {/* Content Area with category-specific styling */}
-      <ScrollArea className="flex-1 relative">
-        <div className="px-6 py-6">
-          <div className="max-w-3xl mx-auto">
-            {/* Category-colored decorative line */}
-            <motion.div 
-              key={activeCategory + '-line'}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              className={cn(
-                'h-1 rounded-full mb-6 origin-left',
-                activeCategory === 'health' && 'bg-gradient-to-r from-rose-500 to-rose-300',
-                activeCategory === 'skills' && 'bg-gradient-to-r from-indigo-600 to-indigo-400',
-                activeCategory === 'hobby' && 'bg-gradient-to-r from-sky-500 to-sky-300'
-              )}
-            />
+      {/* Right Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Content Header */}
+        <div className="px-6 py-4 bg-white border-b border-slate-200 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {(() => {
+              const Icon = activeConfig.icon;
+              return (
+                <div className={cn('p-2 rounded-lg bg-gradient-to-r', activeConfig.gradient)}>
+                  <Icon className="h-5 w-5 text-white" />
+                </div>
+              );
+            })()}
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">{CATEGORY_LABELS[activeCategory]}</h2>
+              <p className="text-xs text-slate-500">{filteredPlans.length} plan{filteredPlans.length !== 1 ? 's' : ''}</p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setIsNewPlanModalOpen(true)}
+            size="sm"
+            className={cn('gap-1.5 bg-gradient-to-r', activeConfig.gradient)}
+          >
+            <Plus className="h-4 w-4" />
+            Add Plan
+          </Button>
+        </div>
 
+        {/* Colored accent line */}
+        <motion.div 
+          key={activeCategory + '-line'}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          className={cn('h-1 origin-left bg-gradient-to-r', activeConfig.gradient)}
+        />
+
+        {/* Plans Content */}
+        <ScrollArea className="flex-1">
+          <div className={cn('p-6 min-h-full', activeConfig.lightBg)}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeCategory}
@@ -228,19 +285,17 @@ export const PersonalGrowth = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className={cn(
-                      'flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed relative overflow-hidden',
+                      'flex flex-col items-center justify-center py-20 rounded-2xl border-2 border-dashed relative overflow-hidden',
                       activeConfig.border,
                       'bg-gradient-to-br',
                       activeConfig.emptyGradient
                     )}
                   >
-                    {/* Decorative sparkles */}
                     <Sparkles className={cn('absolute top-6 right-8 h-6 w-6 opacity-40', activeConfig.accent)} />
                     <Sparkles className={cn('absolute bottom-8 left-10 h-5 w-5 opacity-30', activeConfig.accent)} />
                     
                     <div className={cn(
-                      'p-5 rounded-2xl mb-5 shadow-lg',
-                      'bg-white border',
+                      'p-5 rounded-2xl mb-5 shadow-lg bg-white border',
                       activeConfig.border
                     )}>
                       {(() => {
@@ -256,41 +311,30 @@ export const PersonalGrowth = () => {
                     </p>
                     <Button
                       onClick={() => setIsNewPlanModalOpen(true)}
-                      className={cn(
-                        'gap-2 px-6 shadow-lg transition-transform hover:scale-105',
-                        activeCategory === 'health' && 'bg-rose-500 hover:bg-rose-600 shadow-rose-200',
-                        activeCategory === 'skills' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200',
-                        activeCategory === 'hobby' && 'bg-sky-500 hover:bg-sky-600 shadow-sky-200'
-                      )}
+                      className={cn('gap-2 px-6 shadow-lg bg-gradient-to-r', activeConfig.gradient)}
                     >
                       <Plus className="h-4 w-4" />
                       Create Plan
                     </Button>
                   </motion.div>
                 ) : (
-                  <>
-                    {/* Plans container with subtle background */}
-                    <div className={cn(
-                      'rounded-2xl p-4 space-y-4',
-                      activeConfig.lightBg
-                    )}>
-                      {filteredPlans.map((plan, index) => (
-                        <motion.div
-                          key={plan.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                        >
-                          <GrowthPlanCard
-                            plan={plan}
-                            onUpdate={(updates) => handleUpdatePlan(plan.id, updates)}
-                            onDelete={() => handleDeletePlan(plan.id)}
-                          />
-                        </motion.div>
-                      ))}
-                    </div>
+                  <div className="grid gap-4">
+                    {filteredPlans.map((plan, index) => (
+                      <motion.div
+                        key={plan.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <GrowthPlanCard
+                          plan={plan}
+                          onUpdate={(updates) => handleUpdatePlan(plan.id, updates)}
+                          onDelete={() => handleDeletePlan(plan.id)}
+                        />
+                      </motion.div>
+                    ))}
                     
-                    {/* Add New Plan Button */}
+                    {/* Add More Button */}
                     <motion.button
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -299,33 +343,27 @@ export const PersonalGrowth = () => {
                       className={cn(
                         'w-full py-4 rounded-xl border-2 border-dashed transition-all duration-200',
                         'flex items-center justify-center gap-2 text-sm font-semibold',
-                        'hover:scale-[1.01]',
-                        activeCategory === 'health' && 'border-rose-300 text-rose-500 hover:bg-rose-50',
-                        activeCategory === 'skills' && 'border-indigo-300 text-indigo-600 hover:bg-indigo-50',
-                        activeCategory === 'hobby' && 'border-sky-300 text-sky-500 hover:bg-sky-50'
+                        'hover:scale-[1.01] bg-white/50',
+                        activeConfig.border,
+                        activeConfig.accent
                       )}
                     >
                       <Plus className="h-4 w-4" />
-                      Add New Plan
+                      Add Another Plan
                     </motion.button>
-                  </>
+                  </div>
                 )}
               </motion.div>
             </AnimatePresence>
           </div>
-        </div>
-      </ScrollArea>
+        </ScrollArea>
+      </div>
 
       {/* Floating Action Button (Mobile) */}
-      <div className="fixed bottom-6 right-6 sm:hidden">
+      <div className="fixed bottom-6 right-6 md:hidden">
         <Button
           onClick={() => setIsNewPlanModalOpen(true)}
-          className={cn(
-            'h-14 w-14 rounded-full shadow-xl',
-            activeCategory === 'health' && 'bg-rose-500 hover:bg-rose-600 shadow-rose-300',
-            activeCategory === 'skills' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-300',
-            activeCategory === 'hobby' && 'bg-sky-500 hover:bg-sky-600 shadow-sky-300'
-          )}
+          className={cn('h-14 w-14 rounded-full shadow-xl bg-gradient-to-r', activeConfig.gradient)}
         >
           <Plus className="h-6 w-6" />
         </Button>
