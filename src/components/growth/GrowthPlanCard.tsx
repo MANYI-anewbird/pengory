@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { 
   ChevronDown, 
-  ChevronUp, 
   Trash2, 
   Plus, 
   ExternalLink, 
@@ -12,13 +11,13 @@ import {
   FileText,
   CheckCircle2,
   Pencil,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { GrowthPlan, ExecutionStep, LinkButton, CATEGORY_COLORS } from '@/types/growth';
+import { GrowthPlan, ExecutionStep, LinkButton } from '@/types/growth';
 import { cn } from '@/lib/utils';
 
 interface GrowthPlanCardProps {
@@ -26,6 +25,24 @@ interface GrowthPlanCardProps {
   onUpdate: (updates: Partial<GrowthPlan>) => void;
   onDelete: () => void;
 }
+
+const CATEGORY_STYLES = {
+  health: {
+    dot: 'bg-slate-700',
+    ring: 'stroke-slate-700',
+    accent: 'text-slate-700',
+  },
+  skills: {
+    dot: 'bg-teal-500',
+    ring: 'stroke-teal-500',
+    accent: 'text-teal-600',
+  },
+  hobby: {
+    dot: 'bg-sky-400',
+    ring: 'stroke-sky-400',
+    accent: 'text-sky-500',
+  },
+};
 
 export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -42,6 +59,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
   const completedSteps = plan.executionSteps.filter((s) => s.completed).length;
   const totalSteps = plan.executionSteps.length;
   const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
+  const styles = CATEGORY_STYLES[plan.category];
 
   const handleAddStep = () => {
     if (!newStepTitle.trim()) return;
@@ -147,70 +165,69 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
   return (
     <motion.div
       layout
-      className="bg-background rounded-xl border shadow-sm overflow-hidden"
+      className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
     >
       {/* Header */}
       <div
-        className="p-4 cursor-pointer hover:bg-muted/30 transition-colors"
+        className="p-5 cursor-pointer transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <div className={cn('w-2 h-2 rounded-full', CATEGORY_COLORS[plan.category])} />
-              <h3 className="font-semibold text-foreground truncate">{plan.goal}</h3>
+            <div className="flex items-center gap-3 mb-2">
+              <div className={cn('w-2.5 h-2.5 rounded-full', styles.dot)} />
+              <h3 className="font-semibold text-slate-900 text-base truncate">{plan.goal}</h3>
             </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
+            <div className="flex items-center gap-4 text-xs text-slate-500 ml-5">
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" />
                 {plan.duration}
               </span>
-              <span className="flex items-center gap-1">
-                <Target className="h-3 w-3" />
+              <span className="flex items-center gap-1.5">
+                <Target className="h-3.5 w-3.5" />
                 {completedSteps}/{totalSteps} steps
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Progress ring */}
-            <div className="relative h-10 w-10">
-              <svg className="h-10 w-10 -rotate-90">
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="16"
-                  strokeWidth="3"
-                  fill="none"
-                  className="stroke-muted"
-                />
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="16"
-                  strokeWidth="3"
-                  fill="none"
-                  strokeDasharray={100}
-                  strokeDashoffset={100 - progress}
-                  strokeLinecap="round"
-                  className={cn(
-                    'transition-all duration-300',
-                    plan.category === 'health' && 'stroke-slate-700',
-                    plan.category === 'skills' && 'stroke-teal-500',
-                    plan.category === 'hobby' && 'stroke-sky-400'
-                  )}
-                />
-              </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-xs font-medium">
-                {Math.round(progress)}%
-              </span>
+          
+          <div className="flex items-center gap-3">
+            {/* Progress Display */}
+            <div className="flex items-center gap-2">
+              <div className="relative h-10 w-10">
+                <svg className="h-10 w-10 -rotate-90">
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r="16"
+                    strokeWidth="3"
+                    fill="none"
+                    className="stroke-slate-100"
+                  />
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r="16"
+                    strokeWidth="3"
+                    fill="none"
+                    strokeDasharray={100}
+                    strokeDashoffset={100 - progress}
+                    strokeLinecap="round"
+                    className={cn('transition-all duration-500', styles.ring)}
+                  />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-slate-700">
+                  {Math.round(progress)}%
+                </span>
+              </div>
             </div>
-            <button className="p-1 hover:bg-muted rounded">
-              {isExpanded ? (
-                <ChevronUp className="h-5 w-5 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-muted-foreground" />
-              )}
-            </button>
+            
+            <motion.div
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+              className="p-1.5 rounded-lg hover:bg-slate-100"
+            >
+              <ChevronDown className="h-5 w-5 text-slate-400" />
+            </motion.div>
           </div>
         </div>
       </div>
@@ -225,24 +242,24 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-4 border-t">
+            <div className="px-5 pb-5 space-y-5 border-t border-slate-100">
               {/* Timeline */}
-              <div className="pt-4 grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Start:</span>{' '}
-                  <span className="font-medium">{plan.startDate}</span>
+              <div className="pt-5 flex gap-8 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-400 text-xs uppercase tracking-wide">Start</span>
+                  <span className="font-medium text-slate-700 bg-slate-50 px-2 py-1 rounded">{plan.startDate}</span>
                 </div>
-                <div>
-                  <span className="text-muted-foreground">End:</span>{' '}
-                  <span className="font-medium">{plan.endDate}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-400 text-xs uppercase tracking-wide">End</span>
+                  <span className="font-medium text-slate-700 bg-slate-50 px-2 py-1 rounded">{plan.endDate}</span>
                 </div>
               </div>
 
               {/* Execution Steps */}
               <div>
-                <h4 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3 flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4" />
-                  Execution Steps
+                  Steps
                 </h4>
                 <Reorder.Group
                   axis="y"
@@ -255,24 +272,33 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                       key={step.id}
                       value={step}
                       className={cn(
-                        'bg-muted/50 rounded-lg p-3 cursor-grab active:cursor-grabbing',
-                        draggedLink && 'ring-2 ring-primary/30'
+                        'bg-slate-50 rounded-lg p-3 cursor-grab active:cursor-grabbing border border-transparent',
+                        draggedLink && 'border-slate-300'
                       )}
                       onDragOver={(e) => e.preventDefault()}
                       onDrop={() => handleDrop(step.id)}
                     >
-                      <div className="flex items-start gap-2">
-                        <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                        <Checkbox
-                          checked={step.completed}
-                          onCheckedChange={() => handleToggleStep(step.id)}
-                          className="mt-0.5"
-                        />
+                      <div className="flex items-start gap-3">
+                        <GripVertical className="h-4 w-4 text-slate-300 mt-0.5 flex-shrink-0" />
+                        
+                        {/* Custom Checkbox */}
+                        <button
+                          onClick={() => handleToggleStep(step.id)}
+                          className={cn(
+                            'h-5 w-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all mt-0.5',
+                            step.completed 
+                              ? 'bg-slate-700 border-slate-700' 
+                              : 'border-slate-300 hover:border-slate-400'
+                          )}
+                        >
+                          {step.completed && <Check className="h-3 w-3 text-white" />}
+                        </button>
+                        
                         <div className="flex-1 min-w-0">
                           <span
                             className={cn(
                               'text-sm',
-                              step.completed && 'line-through text-muted-foreground'
+                              step.completed ? 'line-through text-slate-400' : 'text-slate-700'
                             )}
                           >
                             {step.title}
@@ -286,22 +312,22 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                                   key={link.id}
                                   draggable
                                   onDragStart={() => handleDragStart(link, step.id)}
-                                  className="group flex items-center gap-1 bg-background border rounded-md px-2 py-1 text-xs cursor-move hover:border-primary/50 transition-colors"
+                                  className="group flex items-center gap-1.5 bg-white border border-slate-200 rounded-md px-2 py-1 text-xs cursor-move hover:border-slate-300 transition-colors"
                                 >
-                                  <LinkIcon className="h-3 w-3 text-muted-foreground" />
+                                  <LinkIcon className="h-3 w-3 text-slate-400" />
                                   <a
                                     href={link.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-primary hover:underline"
+                                    className="text-slate-600 hover:text-slate-900 hover:underline"
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     {link.title}
                                   </a>
-                                  <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                                  <ExternalLink className="h-3 w-3 text-slate-400" />
                                   <button
                                     onClick={() => handleDeleteLink(step.id, link.id)}
-                                    className="opacity-0 group-hover:opacity-100 ml-1 text-destructive hover:text-destructive/80"
+                                    className="opacity-0 group-hover:opacity-100 ml-0.5 text-slate-400 hover:text-red-500"
                                   >
                                     ×
                                   </button>
@@ -312,26 +338,26 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
 
                           {/* Add link form */}
                           {addingLinkToStep === step.id ? (
-                            <div className="mt-2 space-y-2">
+                            <div className="mt-3 space-y-2">
                               <Input
-                                placeholder="Link URL (e.g., bilibili.com/...)"
+                                placeholder="URL"
                                 value={newLinkUrl}
                                 onChange={(e) => setNewLinkUrl(e.target.value)}
-                                className="h-8 text-xs"
+                                className="h-8 text-sm bg-white border-slate-200"
                               />
                               <Input
-                                placeholder="Button title (optional)"
+                                placeholder="Title (optional)"
                                 value={newLinkTitle}
                                 onChange={(e) => setNewLinkTitle(e.target.value)}
-                                className="h-8 text-xs"
+                                className="h-8 text-sm bg-white border-slate-200"
                               />
                               <div className="flex gap-2">
                                 <Button
                                   size="sm"
                                   onClick={() => handleAddLink(step.id)}
-                                  className="h-7 text-xs"
+                                  className="h-7 text-xs bg-slate-900 hover:bg-slate-800"
                                 >
-                                  Add
+                                  Add Link
                                 </Button>
                                 <Button
                                   size="sm"
@@ -341,7 +367,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                                     setNewLinkUrl('');
                                     setNewLinkTitle('');
                                   }}
-                                  className="h-7 text-xs"
+                                  className="h-7 text-xs text-slate-500"
                                 >
                                   Cancel
                                 </Button>
@@ -350,7 +376,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                           ) : (
                             <button
                               onClick={() => setAddingLinkToStep(step.id)}
-                              className="mt-2 text-xs text-muted-foreground hover:text-primary flex items-center gap-1"
+                              className="mt-2 text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1"
                             >
                               <Plus className="h-3 w-3" />
                               Add link
@@ -359,7 +385,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                         </div>
                         <button
                           onClick={() => handleDeleteStep(step.id)}
-                          className="p-1 text-muted-foreground hover:text-destructive"
+                          className="p-1 text-slate-300 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -369,15 +395,19 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                 </Reorder.Group>
 
                 {/* Add new step */}
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-2 mt-3">
                   <Input
-                    placeholder="Add a new step..."
+                    placeholder="Add a step..."
                     value={newStepTitle}
                     onChange={(e) => setNewStepTitle(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddStep()}
-                    className="h-9 text-sm"
+                    className="h-10 text-sm bg-white border-slate-200"
                   />
-                  <Button size="sm" onClick={handleAddStep} className="h-9">
+                  <Button 
+                    size="sm" 
+                    onClick={handleAddStep} 
+                    className="h-10 px-4 bg-slate-900 hover:bg-slate-800"
+                  >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -386,7 +416,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
               {/* Notes */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     Notes
                   </h4>
@@ -397,7 +427,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                       }
                       setEditingNotes(!editingNotes);
                     }}
-                    className="p-1 text-muted-foreground hover:text-primary rounded"
+                    className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                   </button>
@@ -407,11 +437,11 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     value={notesValue}
                     onChange={(e) => setNotesValue(e.target.value)}
                     placeholder="Add notes..."
-                    className="text-sm"
+                    className="text-sm bg-white border-slate-200"
                     rows={3}
                   />
                 ) : (
-                  <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3 min-h-[40px]">
+                  <p className="text-sm text-slate-500 bg-slate-50 rounded-lg p-3 min-h-[48px]">
                     {plan.notes || 'No notes yet'}
                   </p>
                 )}
@@ -420,7 +450,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
               {/* Expected Result */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2">
                     <Target className="h-4 w-4" />
                     Expected Result
                   </h4>
@@ -431,7 +461,7 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                       }
                       setEditingResult(!editingResult);
                     }}
-                    className="p-1 text-muted-foreground hover:text-primary rounded"
+                    className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                   </button>
@@ -441,23 +471,23 @@ export const GrowthPlanCard = ({ plan, onUpdate, onDelete }: GrowthPlanCardProps
                     value={resultValue}
                     onChange={(e) => setResultValue(e.target.value)}
                     placeholder="What do you want to achieve?"
-                    className="text-sm"
+                    className="text-sm bg-white border-slate-200"
                     rows={3}
                   />
                 ) : (
-                  <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3 min-h-[40px]">
+                  <p className="text-sm text-slate-500 bg-slate-50 rounded-lg p-3 min-h-[48px]">
                     {plan.expectedResult || 'No expected result set'}
                   </p>
                 )}
               </div>
 
               {/* Delete Plan */}
-              <div className="pt-2 border-t">
+              <div className="pt-3 border-t border-slate-100">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onDelete}
-                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete Plan

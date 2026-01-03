@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Heart, Brain, Palette } from 'lucide-react';
+import { Plus, Heart, Brain, Palette, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { GrowthPlan, GrowthCategory, CATEGORY_LABELS } from '@/types/growth';
@@ -10,22 +10,30 @@ import { cn } from '@/lib/utils';
 
 const GROWTH_STORAGE_KEY = 'pompom_growth_plans_v1';
 
-const CATEGORY_ICONS: Record<GrowthCategory, any> = {
-  health: Heart,
-  skills: Brain,
-  hobby: Palette,
-};
-
-const CATEGORY_BG: Record<GrowthCategory, string> = {
-  health: 'from-slate-600/10 to-slate-600/5',
-  skills: 'from-teal-500/10 to-teal-500/5',
-  hobby: 'from-sky-400/10 to-sky-400/5',
-};
-
-const CATEGORY_ACCENT: Record<GrowthCategory, string> = {
-  health: 'text-slate-700 bg-slate-100',
-  skills: 'text-teal-600 bg-teal-100',
-  hobby: 'text-sky-600 bg-sky-100',
+const CATEGORY_CONFIG: Record<GrowthCategory, {
+  icon: any;
+  color: string;
+  lightBg: string;
+  border: string;
+}> = {
+  health: {
+    icon: Heart,
+    color: 'text-slate-700',
+    lightBg: 'bg-slate-50',
+    border: 'border-slate-200',
+  },
+  skills: {
+    icon: Brain,
+    color: 'text-teal-600',
+    lightBg: 'bg-teal-50',
+    border: 'border-teal-200',
+  },
+  hobby: {
+    icon: Palette,
+    color: 'text-sky-500',
+    lightBg: 'bg-sky-50',
+    border: 'border-sky-200',
+  },
 };
 
 export const PersonalGrowth = () => {
@@ -51,6 +59,9 @@ export const PersonalGrowth = () => {
   }, [plans]);
 
   const filteredPlans = plans.filter((p) => p.category === activeCategory);
+  const totalPlans = plans.length;
+  const completedSteps = plans.reduce((acc, p) => acc + p.executionSteps.filter(s => s.completed).length, 0);
+  const totalSteps = plans.reduce((acc, p) => acc + p.executionSteps.length, 0);
 
   const handleAddPlan = (plan: Omit<GrowthPlan, 'id' | 'createdAt'>) => {
     const newPlan: GrowthPlan = {
@@ -73,105 +84,184 @@ export const PersonalGrowth = () => {
   };
 
   const categories: GrowthCategory[] = ['health', 'skills', 'hobby'];
+  const activeConfig = CATEGORY_CONFIG[activeCategory];
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-background">
-      {/* Header */}
-      <div className="px-6 pt-6 pb-4">
-        <h1 className="text-2xl font-semibold text-foreground mb-1">Personal Growth</h1>
-        <p className="text-sm text-muted-foreground">Track your goals and grow every day</p>
+    <div className="flex-1 flex flex-col overflow-hidden bg-white min-h-screen">
+      {/* Hero Header */}
+      <div className="px-6 pt-8 pb-6 border-b border-slate-100">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-slate-900 rounded-xl">
+              <TrendingUp className="h-5 w-5 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+              Personal Growth
+            </h1>
+          </div>
+          <p className="text-slate-500 text-sm ml-12">
+            Build better habits. Track your progress. Achieve your goals.
+          </p>
+          
+          {/* Quick Stats */}
+          {totalPlans > 0 && (
+            <div className="flex gap-6 mt-6 ml-12">
+              <div>
+                <span className="text-2xl font-bold text-slate-900">{totalPlans}</span>
+                <span className="text-slate-500 text-sm ml-1.5">Plans</span>
+              </div>
+              <div className="w-px bg-slate-200" />
+              <div>
+                <span className="text-2xl font-bold text-slate-900">{completedSteps}</span>
+                <span className="text-slate-500 text-sm ml-1.5">/ {totalSteps} Steps</span>
+              </div>
+              <div className="w-px bg-slate-200" />
+              <div>
+                <span className="text-2xl font-bold text-slate-900">
+                  {totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0}%
+                </span>
+                <span className="text-slate-500 text-sm ml-1.5">Complete</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Category Tabs */}
-      <div className="px-6 pb-4">
-        <div className="flex gap-2 flex-wrap">
-          {categories.map((cat) => {
-            const Icon = CATEGORY_ICONS[cat];
-            const isActive = activeCategory === cat;
-            const count = plans.filter((p) => p.category === cat).length;
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={cn(
-                  'flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium',
-                  isActive
-                    ? 'bg-gray-900 text-white shadow-md'
-                    : 'bg-transparent text-muted-foreground hover:bg-muted/50'
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{CATEGORY_LABELS[cat]}</span>
-                {count > 0 && (
-                  <span className={cn(
-                    'text-xs px-1.5 py-0.5 rounded-full',
-                    isActive ? 'bg-white/20' : 'bg-muted'
-                  )}>
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+      {/* Category Navigation */}
+      <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex gap-1 p-1 bg-white rounded-xl border border-slate-200 shadow-sm">
+            {categories.map((cat) => {
+              const config = CATEGORY_CONFIG[cat];
+              const Icon = config.icon;
+              const isActive = activeCategory === cat;
+              const count = plans.filter((p) => p.category === cat).length;
+              
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={cn(
+                    'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium',
+                    isActive
+                      ? cn('bg-slate-900 text-white shadow-md')
+                      : 'text-slate-600 hover:bg-slate-50'
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{CATEGORY_LABELS[cat]}</span>
+                  {count > 0 && (
+                    <span className={cn(
+                      'text-xs px-2 py-0.5 rounded-full font-medium',
+                      isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    )}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* Content Area */}
-      <ScrollArea className={cn('flex-1 px-6 pb-6')}>
-        <div className={cn('min-h-full rounded-2xl bg-gradient-to-b p-4', CATEGORY_BG[activeCategory])}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-4"
-            >
-              {filteredPlans.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <div className={cn('p-4 rounded-full mb-4', CATEGORY_ACCENT[activeCategory])}>
-                    {(() => {
-                      const Icon = CATEGORY_ICONS[activeCategory];
-                      return <Icon className="h-8 w-8" />;
-                    })()}
-                  </div>
-                  <h3 className="text-lg font-medium text-foreground mb-2">No plans yet</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Start your {CATEGORY_LABELS[activeCategory].toLowerCase()} journey
-                  </p>
-                  <Button
-                    onClick={() => setIsNewPlanModalOpen(true)}
-                    className="gap-2"
+      <ScrollArea className="flex-1">
+        <div className="px-6 py-6">
+          <div className="max-w-3xl mx-auto">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeCategory}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+                className="space-y-4"
+              >
+                {filteredPlans.length === 0 ? (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className={cn(
+                      'flex flex-col items-center justify-center py-20 rounded-2xl border-2 border-dashed',
+                      activeConfig.border,
+                      activeConfig.lightBg
+                    )}
                   >
-                    <Plus className="h-4 w-4" />
-                    Create First Plan
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  {filteredPlans.map((plan) => (
-                    <GrowthPlanCard
-                      key={plan.id}
-                      plan={plan}
-                      onUpdate={(updates) => handleUpdatePlan(plan.id, updates)}
-                      onDelete={() => handleDeletePlan(plan.id)}
-                    />
-                  ))}
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsNewPlanModalOpen(true)}
-                    className="w-full gap-2 border-dashed"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add New Plan
-                  </Button>
-                </>
-              )}
-            </motion.div>
-          </AnimatePresence>
+                    <div className={cn(
+                      'p-4 rounded-2xl mb-5',
+                      'bg-white shadow-sm border',
+                      activeConfig.border
+                    )}>
+                      {(() => {
+                        const Icon = activeConfig.icon;
+                        return <Icon className={cn('h-8 w-8', activeConfig.color)} />;
+                      })()}
+                    </div>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                      No {CATEGORY_LABELS[activeCategory]} Plans
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-6 text-center max-w-xs">
+                      Start your journey by creating your first plan in this category
+                    </p>
+                    <Button
+                      onClick={() => setIsNewPlanModalOpen(true)}
+                      className="gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Create Plan
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <>
+                    {filteredPlans.map((plan, index) => (
+                      <motion.div
+                        key={plan.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <GrowthPlanCard
+                          plan={plan}
+                          onUpdate={(updates) => handleUpdatePlan(plan.id, updates)}
+                          onDelete={() => handleDeletePlan(plan.id)}
+                        />
+                      </motion.div>
+                    ))}
+                    
+                    {/* Add New Plan Button */}
+                    <motion.button
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: filteredPlans.length * 0.05 }}
+                      onClick={() => setIsNewPlanModalOpen(true)}
+                      className={cn(
+                        'w-full py-4 rounded-xl border-2 border-dashed transition-all duration-200',
+                        'flex items-center justify-center gap-2 text-sm font-medium',
+                        'hover:border-slate-400 hover:bg-slate-50',
+                        'border-slate-200 text-slate-500'
+                      )}
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add New Plan
+                    </motion.button>
+                  </>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </ScrollArea>
+
+      {/* Floating Action Button (Mobile) */}
+      <div className="fixed bottom-6 right-6 sm:hidden">
+        <Button
+          onClick={() => setIsNewPlanModalOpen(true)}
+          className="h-14 w-14 rounded-full shadow-lg bg-slate-900 hover:bg-slate-800"
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+      </div>
 
       {/* New Plan Modal */}
       <NewPlanModal
