@@ -177,7 +177,7 @@ export const TaskModal = ({
                 <SelectTrigger className="border-border h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent portalled={false}>
                   <SelectItem value="busy" className="text-xs">Busy</SelectItem>
                   <SelectItem value="free" className="text-xs">Free</SelectItem>
                 </SelectContent>
@@ -193,7 +193,7 @@ export const TaskModal = ({
                 <SelectTrigger className="border-border h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent portalled={false}>
                   {taskColors.map((c) => (
                     <SelectItem key={c.value} value={c.value} className="text-xs">
                       {c.label}
