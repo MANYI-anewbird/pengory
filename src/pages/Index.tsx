@@ -8,12 +8,11 @@ import { CompactCalendarGrid } from '@/components/calendar/CompactCalendarGrid';
 import { TaskModal } from '@/components/calendar/TaskModal';
 import { Notes } from './Notes';
 import { Home } from './Home';
-import { Tasks } from './Tasks';
+import { PersonalGrowth } from './PersonalGrowth';
 import { Meditation } from './Meditation';
 import { Learn } from './Learn';
 import { toast as sonnerToast } from '@/components/ui/sonner';
 import { getBostonNow } from '@/lib/timezone';
-
 const TASKS_STORAGE_KEY = 'pompom_tasks_v1';
 
 type ToastOptions = {
@@ -171,12 +170,8 @@ const Index = () => {
             onToggleComplete={handleToggleComplete}
             onNavigate={setActivePage}
           />
-        ) : activePage === 'tasks' ? (
-          <Tasks 
-            tasks={tasks}
-            onToggleComplete={handleToggleComplete}
-            onUpdateTask={handleUpdateTask}
-          />
+        ) : activePage === 'growth' ? (
+          <PersonalGrowth />
         ) : activePage === 'notes' ? (
           <div className="flex-1 flex flex-col overflow-hidden">
             <Notes />

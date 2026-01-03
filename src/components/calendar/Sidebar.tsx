@@ -1,4 +1,4 @@
-import { Home, List, Calendar, StickyNote, Sparkles, BookOpen, User, Settings } from 'lucide-react';
+import { Home, TrendingUp, Calendar, StickyNote, Sparkles, BookOpen, User, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -17,7 +17,7 @@ interface SidebarProps {
 const mainItems = [
   { icon: Home, label: 'Home', page: 'home' },
   { icon: Calendar, label: 'Calendar', page: 'calendar' },
-  { icon: List, label: 'Tasks', page: 'tasks' },
+  { icon: TrendingUp, label: 'Growth', page: 'growth' },
   { icon: StickyNote, label: 'Notes', page: 'notes' },
   { icon: Sparkles, label: 'Meditation', page: 'meditation' },
   { icon: BookOpen, label: 'Learn', page: 'learn' },
