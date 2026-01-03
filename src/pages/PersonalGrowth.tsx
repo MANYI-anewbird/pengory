@@ -246,7 +246,7 @@ export const PersonalGrowth = () => {
         </div>
 
         {/* Add Category Button */}
-        <div className="mt-auto p-4 border-t border-slate-100 space-y-2">
+        <div className="mt-auto p-4 border-t border-slate-100">
           <Button
             onClick={() => setIsNewCategoryModalOpen(true)}
             variant="outline"
@@ -254,14 +254,6 @@ export const PersonalGrowth = () => {
           >
             <FolderPlus className="h-4 w-4" />
             New Category
-          </Button>
-          <Button
-            onClick={() => setIsNewPlanModalOpen(true)}
-            className="w-full gap-2 shadow-md transition-transform hover:scale-[1.02] text-white"
-            style={{ backgroundColor: activeConfig.color }}
-          >
-            <Plus className="h-4 w-4" />
-            New Plan
           </Button>
         </div>
       </div>
