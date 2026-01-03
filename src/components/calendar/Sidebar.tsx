@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Calendar, StickyNote, Link, BookOpen, User, Settings } from 'lucide-react';
+import { Home, TrendingUp, Calendar, StickyNote, Link, BookOpen, User, Settings, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -6,6 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useAuth } from '@/hooks/useAuth';
 import penguinLogo from '@/assets/penguin-logo.png';
 
 interface SidebarProps {
@@ -23,16 +24,24 @@ const mainItems = [
   { icon: BookOpen, label: 'Learn', page: 'learn' },
 ];
 
-const bottomItems = [
-  { icon: User, label: 'Profile', page: 'profile' },
-  { icon: Settings, label: 'Settings', page: 'settings' },
-];
-
 export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => {
+  const { user, profile, loading } = useAuth();
+
+  const bottomItems = user 
+    ? [
+        { icon: User, label: profile?.display_name || profile?.username || 'Profile', page: 'profile' },
+        { icon: Settings, label: 'Settings', page: 'settings' },
+      ]
+    : [
+        { icon: LogIn, label: '登录/注册', page: 'login' },
+        { icon: Settings, label: 'Settings', page: 'settings' },
+      ];
+
   const renderItem = (item: { icon: any; label: string; page: string }) => {
     const Icon = item.icon;
     const isActive = activePage === item.page;
     const isHome = item.page === 'home';
+    const isProfile = item.page === 'profile' && user;
     
     return (
       <Tooltip key={item.label}>
@@ -61,6 +70,15 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
                     <div className="absolute inset-0 bg-white/50 rounded-lg blur-md -z-20 scale-125" />
                   </>
                 )}
+              </div>
+            ) : isProfile ? (
+              <div className={cn(
+                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                isActive 
+                  ? "bg-white text-gray-900" 
+                  : "bg-gradient-to-br from-sky-400 to-cyan-400 text-white"
+              )}>
+                {profile?.display_name?.[0]?.toUpperCase() || profile?.username?.[0]?.toUpperCase() || 'U'}
               </div>
             ) : (
               <Icon className="h-5 w-5" strokeWidth={isActive ? 2 : 1.5} />
