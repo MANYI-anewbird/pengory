@@ -27,11 +27,11 @@ const CATEGORY_CONFIG: Record<GrowthCategory, {
     activeBtn: 'bg-pink-300 text-white',
     accent: 'text-pink-400',
     lightBg: 'bg-pink-50/50',
-    emptyGradient: 'from-pink-100 to-purple-50',
+    emptyGradient: 'from-pink-100 to-pink-50',
     border: 'border-pink-200',
     dotColor: 'bg-pink-300',
     ringStroke: 'stroke-pink-300',
-    gradient: 'from-pink-300 to-purple-200',
+    gradient: 'from-pink-300 to-pink-300',
   },
   skills: {
     icon: Brain,
