@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Heart, Brain, Palette, TrendingUp, Sparkles, Target, Trash2, FolderPlus } from 'lucide-react';
+import { Plus, Heart, Brain, Palette, TrendingUp, Sparkles, Target, Trash2, FolderPlus, Archive, ChevronDown, ChevronUp, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { GrowthPlan, GrowthCategory, CustomCategory, DEFAULT_CATEGORIES } from '@/types/growth';
@@ -76,7 +76,14 @@ export const PersonalGrowth = () => {
     return cat || categories[0] || DEFAULT_CATEGORIES[0];
   }, [categories, activeCategory]);
 
-  const filteredPlans = plans.filter((p) => p.category === activeCategory);
+  const [showArchived, setShowArchived] = useState(false);
+
+  // Separate active and archived plans
+  const isCompleted = (plan: GrowthPlan) => 
+    plan.executionSteps.length > 0 && plan.executionSteps.every(s => s.completed);
+
+  const filteredPlans = plans.filter((p) => p.category === activeCategory && !isCompleted(p));
+  const archivedPlans = plans.filter((p) => p.category === activeCategory && isCompleted(p));
   const totalPlans = plans.length;
   const completedSteps = plans.reduce((acc, p) => acc + p.executionSteps.filter(s => s.completed).length, 0);
   const totalSteps = plans.reduce((acc, p) => acc + p.executionSteps.length, 0);
@@ -400,6 +407,77 @@ export const PersonalGrowth = () => {
                       Add Another Plan
                     </motion.button>
                   </div>
+                )}
+
+                {/* Archived Section */}
+                {archivedPlans.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="mt-8"
+                  >
+                    <button
+                      onClick={() => setShowArchived(!showArchived)}
+                      className="w-full flex items-center justify-between p-4 rounded-xl bg-white/80 border border-slate-200 hover:bg-white transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="p-2 rounded-lg"
+                          style={{ backgroundColor: `${activeConfig.color}20` }}
+                        >
+                          <Archive className="h-4 w-4" style={{ color: activeConfig.color }} />
+                        </div>
+                        <div className="text-left">
+                          <span className="text-sm font-semibold text-slate-700">Archived</span>
+                          <p className="text-xs text-slate-500">
+                            {archivedPlans.length} mastered skill{archivedPlans.length !== 1 ? 's' : ''}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Trophy className="h-4 w-4 text-amber-500" />
+                        {showArchived ? (
+                          <ChevronUp className="h-4 w-4 text-slate-400" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 text-slate-400" />
+                        )}
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {showArchived && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="grid gap-4 mt-4">
+                            {archivedPlans.map((plan, index) => (
+                              <motion.div
+                                key={plan.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                className="relative"
+                              >
+                                <div className="absolute -top-2 -right-2 z-10 bg-amber-400 text-white p-1.5 rounded-full shadow-lg">
+                                  <Trophy className="h-3.5 w-3.5" />
+                                </div>
+                                <GrowthPlanCard
+                                  plan={plan}
+                                  onUpdate={(updates) => handleUpdatePlan(plan.id, updates)}
+                                  onDelete={() => handleDeletePlan(plan.id)}
+                                  customColor={activeConfig.color}
+                                />
+                              </motion.div>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
                 )}
               </motion.div>
             </AnimatePresence>
