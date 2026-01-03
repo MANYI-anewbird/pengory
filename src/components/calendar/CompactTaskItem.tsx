@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils';
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
@@ -22,12 +21,12 @@ interface CompactTaskItemProps {
   denseMode: boolean;
 }
 
-export const CompactTaskItem = ({ 
-  task, 
-  onToggleComplete, 
+export const CompactTaskItem = ({
+  task,
+  onToggleComplete,
   onDelete,
   onClick,
-  denseMode 
+  denseMode,
 }: CompactTaskItemProps) => {
   const handleCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -38,64 +37,62 @@ export const CompactTaskItem = ({
     onClick(task);
   };
 
-  const fullText = task.time && !task.allDay 
-    ? `${task.time} ${task.title}`
-    : task.title;
+  const fullText = task.time && !task.allDay ? `${task.time} ${task.title}` : task.title;
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger asChild>
-        <TooltipProvider>
-          <Tooltip delayDuration={300}>
-            <TooltipTrigger asChild>
-              <div
-                onClick={handleTaskClick}
-                className={cn(
-                  'group flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:bg-gray-100/80 hover:shadow-xs hover:scale-[1.01] rounded-sm px-1 py-0.5 leading-none'
-                )}
-              >
-                <div onClick={handleCheckboxClick} className="flex-shrink-0">
-                  <Checkbox
-                    checked={task.completed}
-                    onCheckedChange={() => onToggleComplete(task.id)}
-                    className={cn(
-                      "rounded-sm border border-muted-foreground/60",
-                      "data-[state=checked]:bg-black data-[state=checked]:border-black data-[state=checked]:text-white",
-                      "h-3.5 w-3.5"
-                    )}
-                  />
-                </div>
-                <div className={cn(
-                  "flex-1 min-w-0 flex items-baseline gap-1",
-                  task.completed && 'opacity-60'
-                )}>
-                  {task.time && !task.allDay && (
-                    <span className={cn(
-                      "text-2xs text-gray-400 flex-shrink-0 leading-none",
-                      task.completed && "line-through"
-                    )}>
-                      {task.time}
-                    </span>
+      <Tooltip delayDuration={300}>
+        <TooltipTrigger asChild>
+          <ContextMenuTrigger>
+            <div
+              onClick={handleTaskClick}
+              className={cn(
+                'group flex items-center gap-1.5 cursor-pointer transition-all duration-200 hover:bg-gray-100/80 hover:shadow-xs hover:scale-[1.01] rounded-sm px-1 py-0.5 leading-none'
+              )}
+            >
+              <div onClick={handleCheckboxClick} className="flex-shrink-0">
+                <Checkbox
+                  checked={task.completed}
+                  onCheckedChange={() => onToggleComplete(task.id)}
+                  className={cn(
+                    'rounded-sm border border-muted-foreground/60',
+                    'data-[state=checked]:bg-black data-[state=checked]:border-black data-[state=checked]:text-white',
+                    'h-3.5 w-3.5'
                   )}
+                />
+              </div>
+              <div
+                className={cn('flex-1 min-w-0 flex items-baseline gap-1', task.completed && 'opacity-60')}
+              >
+                {task.time && !task.allDay && (
                   <span
                     className={cn(
-                      'font-normal truncate block leading-none text-xs',
-                      task.completed ? 'line-through text-muted-foreground/60' : 'text-foreground'
+                      'text-2xs text-gray-400 flex-shrink-0 leading-none',
+                      task.completed && 'line-through'
                     )}
                   >
-                    {task.title}
+                    {task.time}
                   </span>
-                </div>
+                )}
+                <span
+                  className={cn(
+                    'font-normal truncate block leading-none text-xs',
+                    task.completed ? 'line-through text-muted-foreground/60' : 'text-foreground'
+                  )}
+                >
+                  {task.title}
+                </span>
               </div>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
-              <p className="font-arial text-sm">{fullText}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </ContextMenuTrigger>
+            </div>
+          </ContextMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-xs">
+          <p className="font-arial text-sm">{fullText}</p>
+        </TooltipContent>
+      </Tooltip>
+
       <ContextMenuContent className="w-48 bg-white shadow-xl border border-gray-200/60 z-50">
-        <ContextMenuItem 
+        <ContextMenuItem
           className="focus:bg-gray-100 cursor-pointer transition-colors duration-150"
           onClick={(e) => {
             e.stopPropagation();
@@ -109,3 +106,4 @@ export const CompactTaskItem = ({
     </ContextMenu>
   );
 };
+
