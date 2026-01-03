@@ -8,14 +8,10 @@ interface TaskItemProps {
   onClick: (task: Task) => void;
 }
 
-const taskColorClasses: Record<Task['color'], string> = {
-  blue: 'bg-task-blue border-blue-300',
-  pink: 'bg-task-pink border-pink-300',
-  yellow: 'bg-task-yellow border-yellow-300',
-  green: 'bg-task-green border-green-300',
-  lavender: 'bg-task-lavender border-purple-300',
-  peach: 'bg-task-peach border-orange-300',
-  mint: 'bg-task-mint border-teal-300',
+const priorityClasses: Record<Task['priority'], string> = {
+  high: 'bg-rose-50 border-rose-200',
+  core: 'bg-amber-50 border-amber-200',
+  low: 'bg-stone-50 border-stone-200',
 };
 
 export const TaskItem = ({ task, onToggleComplete, onClick }: TaskItemProps) => {
@@ -29,7 +25,7 @@ export const TaskItem = ({ task, onToggleComplete, onClick }: TaskItemProps) => 
       className={cn(
         'group flex items-start gap-2 px-2 py-1.5 mb-1 rounded-md border cursor-pointer',
         'transition-all duration-200 hover:shadow-sm hover:scale-[1.01]',
-        taskColorClasses[task.color],
+        priorityClasses[task.priority],
         task.completed && 'opacity-60'
       )}
     >
@@ -37,7 +33,10 @@ export const TaskItem = ({ task, onToggleComplete, onClick }: TaskItemProps) => 
         <Checkbox
           checked={task.completed}
           onCheckedChange={() => onToggleComplete(task.id)}
-          className="h-4 w-4 rounded border-2"
+          className={cn(
+            "h-4 w-4 rounded border-2",
+            task.priority === 'high' && task.completed && "data-[state=checked]:bg-rose-500 data-[state=checked]:border-rose-500"
+          )}
         />
       </div>
       <div className="flex-1 min-w-0">

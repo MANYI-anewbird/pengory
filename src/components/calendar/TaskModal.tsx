@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Task, TaskColor, Availability } from '@/types/task';
+import { Task, Priority, Availability } from '@/types/task';
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar, Clock, Repeat, Briefcase, Trash2, MapPin } from 'lucide-react';
+import { Calendar, Clock, Repeat, Briefcase, Trash2, MapPin, Flag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TaskModalProps {
@@ -30,14 +30,10 @@ interface TaskModalProps {
   editTask?: Task;
 }
 
-const taskColors: { value: TaskColor; label: string; hex: string }[] = [
-  { value: 'blue', label: 'Sky', hex: '#3B82F6' },
-  { value: 'pink', label: 'Rose', hex: '#EC4899' },
-  { value: 'yellow', label: 'Amber', hex: '#F59E0B' },
-  { value: 'green', label: 'Emerald', hex: '#10B981' },
-  { value: 'lavender', label: 'Violet', hex: '#8B5CF6' },
-  { value: 'peach', label: 'Coral', hex: '#F97316' },
-  { value: 'mint', label: 'Teal', hex: '#14B8A6' },
+const priorities: { value: Priority; label: string; color: string; bgColor: string }[] = [
+  { value: 'high', label: 'Priority', color: 'text-rose-600', bgColor: 'bg-rose-100 border-rose-300' },
+  { value: 'core', label: 'Core', color: 'text-amber-600', bgColor: 'bg-amber-100 border-amber-300' },
+  { value: 'low', label: 'Low', color: 'text-stone-500', bgColor: 'bg-stone-100 border-stone-300' },
 ];
 
 export const TaskModal = ({
@@ -53,7 +49,7 @@ export const TaskModal = ({
   const [time, setTime] = useState('');
   const [allDay, setAllDay] = useState(false);
   const [repeat, setRepeat] = useState(false);
-  const [color, setColor] = useState<TaskColor>('blue');
+  const [priority, setPriority] = useState<Priority>('core');
   const [availability, setAvailability] = useState<Availability>('busy');
   const [location, setLocation] = useState('');
 
@@ -64,7 +60,7 @@ export const TaskModal = ({
       setTime(editTask.time || '');
       setAllDay(editTask.allDay);
       setRepeat(editTask.repeat);
-      setColor(editTask.color);
+      setPriority(editTask.priority);
       setAvailability(editTask.availability);
       setLocation(editTask.location || '');
     } else if (initialDate) {
@@ -73,7 +69,7 @@ export const TaskModal = ({
       setTime('');
       setAllDay(false);
       setRepeat(false);
-      setColor('blue');
+      setPriority('core');
       setAvailability('busy');
       setLocation('');
     }
@@ -88,7 +84,7 @@ export const TaskModal = ({
       time: allDay ? undefined : time || undefined,
       allDay,
       completed: editTask?.completed || false,
-      color,
+      priority,
       availability,
       repeat,
       location: location.trim() || undefined,
@@ -102,7 +98,7 @@ export const TaskModal = ({
     }
   };
 
-  const selectedColor = taskColors.find((c) => c.value === color);
+  const selectedPriority = priorities.find((p) => p.value === priority);
 
   return (
     <Dialog
@@ -115,10 +111,12 @@ export const TaskModal = ({
         {/* Header with gradient accent */}
         <div className="relative px-6 pt-6 pb-4">
           <div 
-            className="absolute inset-x-0 top-0 h-1 rounded-t-2xl"
-            style={{ 
-              background: `linear-gradient(90deg, ${selectedColor?.hex || '#3B82F6'}40, ${selectedColor?.hex || '#3B82F6'})`
-            }}
+            className={cn(
+              "absolute inset-x-0 top-0 h-1 rounded-t-2xl",
+              priority === 'high' && "bg-gradient-to-r from-rose-300 to-rose-500",
+              priority === 'core' && "bg-gradient-to-r from-amber-300 to-amber-500",
+              priority === 'low' && "bg-gradient-to-r from-stone-300 to-stone-400"
+            )}
           />
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold tracking-tight text-stone-800">
@@ -222,30 +220,31 @@ export const TaskModal = ({
             </div>
           </div>
 
-          {/* Color Picker - Visual */}
+          {/* Priority Picker */}
           <div className="bg-white/60 rounded-xl p-4 border border-stone-100">
-            <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-3 block">
-              Color Tag
-            </Label>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-md bg-rose-50 flex items-center justify-center">
+                <Flag className="h-3.5 w-3.5 text-rose-500" />
+              </div>
+              <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">
+                Priority
+              </Label>
+            </div>
             <div className="flex gap-2">
-              {taskColors.map((c) => (
+              {priorities.map((p) => (
                 <button
-                  key={c.value}
+                  key={p.value}
                   type="button"
-                  onClick={() => setColor(c.value)}
+                  onClick={() => setPriority(p.value)}
                   className={cn(
-                    "w-8 h-8 rounded-full transition-all duration-200 relative",
-                    "hover:scale-110 hover:shadow-md",
-                    color === c.value && "ring-2 ring-offset-2 ring-stone-400 scale-110"
+                    "flex-1 h-9 rounded-lg border text-sm font-medium transition-all duration-200",
+                    "hover:scale-[1.02] hover:shadow-sm",
+                    priority === p.value 
+                      ? cn(p.bgColor, p.color, "ring-2 ring-offset-1 ring-stone-300") 
+                      : "bg-stone-50 border-stone-200 text-stone-500 hover:bg-stone-100"
                   )}
-                  style={{ backgroundColor: c.hex }}
-                  title={c.label}
                 >
-                  {color === c.value && (
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <span className="w-2 h-2 rounded-full bg-white/90" />
-                    </span>
-                  )}
+                  {p.label}
                 </button>
               ))}
             </div>
@@ -253,8 +252,8 @@ export const TaskModal = ({
 
           {/* Location */}
           <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center">
-              <MapPin className="h-4 w-4 text-rose-500" />
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center">
+              <MapPin className="h-4 w-4 text-violet-500" />
             </div>
             <Input
               placeholder="Add location (optional)"

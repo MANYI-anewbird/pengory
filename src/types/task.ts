@@ -1,4 +1,4 @@
-export type TaskColor = 'blue' | 'pink' | 'yellow' | 'green' | 'lavender' | 'peach' | 'mint';
+export type Priority = 'high' | 'core' | 'low';
 export type Availability = 'busy' | 'free';
 
 export interface Task {
@@ -8,7 +8,7 @@ export interface Task {
   time?: string; // HH:mm format
   allDay: boolean;
   completed: boolean;
-  color: TaskColor;
+  priority: Priority;
   availability: Availability;
   repeat: boolean;
   deadline?: string;
