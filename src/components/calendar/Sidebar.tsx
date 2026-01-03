@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Calendar, StickyNote, Sparkles, BookOpen, User, Settings } from 'lucide-react';
+import { Home, TrendingUp, Calendar, StickyNote, Link, BookOpen, User, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -19,7 +19,7 @@ const mainItems = [
   { icon: Calendar, label: 'Calendar', page: 'calendar' },
   { icon: TrendingUp, label: 'Growth', page: 'growth' },
   { icon: StickyNote, label: 'Notes', page: 'notes' },
-  { icon: Sparkles, label: 'Meditation', page: 'meditation' },
+  { icon: Link, label: 'Links', page: 'links' },
   { icon: BookOpen, label: 'Learn', page: 'learn' },
 ];
 
