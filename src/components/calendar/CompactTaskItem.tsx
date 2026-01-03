@@ -42,8 +42,8 @@ export const CompactTaskItem = ({
   return (
     <ContextMenu>
       <Tooltip delayDuration={300}>
-        <TooltipTrigger asChild>
-          <ContextMenuTrigger>
+        <ContextMenuTrigger asChild>
+          <TooltipTrigger asChild>
             <div
               onClick={handleTaskClick}
               className={cn(
@@ -84,8 +84,9 @@ export const CompactTaskItem = ({
                 </span>
               </div>
             </div>
-          </ContextMenuTrigger>
-        </TooltipTrigger>
+          </TooltipTrigger>
+        </ContextMenuTrigger>
+
         <TooltipContent side="top" className="max-w-xs">
           <p className="font-arial text-sm">{fullText}</p>
         </TooltipContent>
