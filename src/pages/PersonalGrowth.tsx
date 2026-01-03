@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 
 const GROWTH_STORAGE_KEY = 'pompom_growth_plans_v1';
 
-// Vibrant blue theme colors for each category
+// Vibrant theme colors for each category
 const CATEGORY_CONFIG: Record<GrowthCategory, {
   icon: any;
   // Active button color
@@ -29,23 +29,23 @@ const CATEGORY_CONFIG: Record<GrowthCategory, {
 }> = {
   health: {
     icon: Heart,
-    activeBtn: 'bg-indigo-700 text-white',
+    activeBtn: 'bg-rose-500 text-white',
+    accent: 'text-rose-500',
+    lightBg: 'bg-rose-50/50',
+    emptyGradient: 'from-rose-100 to-rose-50',
+    border: 'border-rose-200',
+    dotColor: 'bg-rose-500',
+    ringStroke: 'stroke-rose-500',
+  },
+  skills: {
+    icon: Brain,
+    activeBtn: 'bg-indigo-600 text-white',
     accent: 'text-indigo-600',
     lightBg: 'bg-indigo-50/50',
     emptyGradient: 'from-indigo-100 to-indigo-50',
     border: 'border-indigo-200',
     dotColor: 'bg-indigo-600',
     ringStroke: 'stroke-indigo-600',
-  },
-  skills: {
-    icon: Brain,
-    activeBtn: 'bg-cyan-600 text-white',
-    accent: 'text-cyan-600',
-    lightBg: 'bg-cyan-50/50',
-    emptyGradient: 'from-cyan-100 to-cyan-50',
-    border: 'border-cyan-200',
-    dotColor: 'bg-cyan-500',
-    ringStroke: 'stroke-cyan-500',
   },
   hobby: {
     icon: Palette,
@@ -113,8 +113,8 @@ export const PersonalGrowth = () => {
     <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100 min-h-screen">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-200/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-cyan-200/20 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-rose-200/30 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 -left-40 w-80 h-80 bg-indigo-200/20 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-20 w-60 h-60 bg-sky-200/25 rounded-full blur-3xl" />
       </div>
 
@@ -122,7 +122,7 @@ export const PersonalGrowth = () => {
       <div className="relative px-6 pt-8 pb-6 border-b border-slate-200/50 bg-white/60 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-2.5 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl shadow-lg shadow-indigo-200">
+            <div className="p-2.5 bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-lg shadow-slate-300">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
@@ -136,7 +136,7 @@ export const PersonalGrowth = () => {
           {/* Quick Stats with visual enhancement */}
           <div className="flex gap-6 mt-6 ml-[52px]">
             <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
+              <span className="text-3xl font-bold bg-gradient-to-r from-slate-700 to-slate-600 bg-clip-text text-transparent">
                 {totalPlans}
               </span>
               <span className="text-slate-500 text-sm">Plans</span>
@@ -148,7 +148,7 @@ export const PersonalGrowth = () => {
             </div>
             <div className="w-px bg-slate-200 self-stretch" />
             <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold bg-gradient-to-r from-cyan-500 to-sky-500 bg-clip-text text-transparent">
+              <span className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-sky-500 bg-clip-text text-transparent">
                 {totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0}%
               </span>
               <span className="text-slate-500 text-sm">Complete</span>
@@ -208,8 +208,8 @@ export const PersonalGrowth = () => {
               animate={{ scaleX: 1 }}
               className={cn(
                 'h-1 rounded-full mb-6 origin-left',
-                activeCategory === 'health' && 'bg-gradient-to-r from-indigo-500 to-indigo-300',
-                activeCategory === 'skills' && 'bg-gradient-to-r from-cyan-500 to-cyan-300',
+                activeCategory === 'health' && 'bg-gradient-to-r from-rose-500 to-rose-300',
+                activeCategory === 'skills' && 'bg-gradient-to-r from-indigo-600 to-indigo-400',
                 activeCategory === 'hobby' && 'bg-gradient-to-r from-sky-500 to-sky-300'
               )}
             />
@@ -258,8 +258,8 @@ export const PersonalGrowth = () => {
                       onClick={() => setIsNewPlanModalOpen(true)}
                       className={cn(
                         'gap-2 px-6 shadow-lg transition-transform hover:scale-105',
-                        activeCategory === 'health' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200',
-                        activeCategory === 'skills' && 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-200',
+                        activeCategory === 'health' && 'bg-rose-500 hover:bg-rose-600 shadow-rose-200',
+                        activeCategory === 'skills' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200',
                         activeCategory === 'hobby' && 'bg-sky-500 hover:bg-sky-600 shadow-sky-200'
                       )}
                     >
@@ -300,8 +300,8 @@ export const PersonalGrowth = () => {
                         'w-full py-4 rounded-xl border-2 border-dashed transition-all duration-200',
                         'flex items-center justify-center gap-2 text-sm font-semibold',
                         'hover:scale-[1.01]',
-                        activeCategory === 'health' && 'border-indigo-300 text-indigo-600 hover:bg-indigo-50',
-                        activeCategory === 'skills' && 'border-cyan-300 text-cyan-600 hover:bg-cyan-50',
+                        activeCategory === 'health' && 'border-rose-300 text-rose-500 hover:bg-rose-50',
+                        activeCategory === 'skills' && 'border-indigo-300 text-indigo-600 hover:bg-indigo-50',
                         activeCategory === 'hobby' && 'border-sky-300 text-sky-500 hover:bg-sky-50'
                       )}
                     >
@@ -322,8 +322,8 @@ export const PersonalGrowth = () => {
           onClick={() => setIsNewPlanModalOpen(true)}
           className={cn(
             'h-14 w-14 rounded-full shadow-xl',
-            activeCategory === 'health' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-300',
-            activeCategory === 'skills' && 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-300',
+            activeCategory === 'health' && 'bg-rose-500 hover:bg-rose-600 shadow-rose-300',
+            activeCategory === 'skills' && 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-300',
             activeCategory === 'hobby' && 'bg-sky-500 hover:bg-sky-600 shadow-sky-300'
           )}
         >

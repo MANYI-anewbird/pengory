@@ -28,20 +28,20 @@ interface GrowthPlanCardProps {
 
 const CATEGORY_STYLES = {
   health: {
+    dot: 'bg-rose-500',
+    ring: 'stroke-rose-500',
+    accent: 'text-rose-500',
+    accentBg: 'bg-rose-500',
+    lightBg: 'bg-rose-50',
+    border: 'border-rose-200',
+  },
+  skills: {
     dot: 'bg-indigo-600',
     ring: 'stroke-indigo-600',
     accent: 'text-indigo-600',
     accentBg: 'bg-indigo-600',
     lightBg: 'bg-indigo-50',
     border: 'border-indigo-200',
-  },
-  skills: {
-    dot: 'bg-cyan-500',
-    ring: 'stroke-cyan-500',
-    accent: 'text-cyan-600',
-    accentBg: 'bg-cyan-600',
-    lightBg: 'bg-cyan-50',
-    border: 'border-cyan-200',
   },
   hobby: {
     dot: 'bg-sky-400',
