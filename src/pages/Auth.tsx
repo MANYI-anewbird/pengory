@@ -10,14 +10,14 @@ import penguinLogo from '@/assets/penguin-logo.png';
 import { z } from 'zod';
 
 const signUpSchema = z.object({
-  email: z.string().trim().email({ message: "请输入有效的邮箱地址" }),
-  password: z.string().min(6, { message: "密码至少需要6个字符" }),
-  username: z.string().trim().min(2, { message: "用户名至少需要2个字符" }).max(20, { message: "用户名最多20个字符" }),
+  email: z.string().trim().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  username: z.string().trim().min(2, { message: "Username must be at least 2 characters" }).max(20, { message: "Username must be 20 characters or less" }),
 });
 
 const signInSchema = z.object({
-  email: z.string().trim().email({ message: "请输入有效的邮箱地址" }),
-  password: z.string().min(1, { message: "请输入密码" }),
+  email: z.string().trim().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(1, { message: "Please enter your password" }),
 });
 
 export default function Auth() {
@@ -76,14 +76,14 @@ export default function Auth() {
 
     if (error) {
       if (error.message.includes('already registered')) {
-        toast.error('该邮箱已被注册，请直接登录');
+        toast.error('This email is already registered, please sign in');
       } else {
         toast.error(error.message);
       }
       return;
     }
 
-    toast.success('注册成功！正在跳转...');
+    toast.success('Registration successful! Redirecting...');
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -106,14 +106,14 @@ export default function Auth() {
 
     if (error) {
       if (error.message.includes('Invalid login credentials')) {
-        toast.error('邮箱或密码错误');
+        toast.error('Invalid email or password');
       } else {
         toast.error(error.message);
       }
       return;
     }
 
-    toast.success('登录成功！');
+    toast.success('Login successful!');
   };
 
   return (
@@ -134,7 +134,7 @@ export default function Auth() {
           className="mb-6 flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          返回首页
+          Back to Home
         </button>
 
         {/* Card */}
@@ -143,14 +143,17 @@ export default function Auth() {
           <div className="text-center mb-8">
             <img 
               src={penguinLogo} 
-              alt="Penguin Logo" 
-              className="h-20 w-20 mx-auto mb-4 drop-shadow-md"
+              alt="Penguin Tempo Logo" 
+              className="h-28 w-28 mx-auto mb-3 drop-shadow-lg object-contain"
             />
-            <h1 className="text-2xl font-bold text-slate-800">
-              {isLogin ? '欢迎回来' : '创建账号'}
+            <h1 className="text-2xl font-bold text-slate-800 mb-1">
+              Penguin Tempo
             </h1>
-            <p className="text-slate-500 mt-2 text-sm">
-              {isLogin ? '登录以继续使用' : '注册后即可使用全部功能'}
+            <p className="text-slate-600 text-lg font-medium">
+              {isLogin ? 'Welcome Back' : 'Create Account'}
+            </p>
+            <p className="text-slate-500 mt-1 text-sm">
+              {isLogin ? 'Sign in to continue' : 'Sign up to unlock all features'}
             </p>
           </div>
 
@@ -158,13 +161,13 @@ export default function Auth() {
           <form onSubmit={isLogin ? handleSignIn : handleSignUp} className="space-y-4">
             {!isLogin && (
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-slate-700">用户名</Label>
+                <Label htmlFor="username" className="text-slate-700">Username</Label>
                 <Input
                   id="username"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="给自己取个名字"
+                  placeholder="Choose a username"
                   className="bg-white/50 border-slate-200 focus:border-sky-400 focus:ring-sky-400"
                   required={!isLogin}
                 />
@@ -172,7 +175,7 @@ export default function Auth() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-700">邮箱</Label>
+              <Label htmlFor="email" className="text-slate-700">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -185,14 +188,14 @@ export default function Auth() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-700">密码</Label>
+              <Label htmlFor="password" className="text-slate-700">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={isLogin ? '输入密码' : '至少6个字符'}
+                  placeholder={isLogin ? 'Enter your password' : 'At least 6 characters'}
                   className="bg-white/50 border-slate-200 focus:border-sky-400 focus:ring-sky-400 pr-10"
                   required
                 />
@@ -209,22 +212,22 @@ export default function Auth() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-medium py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg"
+              className="w-full bg-blue-800 hover:bg-blue-900 text-white font-medium py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg"
             >
-              {loading ? '处理中...' : (isLogin ? '登录' : '注册')}
+              {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Sign Up')}
             </Button>
           </form>
 
           {/* Toggle */}
           <div className="mt-6 text-center">
             <p className="text-slate-500 text-sm">
-              {isLogin ? '还没有账号？' : '已有账号？'}
+              {isLogin ? "Don't have an account?" : 'Already have an account?'}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="ml-1 text-sky-600 hover:text-sky-700 font-medium"
+                className="ml-1 text-blue-800 hover:text-blue-900 font-medium"
               >
-                {isLogin ? '立即注册' : '去登录'}
+                {isLogin ? 'Sign Up' : 'Sign In'}
               </button>
             </p>
           </div>
@@ -232,7 +235,7 @@ export default function Auth() {
 
         {/* Footer info */}
         <p className="text-center text-slate-400 text-xs mt-6">
-          注册后系统会自动生成你的专属10位ID
+          Your unique 10-digit ID will be generated upon registration
         </p>
       </div>
     </div>
