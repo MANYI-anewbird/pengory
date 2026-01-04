@@ -123,8 +123,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6 md:p-12 flex items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100/50">
-      <div className="w-full max-w-lg">
+    <div className="h-full w-full overflow-y-auto p-6 md:p-12 flex items-center justify-center">
+      <div className="w-full max-w-md mx-auto">
         {/* Main Profile Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
           {/* Header with logout */}
