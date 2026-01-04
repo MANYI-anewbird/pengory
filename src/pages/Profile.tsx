@@ -128,8 +128,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-4 md:p-8 flex justify-center">
-      <div className="w-full max-w-4xl">
+    <div className="h-full overflow-y-auto p-4 md:p-8 flex items-start justify-center">
+      <div className="w-full max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6 md:mb-8">
           <h1 className="text-xl md:text-2xl font-bold text-slate-800">Profile</h1>
