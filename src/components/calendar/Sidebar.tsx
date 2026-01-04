@@ -76,7 +76,7 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
                 "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
                 isActive 
                   ? "bg-white text-gray-900" 
-                  : "bg-gradient-to-br from-sky-400 to-cyan-400 text-white"
+                  : "bg-blue-800 text-white"
               )}>
                 {profile?.display_name?.[0]?.toUpperCase() || profile?.username?.[0]?.toUpperCase() || 'U'}
               </div>
