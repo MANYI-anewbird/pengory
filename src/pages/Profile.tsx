@@ -23,7 +23,7 @@ export default function Profile() {
     if (profile?.unique_code) {
       await navigator.clipboard.writeText(profile.unique_code);
       setCopied(true);
-      toast.success('ID已复制');
+      toast.success('ID copied');
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -44,13 +44,13 @@ export default function Profile() {
     setLoading(false);
 
     if (error) {
-      toast.error('保存失败');
+      toast.error('Failed to save');
       return;
     }
 
     await refreshProfile();
     setIsEditing(false);
-    toast.success('保存成功');
+    toast.success('Saved successfully');
   };
 
   const handleSignOut = async () => {
@@ -62,8 +62,8 @@ export default function Profile() {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
-          <p className="text-slate-500 mb-4">请先登录</p>
-          <Button onClick={() => navigate('/auth')}>去登录</Button>
+          <p className="text-slate-500 mb-4">Please log in first</p>
+          <Button onClick={() => navigate('/auth')}>Log In</Button>
         </div>
       </div>
     );
@@ -74,14 +74,14 @@ export default function Profile() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-slate-800">个人资料</h1>
+          <h1 className="text-2xl font-bold text-slate-800">Profile</h1>
           <Button 
             variant="outline" 
             onClick={handleSignOut}
             className="text-red-500 border-red-200 hover:bg-red-50"
           >
             <LogOut className="h-4 w-4 mr-2" />
-            退出登录
+            Log Out
           </Button>
         </div>
 
@@ -101,14 +101,14 @@ export default function Profile() {
               
               {/* Unique Code */}
               <div className="mt-3 flex items-center gap-2">
-                <span className="text-xs text-slate-400">专属ID:</span>
+                <span className="text-xs text-slate-400">Unique ID:</span>
                 <code className="px-2 py-1 bg-slate-100 rounded text-sm font-mono text-slate-700">
                   {profile.unique_code}
                 </code>
                 <button
                   onClick={handleCopyCode}
                   className="p-1 hover:bg-slate-100 rounded transition-colors"
-                  title="复制ID"
+                  title="Copy ID"
                 >
                   {copied ? (
                     <Check className="h-4 w-4 text-green-500" />
@@ -130,14 +130,14 @@ export default function Profile() {
                 }}
               >
                 <Edit2 className="h-4 w-4 mr-1" />
-                编辑
+                Edit
               </Button>
             )}
           </div>
 
           {/* Email */}
           <div className="mb-4">
-            <Label className="text-slate-500 text-sm">邮箱</Label>
+            <Label className="text-slate-500 text-sm">Email</Label>
             <p className="text-slate-700">{user.email}</p>
           </div>
 
@@ -145,23 +145,23 @@ export default function Profile() {
           {isEditing ? (
             <div className="space-y-4">
               <div>
-                <Label htmlFor="displayName" className="text-slate-700">显示名称</Label>
+                <Label htmlFor="displayName" className="text-slate-700">Display Name</Label>
                 <Input
                   id="displayName"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="输入显示名称"
+                  placeholder="Enter display name"
                   className="mt-1"
                 />
               </div>
               
               <div>
-                <Label htmlFor="bio" className="text-slate-700">个人简介</Label>
+                <Label htmlFor="bio" className="text-slate-700">Bio</Label>
                 <Textarea
                   id="bio"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  placeholder="介绍一下自己..."
+                  placeholder="Tell us about yourself..."
                   className="mt-1 resize-none"
                   rows={3}
                 />
@@ -170,19 +170,19 @@ export default function Profile() {
               <div className="flex gap-2">
                 <Button onClick={handleSave} disabled={loading}>
                   <Save className="h-4 w-4 mr-1" />
-                  {loading ? '保存中...' : '保存'}
+                  {loading ? 'Saving...' : 'Save'}
                 </Button>
                 <Button variant="outline" onClick={() => setIsEditing(false)}>
                   <X className="h-4 w-4 mr-1" />
-                  取消
+                  Cancel
                 </Button>
               </div>
             </div>
           ) : (
             <div>
-              <Label className="text-slate-500 text-sm">个人简介</Label>
+              <Label className="text-slate-500 text-sm">Bio</Label>
               <p className="text-slate-700">
-                {profile.bio || <span className="text-slate-400 italic">暂无简介</span>}
+                {profile.bio || <span className="text-slate-400 italic">No bio yet</span>}
               </p>
             </div>
           )}
@@ -190,16 +190,16 @@ export default function Profile() {
 
         {/* Account Info */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4">账号信息</h3>
+          <h3 className="font-semibold text-slate-800 mb-4">Account Info</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-slate-400">注册时间</span>
+              <span className="text-slate-400">Joined</span>
               <p className="text-slate-700">
-                {new Date(profile.created_at).toLocaleDateString('zh-CN')}
+                {new Date(profile.created_at).toLocaleDateString('en-US')}
               </p>
             </div>
             <div>
-              <span className="text-slate-400">用户名</span>
+              <span className="text-slate-400">Username</span>
               <p className="text-slate-700">@{profile.username}</p>
             </div>
           </div>
@@ -207,12 +207,12 @@ export default function Profile() {
 
         {/* Coming Soon */}
         <div className="mt-6 p-4 bg-sky-50 rounded-xl border border-sky-100">
-          <h4 className="font-medium text-sky-800 mb-2">🚀 即将推出</h4>
+          <h4 className="font-medium text-sky-800 mb-2">🚀 Coming Soon</h4>
           <ul className="text-sm text-sky-700 space-y-1">
-            <li>• 添加好友功能</li>
-            <li>• 共享计划 Dashboard</li>
-            <li>• 进度追踪与好友互动</li>
-            <li>• 评论与鼓励系统</li>
+            <li>• Add Friends</li>
+            <li>• Shared Plan Dashboard</li>
+            <li>• Progress Tracking & Friend Interactions</li>
+            <li>• Comments & Encouragement System</li>
           </ul>
         </div>
       </div>
