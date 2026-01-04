@@ -50,9 +50,11 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
             onClick={() => onNavigate(item.page)}
             className={cn(
               "flex items-center justify-center transition-all duration-200 mx-2 rounded-lg h-12",
-              isActive 
-                ? "bg-gray-900 text-white shadow-md scale-105" 
-                : "text-gray-600 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
+              isProfile 
+                ? "" // No background for profile item
+                : isActive 
+                  ? "bg-gray-900 text-white shadow-md scale-105" 
+                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
             )}
           >
             {isHome ? (
@@ -73,10 +75,10 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
               </div>
             ) : isProfile ? (
               <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
                 isActive 
-                  ? "bg-white text-gray-900" 
-                  : "bg-blue-800 text-white"
+                  ? "bg-white text-gray-900 border border-gray-300 shadow-sm" 
+                  : "bg-blue-800 text-white hover:scale-105"
               )}>
                 {profile?.display_name?.[0]?.toUpperCase() || profile?.username?.[0]?.toUpperCase() || 'U'}
               </div>
