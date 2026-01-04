@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -6,14 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { User, Copy, Check, LogOut, Edit2, Save, X } from 'lucide-react';
+import { User, Copy, Check, LogOut, Edit2, Save, X, Camera, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
   const { user, profile, signOut, refreshProfile } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [copied, setCopied] = useState(false);
   
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
@@ -25,6 +27,62 @@ export default function Profile() {
       setCopied(true);
       toast.success('ID copied');
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+
+    // Validate file size (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Image must be less than 2MB');
+      return;
+    }
+
+    setUploadingAvatar(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/avatar.${fileExt}`;
+
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      // Update profile with avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: `${publicUrl}?t=${Date.now()}` })
+        .eq('id', profile?.id);
+
+      if (updateError) throw updateError;
+
+      await refreshProfile();
+      toast.success('Avatar updated');
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast.error('Failed to upload avatar');
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -70,11 +128,11 @@ export default function Profile() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="h-full overflow-y-auto p-4 md:p-6">
+      <div className="w-full max-w-3xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-slate-800">Profile</h1>
+        <div className="flex items-center justify-between mb-6 md:mb-8">
+          <h1 className="text-xl md:text-2xl font-bold text-slate-800">Profile</h1>
           <Button 
             variant="outline" 
             onClick={handleSignOut}
@@ -86,21 +144,50 @@ export default function Profile() {
         </div>
 
         {/* Profile Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 md:p-6 mb-4 md:mb-6">
           {/* Avatar and Basic Info */}
-          <div className="flex items-start gap-6 mb-6">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-sky-400 to-cyan-400 flex items-center justify-center text-white text-2xl font-bold shadow-md">
-              {profile.display_name?.[0]?.toUpperCase() || profile.username[0]?.toUpperCase() || <User className="h-8 w-8" />}
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 md:gap-6 mb-6">
+            {/* Avatar with upload */}
+            <div className="relative group">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                className="hidden"
+              />
+              <button
+                onClick={handleAvatarClick}
+                disabled={uploadingAvatar}
+                className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-blue-800 flex items-center justify-center text-white text-2xl md:text-3xl font-bold shadow-lg overflow-hidden relative transition-transform hover:scale-105"
+              >
+                {uploadingAvatar ? (
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                ) : profile.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  profile.display_name?.[0]?.toUpperCase() || 
+                  profile.username[0]?.toUpperCase() || 
+                  <User className="h-10 w-10" />
+                )}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Camera className="h-6 w-6 text-white" />
+                </div>
+              </button>
             </div>
             
-            <div className="flex-1">
+            <div className="flex-1 text-center sm:text-left">
               <h2 className="text-xl font-bold text-slate-800">
                 {profile.display_name || profile.username}
               </h2>
               <p className="text-slate-500">@{profile.username}</p>
               
               {/* Unique Code */}
-              <div className="mt-3 flex items-center gap-2">
+              <div className="mt-3 flex items-center justify-center sm:justify-start gap-2">
                 <span className="text-xs text-slate-400">Unique ID:</span>
                 <code className="px-2 py-1 bg-slate-100 rounded text-sm font-mono text-slate-700">
                   {profile.unique_code}
@@ -128,6 +215,7 @@ export default function Profile() {
                   setBio(profile.bio || '');
                   setIsEditing(true);
                 }}
+                className="shrink-0"
               >
                 <Edit2 className="h-4 w-4 mr-1" />
                 Edit
@@ -189,7 +277,7 @@ export default function Profile() {
         </div>
 
         {/* Account Info */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 md:p-6">
           <h3 className="font-semibold text-slate-800 mb-4">Account Info</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
@@ -206,7 +294,7 @@ export default function Profile() {
         </div>
 
         {/* Coming Soon */}
-        <div className="mt-6 p-4 bg-sky-50 rounded-xl border border-sky-100">
+        <div className="mt-4 md:mt-6 p-4 bg-sky-50 rounded-xl border border-sky-100">
           <h4 className="font-medium text-sky-800 mb-2">🚀 Coming Soon</h4>
           <ul className="text-sm text-sky-700 space-y-1">
             <li>• Add Friends</li>
