@@ -77,8 +77,8 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
               <div className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
                 isActive 
-                  ? "bg-white text-gray-900 border border-gray-300 shadow-sm" 
-                  : "bg-blue-800 text-white hover:scale-105"
+                  ? "bg-blue-800 text-white" 
+                  : "bg-white text-gray-900 border border-gray-300 shadow-sm hover:scale-105"
               )}>
                 {profile?.display_name?.[0]?.toUpperCase() || profile?.username?.[0]?.toUpperCase() || 'U'}
               </div>
