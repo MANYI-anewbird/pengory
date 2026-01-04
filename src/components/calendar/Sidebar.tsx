@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Calendar, StickyNote, Link, BookOpen, User, Settings, LogIn } from 'lucide-react';
+import { Home, TrendingUp, Calendar, StickyNote, Link, BookOpen, User, Users, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -30,11 +30,11 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
   const bottomItems = user 
     ? [
         { icon: User, label: profile?.display_name || profile?.username || 'Profile', page: 'profile' },
-        { icon: Settings, label: 'Settings', page: 'settings' },
+        { icon: Users, label: '好友', page: 'friends' },
       ]
     : [
         { icon: LogIn, label: '登录/注册', page: 'login' },
-        { icon: Settings, label: 'Settings', page: 'settings' },
+        { icon: Users, label: '好友', page: 'friends' },
       ];
 
   const renderItem = (item: { icon: any; label: string; page: string }) => {
