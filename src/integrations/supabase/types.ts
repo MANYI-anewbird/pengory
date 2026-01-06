@@ -268,7 +268,6 @@ export type Database = {
     }
     Functions: {
       generate_unique_code: { Args: never; Returns: string }
-      get_my_profile_id: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never

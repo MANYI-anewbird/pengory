@@ -71,16 +71,15 @@ export const CompactCalendarGrid = ({
   }, {} as Record<string, Task[]>);
 
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const rowCount = Math.ceil(days.length / 7);
 
   return (
     <div className="flex-1 bg-background overflow-hidden flex flex-col">
-      <div className="grid grid-cols-7 border-l border-t border-border shrink-0">
+      <div className="grid grid-cols-7 border-l border-gray-200/40 shrink-0">
         {weekDays.map((day) => (
           <div
             key={day}
             className={cn(
-              "text-center font-medium text-muted-foreground border-r border-b border-border bg-muted/30 uppercase tracking-wide",
+              "text-center font-medium text-gray-400 border-r border-b border-gray-200/40 bg-gray-50/30 uppercase tracking-wide",
               denseMode ? "py-1 text-2xs" : "py-1.5 text-xs"
             )}
           >
@@ -88,10 +87,7 @@ export const CompactCalendarGrid = ({
           </div>
         ))}
       </div>
-      <div 
-        className="grid grid-cols-7 border-l border-border flex-1"
-        style={{ gridTemplateRows: `repeat(${rowCount}, 1fr)` }}
-      >
+      <div className="grid grid-cols-7 border-l border-gray-200/40 flex-1">
         {days.map((day, index) => {
           const dateKey = formatDateKey(day);
           const dayTasks = tasksByDate[dateKey] || [];

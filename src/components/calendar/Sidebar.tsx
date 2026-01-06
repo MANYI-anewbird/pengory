@@ -51,8 +51,8 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
             onClick={() => onNavigate(item.page)}
             className={cn(
               "flex items-center justify-center transition-all duration-200 mx-2 rounded-lg h-12",
-              isHome || isProfile
-                ? "" // No background for home (penguin) and profile items
+              isProfile 
+                ? "" // No background for profile item
                 : isActive 
                   ? "bg-gray-900 text-white shadow-md scale-105" 
                   : "text-gray-600 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
