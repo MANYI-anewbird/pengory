@@ -65,6 +65,7 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
                 className={cn(
                   "h-16 w-16 object-contain transition-all duration-200"
                 )}
+                style={{ mixBlendMode: 'multiply' }}
               />
             ) : isProfile ? (
               <div className={cn(
