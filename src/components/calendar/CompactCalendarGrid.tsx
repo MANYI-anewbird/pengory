@@ -72,6 +72,8 @@ export const CompactCalendarGrid = ({
 
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+  const numRows = Math.ceil(days.length / 7);
+  
   return (
     <div className="flex-1 bg-background overflow-hidden flex flex-col">
       <div className="grid grid-cols-7 border-l border-t border-border shrink-0">
@@ -87,7 +89,10 @@ export const CompactCalendarGrid = ({
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-border flex-1 auto-rows-[100px] content-start">
+      <div 
+        className="grid grid-cols-7 border-l border-border flex-1"
+        style={{ gridTemplateRows: `repeat(${numRows}, 1fr)` }}
+      >
         {days.map((day, index) => {
           const dateKey = formatDateKey(day);
           const dayTasks = tasksByDate[dateKey] || [];
