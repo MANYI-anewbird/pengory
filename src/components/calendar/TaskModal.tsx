@@ -212,7 +212,7 @@ export const TaskModal = ({
         </div>
         
         {/* Scrollable content */}
-        <div className="px-5 pb-5 space-y-3 overflow-y-auto flex-1">
+        <div className="px-5 pt-2 pb-5 space-y-3 overflow-y-auto flex-1">
           {/* Title Input */}
           <Input
             placeholder="What needs to be done?"
