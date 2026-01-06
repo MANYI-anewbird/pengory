@@ -141,14 +141,16 @@ export default function Auth() {
         <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/50">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <img 
-              src={penguinLogo} 
-              alt="Pengory Logo" 
-              className="h-40 w-40 mx-auto mb-1 object-contain"
-            />
-            <h1 className="text-2xl font-bold text-slate-800 mb-1">
-              Pengory
-            </h1>
+            <div className="relative">
+              <img 
+                src={penguinLogo} 
+                alt="Pengory Logo" 
+                className="h-40 w-40 mx-auto object-contain relative z-10"
+              />
+              <h1 className="text-2xl font-bold text-slate-800 mb-1 -mt-6 relative z-0">
+                Pengory
+              </h1>
+            </div>
             <p className="text-slate-600 text-lg font-medium">
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </p>
