@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Clock, Repeat, Trash2, MapPin, Flag, CalendarRange } from 'lucide-react';
+import { Clock, Repeat, Trash2, MapPin, Flag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type RepeatType = 'daily' | 'weekly' | 'monthly';
@@ -190,9 +190,9 @@ export const TaskModal = ({
         if (!open) onClose();
       }}
     >
-      <DialogContent className="sm:max-w-[420px] p-0 overflow-hidden bg-gradient-to-b from-white to-stone-50/80 border-0 shadow-2xl shadow-black/10 rounded-2xl">
+      <DialogContent className="sm:max-w-[400px] max-h-[85vh] p-0 overflow-hidden bg-gradient-to-b from-white to-stone-50/80 border-0 shadow-2xl shadow-black/10 rounded-2xl flex flex-col">
         {/* Header with gradient accent */}
-        <div className="relative px-6 pt-6 pb-4">
+        <div className="relative px-5 pt-5 pb-3 flex-shrink-0">
           <div 
             className={cn(
               "absolute inset-x-0 top-0 h-1 rounded-t-2xl",
@@ -202,7 +202,7 @@ export const TaskModal = ({
             )}
           />
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold tracking-tight text-stone-800">
+            <DialogTitle className="text-lg font-semibold tracking-tight text-stone-800">
               {editTask ? 'Edit Task' : 'New Task'}
             </DialogTitle>
             <DialogDescription className="sr-only">
@@ -211,106 +211,104 @@ export const TaskModal = ({
           </DialogHeader>
         </div>
         
-        <div className="px-6 pb-6 space-y-5">
-          {/* Title Input - Hero element */}
-          <div className="relative">
-            <Input
-              placeholder="What needs to be done?"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="text-base font-medium h-12 rounded-xl border-stone-200/80 bg-white shadow-sm 
-                         placeholder:text-stone-400 focus:border-stone-300 focus:ring-2 focus:ring-stone-900/5
-                         transition-all duration-200"
-            />
-          </div>
+        {/* Scrollable content */}
+        <div className="px-5 pb-5 space-y-3 overflow-y-auto flex-1">
+          {/* Title Input */}
+          <Input
+            placeholder="What needs to be done?"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="text-sm font-medium h-10 rounded-lg border-stone-200/80 bg-white shadow-sm 
+                       placeholder:text-stone-400 focus:border-stone-300 focus:ring-2 focus:ring-stone-900/5"
+          />
 
           {/* Time Section */}
-          <div className="bg-white/60 rounded-xl p-4 space-y-4 border border-stone-100">
+          <div className="bg-white/60 rounded-lg p-3 space-y-2.5 border border-stone-100">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center">
-                  <Clock className="h-4 w-4 text-white" />
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-gray-900 flex items-center justify-center">
+                  <Clock className="h-3 w-3 text-white" />
                 </div>
                 <Label className="text-sm font-medium text-stone-700">All Day</Label>
               </div>
               <Switch 
                 checked={allDay} 
                 onCheckedChange={setAllDay} 
-                className="data-[state=checked]:bg-gray-900"
+                className="scale-90 data-[state=checked]:bg-gray-900"
               />
             </div>
 
             {!allDay && (
-              <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Start Time */}
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Start</Label>
-                  <div className="flex gap-2">
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-medium text-stone-400 uppercase tracking-wider">Start</Label>
+                  <div className="flex gap-1 items-center">
                     <Select value={startHour} onValueChange={setStartHour}>
-                      <SelectTrigger className="w-16 h-10 rounded-lg border-stone-200 bg-stone-50/50 text-sm">
+                      <SelectTrigger className="w-12 h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs px-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent portalled={false}>
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                          <SelectItem key={h} value={h.toString()} className="text-sm">{h}</SelectItem>
+                          <SelectItem key={h} value={h.toString()} className="text-xs">{h}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <span className="flex items-center text-stone-400 font-medium">:</span>
+                    <span className="text-stone-400 text-xs">:</span>
                     <Select value={startMinute} onValueChange={setStartMinute}>
-                      <SelectTrigger className="w-16 h-10 rounded-lg border-stone-200 bg-stone-50/50 text-sm">
+                      <SelectTrigger className="w-12 h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs px-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent portalled={false}>
                         {['00', '15', '30', '45'].map((m) => (
-                          <SelectItem key={m} value={m} className="text-sm">{m}</SelectItem>
+                          <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <Select value={startPeriod} onValueChange={(v) => setStartPeriod(v as 'AM' | 'PM')}>
-                      <SelectTrigger className="w-20 h-10 rounded-lg border-stone-200 bg-stone-50/50 text-sm">
+                      <SelectTrigger className="w-14 h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs px-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent portalled={false}>
-                        <SelectItem value="AM" className="text-sm">AM</SelectItem>
-                        <SelectItem value="PM" className="text-sm">PM</SelectItem>
+                        <SelectItem value="AM" className="text-xs">AM</SelectItem>
+                        <SelectItem value="PM" className="text-xs">PM</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
                 {/* End Time */}
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">End</Label>
-                  <div className="flex gap-2">
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-medium text-stone-400 uppercase tracking-wider">End</Label>
+                  <div className="flex gap-1 items-center">
                     <Select value={endHour} onValueChange={setEndHour}>
-                      <SelectTrigger className="w-16 h-10 rounded-lg border-stone-200 bg-stone-50/50 text-sm">
+                      <SelectTrigger className="w-12 h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs px-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent portalled={false}>
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                          <SelectItem key={h} value={h.toString()} className="text-sm">{h}</SelectItem>
+                          <SelectItem key={h} value={h.toString()} className="text-xs">{h}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <span className="flex items-center text-stone-400 font-medium">:</span>
+                    <span className="text-stone-400 text-xs">:</span>
                     <Select value={endMinute} onValueChange={setEndMinute}>
-                      <SelectTrigger className="w-16 h-10 rounded-lg border-stone-200 bg-stone-50/50 text-sm">
+                      <SelectTrigger className="w-12 h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs px-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent portalled={false}>
                         {['00', '15', '30', '45'].map((m) => (
-                          <SelectItem key={m} value={m} className="text-sm">{m}</SelectItem>
+                          <SelectItem key={m} value={m} className="text-xs">{m}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     <Select value={endPeriod} onValueChange={(v) => setEndPeriod(v as 'AM' | 'PM')}>
-                      <SelectTrigger className="w-20 h-10 rounded-lg border-stone-200 bg-stone-50/50 text-sm">
+                      <SelectTrigger className="w-14 h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs px-2">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent portalled={false}>
-                        <SelectItem value="AM" className="text-sm">AM</SelectItem>
-                        <SelectItem value="PM" className="text-sm">PM</SelectItem>
+                        <SelectItem value="AM" className="text-xs">AM</SelectItem>
+                        <SelectItem value="PM" className="text-xs">PM</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -320,219 +318,203 @@ export const TaskModal = ({
           </div>
 
           {/* Repeat Section */}
-          <div className="bg-white/60 rounded-xl p-4 space-y-4 border border-stone-100">
+          <div className="bg-white/60 rounded-lg p-3 space-y-2.5 border border-stone-100">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center">
-                  <Repeat className="h-4 w-4 text-white" />
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-gray-900 flex items-center justify-center">
+                  <Repeat className="h-3 w-3 text-white" />
                 </div>
                 <Label className="text-sm font-medium text-stone-700">Repeat</Label>
               </div>
               <Switch 
                 checked={repeat} 
                 onCheckedChange={setRepeat}
-                className="data-[state=checked]:bg-gray-900"
+                className="scale-90 data-[state=checked]:bg-gray-900"
               />
             </div>
 
             {repeat && (
-              <div className="space-y-4">
-                {/* Date Range */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <CalendarRange className="h-4 w-4 text-stone-500" />
-                    <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Date Range</Label>
+              <div className="space-y-2.5">
+                {/* Date Range - inline */}
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-0.5">
+                    <Label className="text-[10px] text-stone-400 uppercase tracking-wider">From</Label>
+                    <Input
+                      type="date"
+                      value={repeatStartDate}
+                      onChange={(e) => setRepeatStartDate(e.target.value)}
+                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs"
+                    />
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label className="text-xs text-stone-400">From</Label>
-                      <Input
-                        type="date"
-                        value={repeatStartDate}
-                        onChange={(e) => setRepeatStartDate(e.target.value)}
-                        className="h-9 rounded-lg border-stone-200 bg-stone-50/50 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-stone-400">To</Label>
-                      <Input
-                        type="date"
-                        value={repeatEndDate}
-                        onChange={(e) => setRepeatEndDate(e.target.value)}
-                        className="h-9 rounded-lg border-stone-200 bg-stone-50/50 text-sm"
-                      />
-                    </div>
+                  <div className="space-y-0.5">
+                    <Label className="text-[10px] text-stone-400 uppercase tracking-wider">To</Label>
+                    <Input
+                      type="date"
+                      value={repeatEndDate}
+                      onChange={(e) => setRepeatEndDate(e.target.value)}
+                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs"
+                    />
                   </div>
                 </div>
 
                 {/* Repeat Type */}
-                <div className="space-y-2">
-                  <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Frequency</Label>
-                  <div className="flex gap-2">
-                    {(['daily', 'weekly', 'monthly'] as RepeatType[]).map((type) => (
-                      <button
-                        key={type}
-                        type="button"
-                        onClick={() => setRepeatType(type)}
-                        className={cn(
-                          "flex-1 h-9 rounded-lg border text-sm font-medium transition-all duration-200",
-                          "hover:scale-[1.02] hover:shadow-sm capitalize",
-                          repeatType === type 
-                            ? "bg-stone-900 border-stone-900 text-white" 
-                            : "bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100"
-                        )}
-                      >
-                        {type}
-                      </button>
-                    ))}
-                  </div>
+                <div className="flex gap-1.5">
+                  {(['daily', 'weekly', 'monthly'] as RepeatType[]).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setRepeatType(type)}
+                      className={cn(
+                        "flex-1 h-7 rounded-md border text-xs font-medium transition-all capitalize",
+                        repeatType === type 
+                          ? "bg-stone-900 border-stone-900 text-white" 
+                          : "bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100"
+                      )}
+                    >
+                      {type}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Weekly: Weekday Picker */}
                 {repeatType === 'weekly' && (
-                  <div className="space-y-2">
-                    <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Repeat On</Label>
-                    <div className="flex gap-1.5">
-                      {WEEKDAYS.map((day) => (
-                        <button
-                          key={day.value}
-                          type="button"
-                          onClick={() => {
-                            setSelectedWeekdays((prev) =>
-                              prev.includes(day.value)
-                                ? prev.filter((d) => d !== day.value)
-                                : [...prev, day.value]
-                            );
-                          }}
-                          className={cn(
-                            "flex-1 h-9 rounded-lg border text-xs font-medium transition-all duration-200",
-                            selectedWeekdays.includes(day.value)
-                              ? "bg-stone-900 border-stone-900 text-white"
-                              : "bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100"
-                          )}
-                        >
-                          {day.label}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="flex gap-1">
+                    {WEEKDAYS.map((day) => (
+                      <button
+                        key={day.value}
+                        type="button"
+                        onClick={() => {
+                          setSelectedWeekdays((prev) =>
+                            prev.includes(day.value)
+                              ? prev.filter((d) => d !== day.value)
+                              : [...prev, day.value]
+                          );
+                        }}
+                        className={cn(
+                          "flex-1 h-7 rounded-md border text-[10px] font-medium transition-all",
+                          selectedWeekdays.includes(day.value)
+                            ? "bg-stone-900 border-stone-900 text-white"
+                            : "bg-stone-50 border-stone-200 text-stone-500 hover:bg-stone-100"
+                        )}
+                      >
+                        {day.label}
+                      </button>
+                    ))}
                   </div>
                 )}
 
                 {/* Monthly: Day of Month Picker */}
                 {repeatType === 'monthly' && (
-                  <div className="space-y-2">
-                    <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Repeat On Day</Label>
-                    <div className="grid grid-cols-7 gap-1.5">
-                      {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-                        <button
-                          key={day}
-                          type="button"
-                          onClick={() => {
-                            setSelectedMonthDays((prev) =>
-                              prev.includes(day)
-                                ? prev.filter((d) => d !== day)
-                                : [...prev, day]
-                            );
-                          }}
-                          className={cn(
-                            "h-8 rounded-md border text-xs font-medium transition-all duration-200",
-                            selectedMonthDays.includes(day)
-                              ? "bg-stone-900 border-stone-900 text-white"
-                              : "bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100"
-                          )}
-                        >
-                          {day}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="grid grid-cols-7 gap-1">
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() => {
+                          setSelectedMonthDays((prev) =>
+                            prev.includes(day)
+                              ? prev.filter((d) => d !== day)
+                              : [...prev, day]
+                          );
+                        }}
+                        className={cn(
+                          "h-6 rounded text-[10px] font-medium transition-all border",
+                          selectedMonthDays.includes(day)
+                            ? "bg-stone-900 border-stone-900 text-white"
+                            : "bg-stone-50 border-stone-200 text-stone-500 hover:bg-stone-100"
+                        )}
+                      >
+                        {day}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
             )}
           </div>
 
-          {/* Priority Picker */}
-          <div className="bg-white/60 rounded-xl p-4 border border-stone-100">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-md bg-rose-50 flex items-center justify-center">
-                <Flag className="h-3.5 w-3.5 text-rose-500" />
+          {/* Priority & Location Row */}
+          <div className="grid grid-cols-2 gap-2">
+            {/* Priority */}
+            <div className="bg-white/60 rounded-lg p-2.5 border border-stone-100">
+              <div className="flex items-center gap-1.5 mb-2">
+                <div className="w-5 h-5 rounded bg-rose-50 flex items-center justify-center">
+                  <Flag className="h-2.5 w-2.5 text-rose-500" />
+                </div>
+                <Label className="text-[10px] font-medium text-stone-400 uppercase tracking-wider">Priority</Label>
               </div>
-              <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">
-                Priority
-              </Label>
+              <div className="flex gap-1">
+                {priorities.map((p) => (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setPriority(p.value)}
+                    className={cn(
+                      "flex-1 h-7 rounded-md border text-[10px] font-medium transition-all",
+                      priority === p.value 
+                        ? cn(p.bgColor, p.color) 
+                        : "bg-stone-50 border-stone-200 text-stone-500 hover:bg-stone-100"
+                    )}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex gap-2">
-              {priorities.map((p) => (
-                <button
-                  key={p.value}
-                  type="button"
-                  onClick={() => setPriority(p.value)}
-                  className={cn(
-                    "flex-1 h-9 rounded-lg border text-sm font-medium transition-all duration-200",
-                    "hover:scale-[1.02] hover:shadow-sm",
-                    priority === p.value 
-                      ? cn(p.bgColor, p.color, "ring-2 ring-offset-1 ring-stone-300") 
-                      : "bg-stone-50 border-stone-200 text-stone-500 hover:bg-stone-100"
-                  )}
-                >
-                  {p.label}
-                </button>
-              ))}
+
+            {/* Location */}
+            <div className="bg-white/60 rounded-lg p-2.5 border border-stone-100">
+              <div className="flex items-center gap-1.5 mb-2">
+                <div className="w-5 h-5 rounded bg-gray-900 flex items-center justify-center">
+                  <MapPin className="h-2.5 w-2.5 text-white" />
+                </div>
+                <Label className="text-[10px] font-medium text-stone-400 uppercase tracking-wider">Location</Label>
+              </div>
+              <Input
+                placeholder="Optional"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="h-7 rounded-md border-stone-200 bg-stone-50/50 text-xs placeholder:text-stone-400"
+              />
             </div>
           </div>
+        </div>
 
-          {/* Location */}
-          <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center">
-              <MapPin className="h-4 w-4 text-white" />
-            </div>
-            <Input
-              placeholder="Add location (optional)"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="pl-14 h-11 rounded-xl border-stone-200 bg-white/60 text-sm
-                         placeholder:text-stone-400 focus:bg-white focus:border-stone-300 transition-all duration-200"
-            />
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center justify-between pt-2">
-            {editTask && onDelete ? (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleDelete}
-                className="rounded-xl h-10 px-4 text-sm font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50
-                           transition-all duration-200 gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                Delete
-              </Button>
-            ) : (
-              <div />
-            )}
-            <div className="flex gap-2">
-              <Button 
-                type="button" 
-                variant="ghost" 
-                onClick={onClose} 
-                className="rounded-xl h-10 px-5 text-sm font-medium text-stone-600 hover:bg-stone-100
-                           transition-all duration-200"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                onClick={handleSave}
-                disabled={!title.trim() || !date}
-                className="rounded-xl h-10 px-6 text-sm font-semibold shadow-md
-                           bg-stone-900 hover:bg-stone-800 text-white
-                           disabled:opacity-40 disabled:cursor-not-allowed
-                           transition-all duration-200"
-              >
-                {editTask ? 'Update' : 'Create'}
-              </Button>
-            </div>
+        {/* Fixed Actions Footer */}
+        <div className="px-5 py-3 border-t border-stone-100 bg-white/80 flex-shrink-0 flex items-center justify-between">
+          {editTask && onDelete ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              className="rounded-lg h-8 px-3 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 gap-1.5"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Delete
+            </Button>
+          ) : (
+            <div />
+          )}
+          <div className="flex gap-2">
+            <Button 
+              type="button" 
+              variant="ghost" 
+              size="sm"
+              onClick={onClose} 
+              className="rounded-lg h-8 px-4 text-xs font-medium text-stone-600 hover:bg-stone-100"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleSave}
+              disabled={!title.trim() || !date}
+              className="rounded-lg h-8 px-5 text-xs font-semibold shadow-sm bg-stone-900 hover:bg-stone-800 text-white disabled:opacity-40"
+            >
+              {editTask ? 'Update' : 'Create'}
+            </Button>
           </div>
         </div>
       </DialogContent>
