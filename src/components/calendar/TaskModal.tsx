@@ -343,7 +343,7 @@ export const TaskModal = ({
                       type="date"
                       value={repeatStartDate}
                       onChange={(e) => setRepeatStartDate(e.target.value)}
-                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs"
+                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs text-stone-800"
                     />
                   </div>
                   <div className="space-y-0.5">
@@ -352,7 +352,7 @@ export const TaskModal = ({
                       type="date"
                       value={repeatEndDate}
                       onChange={(e) => setRepeatEndDate(e.target.value)}
-                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs"
+                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs text-stone-800"
                     />
                   </div>
                 </div>
