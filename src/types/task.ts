@@ -1,5 +1,6 @@
 export type Priority = 'high' | 'core' | 'low';
 export type Availability = 'busy' | 'free';
+export type RepeatType = 'daily' | 'weekly' | 'monthly';
 
 export interface Task {
   id: string;
@@ -12,6 +13,11 @@ export interface Task {
   priority: Priority;
   availability: Availability;
   repeat: boolean;
+  repeatType?: RepeatType;
+  repeatStartDate?: string; // YYYY-MM-DD format
+  repeatEndDate?: string; // YYYY-MM-DD format
+  repeatWeekdays?: number[]; // 0-6, Sunday = 0
+  repeatMonthDays?: number[]; // 1-31
   deadline?: string;
   duration?: number; // in minutes
   location?: string;
