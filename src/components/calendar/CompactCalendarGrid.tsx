@@ -72,14 +72,21 @@ export const CompactCalendarGrid = ({
 
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+  // Group days into weeks (rows)
+  const weeks: Date[][] = [];
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
+
   return (
-    <div className="flex-1 bg-background overflow-hidden flex flex-col">
-      <div className="grid grid-cols-7 border-l border-gray-200/40 shrink-0">
+    <div className="bg-background">
+      {/* Sticky weekday header */}
+      <div className="grid grid-cols-7 border-l border-gray-200/40 sticky top-0 z-10 bg-white">
         {weekDays.map((day) => (
           <div
             key={day}
             className={cn(
-              "text-center font-medium text-gray-400 border-r border-b border-gray-200/40 bg-gray-50/30 uppercase tracking-wide",
+              "text-center font-medium text-gray-400 border-r border-b border-gray-200/40 bg-gray-50/80 uppercase tracking-wide",
               denseMode ? "py-1 text-2xs" : "py-1.5 text-xs"
             )}
           >
@@ -87,28 +94,34 @@ export const CompactCalendarGrid = ({
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-gray-200/40 flex-1">
-        {days.map((day, index) => {
-          const dateKey = formatDateKey(day);
-          const dayTasks = tasksByDate[dateKey] || [];
-          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-          const isToday = dateKey === todayKey;
-          
-          return (
-            <CompactDayCell
-              key={index}
-              date={day}
-              isCurrentMonth={isCurrentMonth}
-              isToday={isToday}
-              tasks={dayTasks}
-              onDayClick={onDayClick}
-              onTaskClick={onTaskClick}
-              onToggleComplete={onToggleComplete}
-              onDeleteTask={onDeleteTask}
-              denseMode={denseMode}
-            />
-          );
-        })}
+      
+      {/* Calendar rows - each row expands based on content */}
+      <div className="border-l border-gray-200/40">
+        {weeks.map((week, weekIndex) => (
+          <div key={weekIndex} className="grid grid-cols-7">
+            {week.map((day, dayIndex) => {
+              const dateKey = formatDateKey(day);
+              const dayTasks = tasksByDate[dateKey] || [];
+              const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+              const isToday = dateKey === todayKey;
+              
+              return (
+                <CompactDayCell
+                  key={dayIndex}
+                  date={day}
+                  isCurrentMonth={isCurrentMonth}
+                  isToday={isToday}
+                  tasks={dayTasks}
+                  onDayClick={onDayClick}
+                  onTaskClick={onTaskClick}
+                  onToggleComplete={onToggleComplete}
+                  onDeleteTask={onDeleteTask}
+                  denseMode={denseMode}
+                />
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
