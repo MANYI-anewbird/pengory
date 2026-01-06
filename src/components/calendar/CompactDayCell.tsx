@@ -29,9 +29,9 @@ export const CompactDayCell = ({
     <div
       onClick={() => onDayClick(date)}
       className={cn(
-        'border-r border-b border-gray-200 bg-white hover:bg-gray-50/80 hover:shadow-sm transition-all duration-200 cursor-pointer h-[100px] flex flex-col overflow-hidden',
+        'border-r border-b border-border bg-card hover:bg-accent/30 hover:shadow-sm transition-all duration-200 cursor-pointer h-[100px] flex flex-col overflow-hidden',
         denseMode ? 'p-0.5' : 'p-1',
-        !isCurrentMonth && 'bg-gray-50/30',
+        !isCurrentMonth && 'bg-muted/30',
         isToday && 'ring-1 ring-blue-500/20'
       )}
     >
@@ -52,7 +52,7 @@ export const CompactDayCell = ({
           {date.getDate()}
         </span>
       </div>
-      <div className="space-y-0.5 flex-1 overflow-auto">
+      <div className="space-y-0.5 flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
         {tasks.map((task) => (
           <CompactTaskItem
             key={task.id}
