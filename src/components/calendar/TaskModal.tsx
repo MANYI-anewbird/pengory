@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Task, Priority, Availability } from '@/types/task';
+import { Task, Priority } from '@/types/task';
 import {
   Dialog,
   DialogContent,
@@ -18,8 +18,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Calendar, Clock, Repeat, Briefcase, Trash2, MapPin, Flag } from 'lucide-react';
+import { Clock, Repeat, Trash2, MapPin, Flag, CalendarRange } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+type RepeatType = 'daily' | 'weekly' | 'monthly';
+
+const WEEKDAYS = [
+  { value: 0, label: 'Sun' },
+  { value: 1, label: 'Mon' },
+  { value: 2, label: 'Tue' },
+  { value: 3, label: 'Wed' },
+  { value: 4, label: 'Thu' },
+  { value: 5, label: 'Fri' },
+  { value: 6, label: 'Sat' },
+];
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -49,8 +61,14 @@ export const TaskModal = ({
   const [allDay, setAllDay] = useState(false);
   const [repeat, setRepeat] = useState(false);
   const [priority, setPriority] = useState<Priority>('core');
-  const [availability, setAvailability] = useState<Availability>('busy');
   const [location, setLocation] = useState('');
+  
+  // Repeat options state
+  const [repeatType, setRepeatType] = useState<RepeatType>('daily');
+  const [repeatStartDate, setRepeatStartDate] = useState('');
+  const [repeatEndDate, setRepeatEndDate] = useState('');
+  const [selectedWeekdays, setSelectedWeekdays] = useState<number[]>([1]); // Default to Monday
+  const [selectedMonthDays, setSelectedMonthDays] = useState<number[]>([1]); // Default to 1st
   
   // Start time state
   const [startHour, setStartHour] = useState('9');
@@ -86,7 +104,6 @@ export const TaskModal = ({
       setAllDay(editTask.allDay);
       setRepeat(editTask.repeat);
       setPriority(editTask.priority);
-      setAvailability(editTask.availability);
       setLocation(editTask.location || '');
       
       if (editTask.time) {
@@ -94,7 +111,6 @@ export const TaskModal = ({
         setStartHour(parsed.hour);
         setStartMinute(parsed.minute);
         setStartPeriod(parsed.period);
-        // Default end time to 1 hour after start
         const endH = parseInt(parsed.hour) + 1;
         setEndHour(endH > 12 ? (endH - 12).toString() : endH.toString());
         setEndMinute(parsed.minute);
@@ -106,13 +122,18 @@ export const TaskModal = ({
         setEndMinute(parsedEnd.minute);
         setEndPeriod(parsedEnd.period);
       }
+      // Repeat options
+      if (editTask.repeatType) setRepeatType(editTask.repeatType as RepeatType);
+      if (editTask.repeatStartDate) setRepeatStartDate(editTask.repeatStartDate);
+      if (editTask.repeatEndDate) setRepeatEndDate(editTask.repeatEndDate);
+      if (editTask.repeatWeekdays) setSelectedWeekdays(editTask.repeatWeekdays);
+      if (editTask.repeatMonthDays) setSelectedMonthDays(editTask.repeatMonthDays);
     } else if (initialDate) {
       setDate(initialDate.toISOString().split('T')[0]);
       setTitle('');
       setAllDay(false);
       setRepeat(false);
       setPriority('core');
-      setAvailability('busy');
       setLocation('');
       setStartHour('9');
       setStartMinute('00');
@@ -120,6 +141,11 @@ export const TaskModal = ({
       setEndHour('10');
       setEndMinute('00');
       setEndPeriod('AM');
+      setRepeatType('daily');
+      setRepeatStartDate(initialDate.toISOString().split('T')[0]);
+      setRepeatEndDate('');
+      setSelectedWeekdays([1]);
+      setSelectedMonthDays([1]);
     }
   }, [editTask, initialDate, isOpen]);
 
@@ -137,8 +163,13 @@ export const TaskModal = ({
       allDay,
       completed: editTask?.completed || false,
       priority,
-      availability,
+      availability: 'busy',
       repeat,
+      repeatType: repeat ? repeatType : undefined,
+      repeatStartDate: repeat ? repeatStartDate : undefined,
+      repeatEndDate: repeat ? repeatEndDate : undefined,
+      repeatWeekdays: repeat && repeatType === 'weekly' ? selectedWeekdays : undefined,
+      repeatMonthDays: repeat && repeatType === 'monthly' ? selectedMonthDays : undefined,
       location: location.trim() || undefined,
     });
   };
@@ -288,41 +319,136 @@ export const TaskModal = ({
             )}
           </div>
 
-          {/* Options Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            {/* Repeat Toggle */}
-            <div className="bg-white/60 rounded-xl p-3.5 border border-stone-100 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-md bg-gray-900 flex items-center justify-center">
-                  <Repeat className="h-3.5 w-3.5 text-white" />
+          {/* Repeat Section */}
+          <div className="bg-white/60 rounded-xl p-4 space-y-4 border border-stone-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center">
+                  <Repeat className="h-4 w-4 text-white" />
                 </div>
                 <Label className="text-sm font-medium text-stone-700">Repeat</Label>
               </div>
               <Switch 
                 checked={repeat} 
                 onCheckedChange={setRepeat}
-                className="scale-90 data-[state=checked]:bg-gray-900"
+                className="data-[state=checked]:bg-gray-900"
               />
             </div>
 
-            {/* Availability */}
-            <div className="bg-white/60 rounded-xl p-3.5 border border-stone-100">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-7 h-7 rounded-md bg-gray-900 flex items-center justify-center">
-                  <Briefcase className="h-3.5 w-3.5 text-white" />
+            {repeat && (
+              <div className="space-y-4">
+                {/* Date Range */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <CalendarRange className="h-4 w-4 text-stone-500" />
+                    <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Date Range</Label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-stone-400">From</Label>
+                      <Input
+                        type="date"
+                        value={repeatStartDate}
+                        onChange={(e) => setRepeatStartDate(e.target.value)}
+                        className="h-9 rounded-lg border-stone-200 bg-stone-50/50 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-stone-400">To</Label>
+                      <Input
+                        type="date"
+                        value={repeatEndDate}
+                        onChange={(e) => setRepeatEndDate(e.target.value)}
+                        className="h-9 rounded-lg border-stone-200 bg-stone-50/50 text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <Label className="text-sm font-medium text-stone-700">Status</Label>
+
+                {/* Repeat Type */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Frequency</Label>
+                  <div className="flex gap-2">
+                    {(['daily', 'weekly', 'monthly'] as RepeatType[]).map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setRepeatType(type)}
+                        className={cn(
+                          "flex-1 h-9 rounded-lg border text-sm font-medium transition-all duration-200",
+                          "hover:scale-[1.02] hover:shadow-sm capitalize",
+                          repeatType === type 
+                            ? "bg-stone-900 border-stone-900 text-white" 
+                            : "bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100"
+                        )}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Weekly: Weekday Picker */}
+                {repeatType === 'weekly' && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Repeat On</Label>
+                    <div className="flex gap-1.5">
+                      {WEEKDAYS.map((day) => (
+                        <button
+                          key={day.value}
+                          type="button"
+                          onClick={() => {
+                            setSelectedWeekdays((prev) =>
+                              prev.includes(day.value)
+                                ? prev.filter((d) => d !== day.value)
+                                : [...prev, day.value]
+                            );
+                          }}
+                          className={cn(
+                            "flex-1 h-9 rounded-lg border text-xs font-medium transition-all duration-200",
+                            selectedWeekdays.includes(day.value)
+                              ? "bg-stone-900 border-stone-900 text-white"
+                              : "bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100"
+                          )}
+                        >
+                          {day.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Monthly: Day of Month Picker */}
+                {repeatType === 'monthly' && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-stone-500 uppercase tracking-wider">Repeat On Day</Label>
+                    <div className="grid grid-cols-7 gap-1.5">
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                        <button
+                          key={day}
+                          type="button"
+                          onClick={() => {
+                            setSelectedMonthDays((prev) =>
+                              prev.includes(day)
+                                ? prev.filter((d) => d !== day)
+                                : [...prev, day]
+                            );
+                          }}
+                          className={cn(
+                            "h-8 rounded-md border text-xs font-medium transition-all duration-200",
+                            selectedMonthDays.includes(day)
+                              ? "bg-stone-900 border-stone-900 text-white"
+                              : "bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100"
+                          )}
+                        >
+                          {day}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-              <Select value={availability} onValueChange={(v) => setAvailability(v as Availability)}>
-                <SelectTrigger className="h-8 rounded-lg border-stone-200 bg-stone-50/50 text-xs font-medium">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent portalled={false}>
-                  <SelectItem value="busy" className="text-xs">Busy</SelectItem>
-                  <SelectItem value="free" className="text-xs">Available</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            )}
           </div>
 
           {/* Priority Picker */}
