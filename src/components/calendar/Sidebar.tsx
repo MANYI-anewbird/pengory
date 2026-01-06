@@ -30,11 +30,11 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
   const bottomItems = user 
     ? [
         { icon: User, label: profile?.display_name || profile?.username || 'Profile', page: 'profile' },
-        { icon: Users, label: '好友', page: 'friends' },
+        { icon: Users, label: 'Friends', page: 'friends' },
       ]
     : [
-        { icon: LogIn, label: '登录/注册', page: 'login' },
-        { icon: Users, label: '好友', page: 'friends' },
+        { icon: LogIn, label: 'Login/Register', page: 'login' },
+        { icon: Users, label: 'Friends', page: 'friends' },
       ];
 
   const renderItem = (item: { icon: any; label: string; page: string }) => {

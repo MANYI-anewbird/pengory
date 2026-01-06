@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Heart, Brain, Palette, TrendingUp, Sparkles, Target, Trash2, FolderPlus, Archive, ChevronDown, ChevronUp, Trophy } from 'lucide-react';
+import { Plus, TrendingUp, Sparkles, Target, Trash2, FolderPlus, Archive, ChevronDown, ChevronUp, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { GrowthPlan, GrowthCategory, CustomCategory, DEFAULT_CATEGORIES } from '@/types/growth';
@@ -12,11 +12,6 @@ import { cn } from '@/lib/utils';
 const GROWTH_STORAGE_KEY = 'pompom_growth_plans_v1';
 const CATEGORIES_STORAGE_KEY = 'pompom_growth_categories_v1';
 
-const DEFAULT_ICONS: Record<string, any> = {
-  health: Heart,
-  skills: Brain,
-  hobby: Palette,
-};
 
 export const PersonalGrowth = () => {
   const [categories, setCategories] = useState<CustomCategory[]>(() => {
@@ -192,7 +187,6 @@ export const PersonalGrowth = () => {
             <div className="space-y-2">
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide px-1">By Category</span>
               {categories.map((cat) => {
-                const Icon = DEFAULT_ICONS[cat.id] || Sparkles;
                 const catPlans = plans.filter(p => p.category === cat.id);
                 const catSteps = catPlans.reduce((acc, p) => acc + p.executionSteps.length, 0);
                 const catCompleted = catPlans.reduce((acc, p) => acc + p.executionSteps.filter(s => s.completed).length, 0);
@@ -212,7 +206,6 @@ export const PersonalGrowth = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4" />
                         <span className="text-sm font-medium">{cat.name}</span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -281,15 +274,6 @@ export const PersonalGrowth = () => {
         {/* Content Header */}
         <div className="px-6 py-4 bg-white border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div 
-              className="p-2 rounded-lg"
-              style={{ backgroundColor: activeConfig.color }}
-            >
-              {(() => {
-                const Icon = DEFAULT_ICONS[activeCategory] || Sparkles;
-                return <Icon className="h-5 w-5 text-white" />;
-              })()}
-            </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900">{activeConfig.name}</h2>
               <p className="text-xs text-slate-500">{filteredPlans.length} plan{filteredPlans.length !== 1 ? 's' : ''}</p>
@@ -349,15 +333,6 @@ export const PersonalGrowth = () => {
                       style={{ color: activeConfig.color }}
                     />
                     
-                    <div 
-                      className="p-5 rounded-2xl mb-5 shadow-lg bg-white border"
-                      style={{ borderColor: `${activeConfig.color}30` }}
-                    >
-                      {(() => {
-                        const Icon = DEFAULT_ICONS[activeCategory] || Sparkles;
-                        return <Icon className="h-10 w-10" style={{ color: activeConfig.color }} />;
-                      })()}
-                    </div>
                     <h3 className="text-xl font-bold text-slate-900 mb-2">
                       No {activeConfig.name} Plans
                     </h3>

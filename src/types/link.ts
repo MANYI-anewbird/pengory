@@ -15,8 +15,8 @@ export interface LinkCategory {
 
 export const DEFAULT_LINK_CATEGORIES: LinkCategory[] = [
   { id: 'learning', name: 'Learning', color: '#1e3a5f', links: [] },
-  { id: 'entertainment', name: 'Entertainment', color: '#2563eb', links: [] },
-  { id: 'tools', name: 'Tools', color: '#38bdf8', links: [] },
+  { id: 'ai-tool', name: 'AI Tool', color: '#2563eb', links: [] },
+  { id: 'entertainment', name: 'Entertainment', color: '#38bdf8', links: [] },
 ];
 
 export const LINK_PRESET_COLORS = [

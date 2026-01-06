@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { DEFAULT_LINK_CATEGORIES } from '@/types/link';
 
 interface LinkItem {
   id: string;
@@ -40,11 +41,17 @@ export const Links = () => {
   const [categories, setCategories] = useState<LinkCategory[]>(() => {
     try {
       const raw = localStorage.getItem(LINKS_STORAGE_KEY);
-      if (!raw) return [];
+      if (!raw) {
+        // First time - return default categories
+        return DEFAULT_LINK_CATEGORIES;
+      }
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        return DEFAULT_LINK_CATEGORIES;
+      }
+      return parsed;
     } catch {
-      return [];
+      return DEFAULT_LINK_CATEGORIES;
     }
   });
 
