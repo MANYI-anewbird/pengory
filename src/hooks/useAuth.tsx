@@ -43,6 +43,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return null;
     }
 
+    // If profile doesn't exist, try to create it
+    if (!data) {
+      console.log('Profile not found, attempting to create...');
+      const { data: userData } = await supabase.auth.getUser();
+      const email = userData?.user?.email || '';
+      const username = email.split('@')[0] || `user_${userId.slice(0, 8)}`;
+      
+      // Generate unique code
+      const uniqueCode = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+      
+      const { data: newProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert({
+          user_id: userId,
+          username: username,
+          display_name: username,
+          unique_code: uniqueCode,
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error('Error creating profile:', createError);
+        return null;
+      }
+
+      return newProfile as Profile | null;
+    }
+
     return data as Profile | null;
   };
 
