@@ -47,15 +47,17 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
     return (
       <Tooltip key={item.label}>
         <TooltipTrigger asChild>
-          <button
+            <button
             onClick={() => onNavigate(item.page)}
             className={cn(
               "flex items-center justify-center transition-all duration-200 mx-2 rounded-lg h-12",
-              isHome || isProfile
-                ? "bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent" // No background for home (penguin) and profile items
-                : isActive 
-                  ? "bg-gray-900 text-white shadow-md scale-105" 
-                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
+              isHome
+                ? "bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none" // No effects for penguin
+                : isProfile
+                  ? "bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent"
+                  : isActive 
+                    ? "bg-gray-900 text-white shadow-md scale-105" 
+                    : "text-gray-600 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
             )}
           >
             {isHome ? (
