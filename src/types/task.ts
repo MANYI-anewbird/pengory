@@ -18,6 +18,7 @@ export interface Task {
   repeatEndDate?: string; // YYYY-MM-DD format
   repeatWeekdays?: number[]; // 0-6, Sunday = 0
   repeatMonthDays?: number[]; // 1-31
+  excludedDates?: string[]; // Dates to exclude from repeat (for single instance deletion)
   deadline?: string;
   duration?: number; // in minutes
   location?: string;
