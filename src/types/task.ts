@@ -5,7 +5,8 @@ export interface Task {
   id: string;
   title: string;
   date: string; // YYYY-MM-DD format
-  time?: string; // HH:mm format
+  time?: string; // HH:mm format (start time)
+  endTime?: string; // HH:mm format (end time)
   allDay: boolean;
   completed: boolean;
   priority: Priority;
