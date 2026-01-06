@@ -205,15 +205,17 @@ const Index = () => {
               onDenseModeChange={setDenseMode}
             />
             
-            <CompactCalendarGrid
-              currentDate={currentDate}
-              tasks={tasks}
-              onDayClick={handleDayClick}
-              onTaskClick={handleTaskClick}
-              onToggleComplete={handleToggleComplete}
-              onDeleteTask={handleDeleteTask}
-              denseMode={denseMode}
-            />
+            <div className="flex-1 overflow-auto">
+              <CompactCalendarGrid
+                currentDate={currentDate}
+                tasks={tasks}
+                onDayClick={handleDayClick}
+                onTaskClick={handleTaskClick}
+                onToggleComplete={handleToggleComplete}
+                onDeleteTask={handleDeleteTask}
+                denseMode={denseMode}
+              />
+            </div>
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
