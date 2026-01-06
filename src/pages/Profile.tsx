@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,14 @@ export default function Profile() {
   
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
   const [bio, setBio] = useState(profile?.bio || '');
+
+  // Update local state when profile changes
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.display_name || '');
+      setBio(profile.bio || '');
+    }
+  }, [profile]);
 
   const handleCopyCode = async () => {
     if (profile?.unique_code) {
@@ -136,13 +144,26 @@ export default function Profile() {
     );
   }
 
-  // If user is logged in but profile is still loading, show loading state
+  // If user is logged in but profile is still loading, try to refresh or show basic profile
   if (!profile) {
+    // Try to refresh profile once
+    if (user && !loading) {
+      refreshProfile();
+    }
+    
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-slate-400" />
-          <p className="text-slate-500">Loading profile...</p>
+          <p className="text-slate-500 mb-4">Loading profile...</p>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => refreshProfile()}
+            className="text-xs"
+          >
+            Retry
+          </Button>
         </div>
       </div>
     );

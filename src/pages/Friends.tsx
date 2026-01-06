@@ -300,14 +300,22 @@ export default function Friends() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-slate-800">Friends</h1>
-          <p className="text-slate-500 text-sm mt-1">Track progress together</p>
+          <p className="text-slate-500 text-sm mt-1">Add friends and share your learning dashboard</p>
         </div>
 
         {/* Search */}
         <div className="bg-white rounded-xl border border-slate-200 p-5 mb-6">
+          <div className="mb-3">
+            <label className="text-sm font-medium text-slate-700 mb-2 block">
+              Add Friend by ID
+            </label>
+            <p className="text-xs text-slate-500 mb-3">
+              Enter your friend's unique ID to send a friend request. Once accepted, you can share your learning dashboard and track progress together.
+            </p>
+          </div>
           <div className="flex gap-3">
             <Input
-              placeholder="Enter friend's unique ID..."
+              placeholder="Enter friend's unique ID (10 digits)..."
               value={searchCode}
               onChange={(e) => setSearchCode(e.target.value)}
               className="flex-1"
@@ -315,7 +323,7 @@ export default function Friends() {
             />
             <Button onClick={handleSearch} disabled={searching}>
               {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
-              <span className="ml-2">Add</span>
+              <span className="ml-2">Send Request</span>
             </Button>
           </div>
         </div>
@@ -367,7 +375,10 @@ export default function Friends() {
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
             <Users className="h-16 w-16 text-slate-200 mx-auto mb-4" />
             <p className="text-slate-500 mb-1">No friends yet</p>
-            <p className="text-xs text-slate-400">Add friends using their unique ID</p>
+            <p className="text-xs text-slate-400 mb-4">Add friends using their unique ID to share your learning dashboard</p>
+            <p className="text-xs text-slate-300 mt-2">
+              Share your progress and motivate each other to learn!
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -419,42 +430,53 @@ export default function Friends() {
                   </div>
                 </div>
 
+                {/* Shared Dashboard Section */}
+                <div className="mb-4">
+                  <h4 className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">
+                    Shared Learning Dashboard
+                  </h4>
+                </div>
+
                 {/* Dashboard Columns */}
                 <div className="grid grid-cols-2 gap-4">
                   {/* Their Dashboard (what they share with me) */}
-                  <div className="bg-purple-50 rounded-xl p-4">
+                  <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs">
                         {(friend.display_name?.[0] || friend.username[0]).toUpperCase()}
                       </div>
                       <span className="text-xs font-medium text-purple-800">
-                        {friend.display_name || friend.username}
+                        {friend.display_name || friend.username}'s Dashboard
                       </span>
                     </div>
                     <div className="text-3xl font-bold text-purple-600 mb-1">
                       {friend.theirProgress}%
                     </div>
                     <p className="text-xs text-purple-500">
-                      {friend.theirTasks} tasks today
+                      {friend.theirTasks} shared tasks today
                     </p>
                   </div>
 
                   {/* My Dashboard (what I share with them) */}
-                  <div className="bg-blue-50 rounded-xl p-4">
+                  <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
                         {(profile.display_name?.[0] || profile.username[0]).toUpperCase()}
                       </div>
-                      <span className="text-xs font-medium text-blue-800">You</span>
+                      <span className="text-xs font-medium text-blue-800">Your Dashboard</span>
                     </div>
                     <div className="text-3xl font-bold text-blue-600 mb-1">
                       {friend.myProgress}%
                     </div>
                     <p className="text-xs text-blue-500">
-                      {friend.myTasks} tasks today
+                      {friend.myTasks} shared tasks today
                     </p>
                   </div>
                 </div>
+                
+                <p className="text-xs text-slate-400 mt-3 italic">
+                  Only tasks marked as "shared" are visible to friends
+                </p>
               </div>
             ))}
           </div>
