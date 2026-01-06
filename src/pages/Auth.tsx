@@ -143,11 +143,11 @@ export default function Auth() {
           <div className="text-center mb-8">
             <img 
               src={penguinLogo} 
-              alt="Penguin Tempo Logo" 
-              className="h-28 w-28 mx-auto mb-3 drop-shadow-lg object-contain"
+              alt="Pengory Logo" 
+              className="h-40 w-40 mx-auto mb-3 object-contain"
             />
             <h1 className="text-2xl font-bold text-slate-800 mb-1">
-              Penguin Tempo
+              Pengory
             </h1>
             <p className="text-slate-600 text-lg font-medium">
               {isLogin ? 'Welcome Back' : 'Create Account'}

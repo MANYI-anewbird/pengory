@@ -19,9 +19,9 @@ const mainItems = [
   { icon: Home, label: 'Home', page: 'home' },
   { icon: Calendar, label: 'Calendar', page: 'calendar' },
   { icon: TrendingUp, label: 'Growth', page: 'growth' },
-  { icon: StickyNote, label: 'Notes', page: 'notes' },
   { icon: Link, label: 'Links', page: 'links' },
   { icon: BookOpen, label: 'Learn', page: 'learn' },
+  { icon: StickyNote, label: 'Notes', page: 'notes' },
 ];
 
 export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => {
@@ -58,21 +58,13 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
             )}
           >
             {isHome ? (
-              <div className="relative">
-                <img 
-                  src={penguinLogo} 
-                  alt="Penguin Logo" 
-                  className={cn(
-                    "h-14 w-14 object-contain transition-all duration-200 relative z-10"
-                  )}
-                />
-                {isActive && (
-                  <>
-                    <div className="absolute inset-0 bg-white rounded-lg -z-10 scale-110" />
-                    <div className="absolute inset-0 bg-white/50 rounded-lg blur-md -z-20 scale-125" />
-                  </>
+              <img 
+                src={penguinLogo} 
+                alt="Pengory Logo" 
+                className={cn(
+                  "h-16 w-16 object-contain transition-all duration-200"
                 )}
-              </div>
+              />
             ) : isProfile ? (
               <div className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
