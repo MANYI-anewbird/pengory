@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, addDays } from 'date-fns';
-import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, StickyNote, Sparkles, CheckCircle2, Circle, Plus, Bell, TrendingUp, Link, BookOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, Calendar as CalendarIcon, StickyNote, Sparkles, CheckCircle2, Circle, Plus, Bell } from 'lucide-react';
 import { Task } from '@/types/task';
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -459,32 +459,32 @@ export const Home = ({ tasks = [], onToggleComplete = () => {}, onNavigate = () 
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-gray-500 mr-1">Quick Actions</span>
             <button
-              onClick={() => onNavigate('growth')}
+              onClick={() => onNavigate('calendar')}
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
             >
-              <TrendingUp className="h-3.5 w-3.5 text-white" />
-              <span className="text-xs font-medium text-white">Personal Growth</span>
-            </button>
-            <button
-              onClick={() => onNavigate('links')}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
-            >
-              <Link className="h-3.5 w-3.5 text-white" />
-              <span className="text-xs font-medium text-white">Quick Link</span>
-            </button>
-            <button
-              onClick={() => onNavigate('learn')}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
-            >
-              <BookOpen className="h-3.5 w-3.5 text-white" />
-              <span className="text-xs font-medium text-white">Daily Learn</span>
+              <Plus className="h-3.5 w-3.5 text-white" />
+              <span className="text-xs font-medium text-white">New Task</span>
             </button>
             <button
               onClick={() => onNavigate('notes')}
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
             >
               <StickyNote className="h-3.5 w-3.5 text-white" />
-              <span className="text-xs font-medium text-white">New Notes</span>
+              <span className="text-xs font-medium text-white">New Note</span>
+            </button>
+            <button
+              onClick={() => onNavigate('meditation')}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-white" />
+              <span className="text-xs font-medium text-white">Meditate</span>
+            </button>
+            <button
+              onClick={() => onNavigate('tasks')}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-all flex-1"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5 text-white" />
+              <span className="text-xs font-medium text-white">View Tasks</span>
             </button>
           </div>
         </div>

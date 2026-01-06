@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { GrowthPlan, GrowthCategory } from '@/types/growth';
 
 interface NewPlanModalProps {
@@ -84,38 +84,6 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
     setExpectedResults(updated);
   };
 
-  const handleExpectedResultKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      // If current line has content, add a new line
-      if (expectedResults[index].trim()) {
-        const updated = [...expectedResults];
-        updated.splice(index + 1, 0, '');
-        setExpectedResults(updated);
-        // Focus the new input after a brief delay
-        setTimeout(() => {
-          const nextInput = document.getElementById(`expected-result-${index + 1}`);
-          if (nextInput) {
-            (nextInput as HTMLInputElement).focus();
-          }
-        }, 0);
-      }
-    } else if (e.key === 'Backspace' && !expectedResults[index] && expectedResults.length > 1) {
-      // If current line is empty and user presses backspace, remove it
-      e.preventDefault();
-      removeExpectedResult(index);
-      // Focus the previous input
-      if (index > 0) {
-        setTimeout(() => {
-          const prevInput = document.getElementById(`expected-result-${index - 1}`);
-          if (prevInput) {
-            (prevInput as HTMLInputElement).focus();
-          }
-        }, 0);
-      }
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-md bg-white border-slate-200">
@@ -177,7 +145,6 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
               <Input
                 id="startDate"
                 type="date"
-                lang="en"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
@@ -190,7 +157,6 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
               <Input
                 id="endDate"
                 type="date"
-                lang="en"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
@@ -200,31 +166,43 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
 
           {/* Expected Result */}
           <div className="space-y-2">
-            <Label htmlFor="result" className="text-sm font-bold text-slate-500 uppercase tracking-wide">
-              Expected Result
-            </Label>
-            <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="result" className="text-sm font-bold text-slate-500 uppercase tracking-wide">
+                Expected Result
+              </Label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={addExpectedResult}
+                className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900"
+              >
+                <Plus className="h-3.5 w-3.5 mr-1" />
+                Add
+              </Button>
+            </div>
+            <div className="space-y-2">
               {expectedResults.map((result, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="flex-shrink-0 w-5 flex items-center justify-center">
-                    <span className="text-base font-bold text-black">•</span>
+                <div key={index} className="flex items-start gap-2">
+                  <div className="flex-shrink-0 w-6 h-11 flex items-center justify-center text-sm font-medium text-slate-500 pt-3">
+                    {index + 1}.
                   </div>
                   <Input
-                    id={`expected-result-${index}`}
                     placeholder="Describe your success criteria..."
                     value={result}
                     onChange={(e) => updateExpectedResult(index, e.target.value)}
-                    onKeyDown={(e) => handleExpectedResultKeyDown(index, e)}
-                    className="flex-1 border-0 border-b border-slate-200 rounded-none bg-transparent px-0 py-2 focus-visible:ring-0 focus-visible:border-slate-400 focus-visible:border-b-2"
+                    className="h-11 bg-slate-50 border-slate-200 focus:bg-white flex-1"
                   />
                   {expectedResults.length > 1 && (
-                    <button
+                    <Button
                       type="button"
+                      variant="ghost"
+                      size="sm"
                       onClick={() => removeExpectedResult(index)}
-                      className="flex-shrink-0 p-1 text-slate-300 hover:text-red-500 transition-colors"
+                      className="h-11 w-11 p-0 text-slate-400 hover:text-slate-600 flex-shrink-0"
                     >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
+                      <X className="h-4 w-4" />
+                    </Button>
                   )}
                 </div>
               ))}

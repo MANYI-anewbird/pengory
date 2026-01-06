@@ -136,8 +136,8 @@ export const PersonalGrowth = () => {
       {/* Left Sidebar - Dashboard */}
       <div className="w-72 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
         {/* Header */}
-        <div className="px-5 pt-5 pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-3">
+        <div className="p-5 border-b border-slate-100">
+          <div className="flex items-center gap-3 mb-3">
             <div className="p-2 bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-md">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>

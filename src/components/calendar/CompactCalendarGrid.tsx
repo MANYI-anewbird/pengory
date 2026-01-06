@@ -87,30 +87,28 @@ export const CompactCalendarGrid = ({
           </div>
         ))}
       </div>
-      <div className="flex-1 overflow-auto">
-        <div className="grid grid-cols-7 border-l border-gray-200/40">
-          {days.map((day, index) => {
-            const dateKey = formatDateKey(day);
-            const dayTasks = tasksByDate[dateKey] || [];
-            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-            const isToday = dateKey === todayKey;
-            
-            return (
-              <CompactDayCell
-                key={index}
-                date={day}
-                isCurrentMonth={isCurrentMonth}
-                isToday={isToday}
-                tasks={dayTasks}
-                onDayClick={onDayClick}
-                onTaskClick={onTaskClick}
-                onToggleComplete={onToggleComplete}
-                onDeleteTask={onDeleteTask}
-                denseMode={denseMode}
-              />
-            );
-          })}
-        </div>
+      <div className="grid grid-cols-7 border-l border-gray-200/40 flex-1">
+        {days.map((day, index) => {
+          const dateKey = formatDateKey(day);
+          const dayTasks = tasksByDate[dateKey] || [];
+          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+          const isToday = dateKey === todayKey;
+          
+          return (
+            <CompactDayCell
+              key={index}
+              date={day}
+              isCurrentMonth={isCurrentMonth}
+              isToday={isToday}
+              tasks={dayTasks}
+              onDayClick={onDayClick}
+              onTaskClick={onTaskClick}
+              onToggleComplete={onToggleComplete}
+              onDeleteTask={onDeleteTask}
+              denseMode={denseMode}
+            />
+          );
+        })}
       </div>
     </div>
   );
