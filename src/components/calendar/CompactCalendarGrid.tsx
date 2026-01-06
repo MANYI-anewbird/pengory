@@ -61,6 +61,7 @@ export const CompactCalendarGrid = ({
   const days = getDaysInMonth(currentDate);
   const today = getBostonNow();
   const todayKey = formatDateKey(today);
+  const numRows = Math.ceil(days.length / 7);
   
   const tasksByDate = tasks.reduce((acc, task) => {
     if (!acc[task.date]) {
@@ -87,7 +88,10 @@ export const CompactCalendarGrid = ({
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-border flex-1 auto-rows-[100px] content-start">
+      <div 
+        className="grid grid-cols-7 border-l border-border flex-1"
+        style={{ gridTemplateRows: `repeat(${numRows}, 1fr)` }}
+      >
         {days.map((day, index) => {
           const dateKey = formatDateKey(day);
           const dayTasks = tasksByDate[dateKey] || [];
