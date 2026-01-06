@@ -218,7 +218,7 @@ export const TaskModal = ({
             placeholder="What needs to be done?"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="text-sm font-medium h-10 rounded-lg border-stone-200/80 bg-white shadow-sm 
+            className="text-sm font-medium h-10 rounded-lg border-stone-200/80 bg-white shadow-sm mb-1
                        placeholder:text-stone-400 focus:border-stone-300 focus:ring-2 focus:ring-stone-900/5"
           />
 
