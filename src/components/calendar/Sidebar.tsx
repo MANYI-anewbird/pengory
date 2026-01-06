@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
 import penguinLogo from '@/assets/penguin-logo.png';
+import penguinCharacter from '@/assets/penguin-character.png';
 
 interface SidebarProps {
   denseMode: boolean;
@@ -67,12 +68,24 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
               />
             ) : isProfile ? (
               <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
+                "w-8 h-8 rounded-full overflow-hidden flex items-center justify-center transition-all",
                 isActive 
-                  ? "bg-blue-800 text-white" 
-                  : "bg-white text-gray-900 border border-gray-300 shadow-sm hover:scale-105"
+                  ? "ring-2 ring-blue-800" 
+                  : "hover:scale-105"
               )}>
-                {profile?.display_name?.[0]?.toUpperCase() || profile?.username?.[0]?.toUpperCase() || 'U'}
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={penguinCharacter}
+                    alt="Penguin Avatar"
+                    className="w-full h-full object-contain"
+                  />
+                )}
               </div>
             ) : (
               <Icon className="h-5 w-5" strokeWidth={isActive ? 2 : 1.5} />

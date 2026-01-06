@@ -144,7 +144,7 @@ export default function Auth() {
             <img 
               src={penguinLogo} 
               alt="Pengory Logo" 
-              className="h-40 w-40 mx-auto mb-3 object-contain"
+              className="h-40 w-40 mx-auto mb-1 object-contain"
             />
             <h1 className="text-2xl font-bold text-slate-800 mb-1">
               Pengory

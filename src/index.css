@@ -104,4 +104,21 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Hide date input placeholder text completely */
+  input[type="date"]::-webkit-datetime-edit-text,
+  input[type="date"]::-webkit-datetime-edit-month-field,
+  input[type="date"]::-webkit-datetime-edit-day-field,
+  input[type="date"]::-webkit-datetime-edit-year-field {
+    color: transparent !important;
+    opacity: 0 !important;
+  }
+
+  input[type="date"]:not([value=""])::-webkit-datetime-edit-text,
+  input[type="date"]:not([value=""])::-webkit-datetime-edit-month-field,
+  input[type="date"]:not([value=""])::-webkit-datetime-edit-day-field,
+  input[type="date"]:not([value=""])::-webkit-datetime-edit-year-field {
+    color: inherit;
+    opacity: 1;
+  }
 }

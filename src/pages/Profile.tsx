@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { User, Copy, Check, LogOut, Edit2, Save, X, Camera, Loader2, Mail, Calendar, AtSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import penguinCharacter from '@/assets/penguin-character.png';
 
 export default function Profile() {
   const { user, profile, signOut, refreshProfile } = useAuth();
@@ -164,9 +165,11 @@ export default function Profile() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  profile.display_name?.[0]?.toUpperCase() || 
-                  profile.username[0]?.toUpperCase() || 
-                  <User className="h-10 w-10" />
+                  <img
+                    src={penguinCharacter}
+                    alt="Penguin Avatar"
+                    className="w-full h-full object-contain"
+                  />
                 )}
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Camera className="h-5 w-5 text-white" />
