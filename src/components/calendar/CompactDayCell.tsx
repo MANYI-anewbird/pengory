@@ -29,7 +29,7 @@ export const CompactDayCell = ({
     <div
       onClick={() => onDayClick(date)}
       className={cn(
-        'border-r border-b border-gray-200 bg-white hover:bg-gray-50/80 transition-all duration-200 cursor-pointer h-[100px] flex flex-col',
+        'bg-white hover:bg-gray-50/80 transition-all duration-200 cursor-pointer h-[100px] flex flex-col',
         denseMode ? 'p-0.5' : 'p-1',
         !isCurrentMonth && 'bg-gray-50/30',
         isToday && 'ring-1 ring-blue-500/20'
