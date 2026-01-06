@@ -206,8 +206,8 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
             <div className="space-y-1">
               {expectedResults.map((result, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div className="flex-shrink-0 w-4 flex items-center justify-center text-slate-400">
-                    <span className="text-xs">•</span>
+                  <div className="flex-shrink-0 w-5 flex items-center justify-center">
+                    <span className="text-base font-bold text-black">•</span>
                   </div>
                   <Input
                     id={`expected-result-${index}`}
