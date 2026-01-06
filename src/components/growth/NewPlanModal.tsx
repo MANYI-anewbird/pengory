@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent } from 'react';
+import { format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +12,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { X } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { X, CalendarIcon } from 'lucide-react';
 import { GrowthPlan, GrowthCategory } from '@/types/growth';
+import { cn } from '@/lib/utils';
 
 interface NewPlanModalProps {
   isOpen: boolean;
@@ -25,8 +33,8 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
   const [goal, setGoal] = useState('');
   const [durationValue, setDurationValue] = useState('');
   const [durationUnit, setDurationUnit] = useState<'day' | 'week' | 'month' | 'year'>('month');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [notes, setNotes] = useState('');
   const [expectedResults, setExpectedResults] = useState<string[]>(['']);
 
@@ -51,8 +59,8 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
       category: defaultCategory,
       goal: goal.trim(),
       duration,
-      startDate: startDate || new Date().toISOString().split('T')[0],
-      endDate: endDate || '',
+      startDate: startDate ? format(startDate, 'yyyy-MM-dd') : new Date().toISOString().split('T')[0],
+      endDate: endDate ? format(endDate, 'yyyy-MM-dd') : '',
       executionSteps: [],
       notes: notes.trim(),
       expectedResult: expectedResult.trim(),
@@ -62,8 +70,8 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
     setGoal('');
     setDurationValue('');
     setDurationUnit('month');
-    setStartDate('');
-    setEndDate('');
+    setStartDate(undefined);
+    setEndDate(undefined);
     setNotes('');
     setExpectedResults(['']);
   };
@@ -171,42 +179,58 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
           {/* Dates */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="startDate" className="text-sm font-bold text-slate-500 uppercase tracking-wide">
+              <Label className="text-sm font-bold text-slate-500 uppercase tracking-wide">
                 Start
               </Label>
-              <div className="relative">
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
-                />
-                {!startDate && (
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm">
-                    MM/DD/YY
-                  </div>
-                )}
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "h-11 w-full justify-start text-left font-normal bg-slate-50 border-slate-200 hover:bg-white",
+                      !startDate && "text-slate-400"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "MM/dd/yy") : "MM/DD/YY"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="endDate" className="text-sm font-bold text-slate-500 uppercase tracking-wide">
+              <Label className="text-sm font-bold text-slate-500 uppercase tracking-wide">
                 End
               </Label>
-              <div className="relative">
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
-                />
-                {!endDate && (
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm">
-                    MM/DD/YY
-                  </div>
-                )}
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "h-11 w-full justify-start text-left font-normal bg-slate-50 border-slate-200 hover:bg-white",
+                      !endDate && "text-slate-400"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, "MM/dd/yy") : "MM/DD/YY"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

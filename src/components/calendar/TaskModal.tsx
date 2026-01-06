@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { format, parse } from 'date-fns';
 import { Task, Priority } from '@/types/task';
 import {
   Dialog,
@@ -18,7 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Clock, Repeat, Trash2, MapPin, Flag } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Clock, Repeat, Trash2, MapPin, Flag, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type RepeatType = 'daily' | 'weekly' | 'monthly';
@@ -339,21 +346,53 @@ export const TaskModal = ({
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-0.5">
                     <Label className="text-[10px] text-stone-400 uppercase tracking-wider">From</Label>
-                    <Input
-                      type="date"
-                      value={repeatStartDate}
-                      onChange={(e) => setRepeatStartDate(e.target.value)}
-                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs text-stone-800"
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "h-8 w-full justify-start text-left font-normal text-xs rounded-md border-stone-200 bg-stone-50/50",
+                            !repeatStartDate && "text-stone-400"
+                          )}
+                        >
+                          <CalendarIcon className="mr-1.5 h-3 w-3" />
+                          {repeatStartDate ? format(parse(repeatStartDate, 'yyyy-MM-dd', new Date()), "MM/dd/yy") : "Select"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={repeatStartDate ? parse(repeatStartDate, 'yyyy-MM-dd', new Date()) : undefined}
+                          onSelect={(date) => setRepeatStartDate(date ? format(date, 'yyyy-MM-dd') : '')}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="space-y-0.5">
                     <Label className="text-[10px] text-stone-400 uppercase tracking-wider">To</Label>
-                    <Input
-                      type="date"
-                      value={repeatEndDate}
-                      onChange={(e) => setRepeatEndDate(e.target.value)}
-                      className="h-8 rounded-md border-stone-200 bg-stone-50/50 text-xs text-stone-800"
-                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "h-8 w-full justify-start text-left font-normal text-xs rounded-md border-stone-200 bg-stone-50/50",
+                            !repeatEndDate && "text-stone-400"
+                          )}
+                        >
+                          <CalendarIcon className="mr-1.5 h-3 w-3" />
+                          {repeatEndDate ? format(parse(repeatEndDate, 'yyyy-MM-dd', new Date()), "MM/dd/yy") : "Select"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={repeatEndDate ? parse(repeatEndDate, 'yyyy-MM-dd', new Date()) : undefined}
+                          onSelect={(date) => setRepeatEndDate(date ? format(date, 'yyyy-MM-dd') : '')}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
 
