@@ -145,6 +145,7 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
               <Input
                 id="startDate"
                 type="date"
+                lang="en"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="h-11 bg-slate-50 border-slate-200 focus:bg-white"
@@ -157,6 +158,7 @@ export const NewPlanModal = ({ isOpen, onClose, onSave, defaultCategory }: NewPl
               <Input
                 id="endDate"
                 type="date"
+                lang="en"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="h-11 bg-slate-50 border-slate-200 focus:bg-white"

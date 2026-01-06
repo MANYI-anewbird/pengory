@@ -182,14 +182,14 @@ const Index = () => {
           />
         ) : activePage === 'growth' ? (
           <PersonalGrowth />
-        ) : activePage === 'notes' ? (
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <Notes />
-          </div>
         ) : activePage === 'links' ? (
           <Links />
         ) : activePage === 'learn' ? (
           <Learn />
+        ) : activePage === 'notes' ? (
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <Notes />
+          </div>
         ) : activePage === 'profile' ? (
           <Profile />
         ) : activePage === 'friends' ? (

@@ -19,9 +19,9 @@ const mainItems = [
   { icon: Home, label: 'Home', page: 'home' },
   { icon: Calendar, label: 'Calendar', page: 'calendar' },
   { icon: TrendingUp, label: 'Growth', page: 'growth' },
-  { icon: StickyNote, label: 'Notes', page: 'notes' },
   { icon: Link, label: 'Links', page: 'links' },
   { icon: BookOpen, label: 'Learn', page: 'learn' },
+  { icon: StickyNote, label: 'Notes', page: 'notes' },
 ];
 
 export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => {
