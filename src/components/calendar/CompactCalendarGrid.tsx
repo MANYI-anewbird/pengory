@@ -81,11 +81,15 @@ const expandRepeatTasks = (tasks: Task[]): Task[] => {
       }
       
       if (shouldInclude) {
-        expandedTasks.push({
-          ...task,
-          id: `${task.id}_${formatDateKey(currentDate)}`, // Unique ID for each instance
-          date: formatDateKey(currentDate),
-        });
+        const dateKey = formatDateKey(currentDate);
+        // Check if this date is excluded
+        if (!task.excludedDates?.includes(dateKey)) {
+          expandedTasks.push({
+            ...task,
+            id: `${task.id}_${dateKey}`, // Unique ID for each instance
+            date: dateKey,
+          });
+        }
       }
       
       currentDate.setDate(currentDate.getDate() + 1);
