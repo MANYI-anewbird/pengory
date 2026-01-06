@@ -8,6 +8,12 @@ interface TaskItemProps {
   onClick: (task: Task) => void;
 }
 
+const priorityClasses: Record<Task['priority'], string> = {
+  high: 'bg-rose-50 border-rose-200',
+  core: 'bg-amber-50 border-amber-200',
+  low: 'bg-stone-50 border-stone-200',
+};
+
 export const TaskItem = ({ task, onToggleComplete, onClick }: TaskItemProps) => {
   const handleCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -17,8 +23,9 @@ export const TaskItem = ({ task, onToggleComplete, onClick }: TaskItemProps) => 
     <div
       onClick={() => onClick(task)}
       className={cn(
-        'group flex items-start gap-2 px-2 py-1.5 mb-1 rounded-md cursor-pointer',
-        'transition-all duration-200 hover:bg-gray-100/50',
+        'group flex items-start gap-2 px-2 py-1.5 mb-1 rounded-md border cursor-pointer',
+        'transition-all duration-200 hover:shadow-sm hover:scale-[1.01]',
+        priorityClasses[task.priority],
         task.completed && 'opacity-60'
       )}
     >
