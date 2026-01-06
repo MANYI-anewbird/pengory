@@ -105,20 +105,15 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 
-  /* Hide date input placeholder text completely */
+  /* Style date input fields */
   input[type="date"]::-webkit-datetime-edit-text,
   input[type="date"]::-webkit-datetime-edit-month-field,
   input[type="date"]::-webkit-datetime-edit-day-field,
   input[type="date"]::-webkit-datetime-edit-year-field {
-    color: transparent !important;
-    opacity: 0 !important;
+    color: hsl(30 20% 25%);
   }
 
-  input[type="date"]:not([value=""])::-webkit-datetime-edit-text,
-  input[type="date"]:not([value=""])::-webkit-datetime-edit-month-field,
-  input[type="date"]:not([value=""])::-webkit-datetime-edit-day-field,
-  input[type="date"]:not([value=""])::-webkit-datetime-edit-year-field {
-    color: inherit;
-    opacity: 1;
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
   }
 }
