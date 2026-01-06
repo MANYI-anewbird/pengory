@@ -24,7 +24,7 @@ export const CompactHeader = ({
   const year = currentDate.getFullYear().toString();
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200/60 bg-white shadow-xs shrink-0">
+    <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200/60 bg-white shadow-xs">
       <div className="flex items-center gap-3">
         <h1 className="text-3xl font-bold text-black font-arial">
           {month} <span className="font-bold text-gray-600">{year}</span>
