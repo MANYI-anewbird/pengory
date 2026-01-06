@@ -25,12 +25,12 @@ export const DayCell = ({
     <div
       onClick={() => onDayClick(date)}
       className={cn(
-        'min-h-[120px] p-2 border-b border-r border-border bg-card',
+        'h-[120px] p-2 border-b border-r border-border bg-card flex flex-col',
         'hover:bg-accent/30 transition-colors cursor-pointer',
         !isCurrentMonth && 'bg-muted/30'
       )}
     >
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2 shrink-0">
         <span
           className={cn(
             'text-sm font-medium',
@@ -42,7 +42,7 @@ export const DayCell = ({
           {date.getDate()}
         </span>
       </div>
-      <div className="space-y-1">
+      <div className="space-y-1 flex-1 overflow-auto min-h-0">
         {tasks.map((task) => (
           <TaskItem
             key={task.id}
