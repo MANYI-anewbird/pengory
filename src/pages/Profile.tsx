@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import penguinCharacter from '@/assets/penguin-character.png';
 
 export default function Profile() {
-  const { user, profile, signOut, refreshProfile } = useAuth();
+  const { user, profile, signOut, refreshProfile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -112,12 +112,37 @@ export default function Profile() {
     navigate('/auth');
   };
 
-  if (!user || !profile) {
+  // Show loading state while auth is being checked
+  if (authLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-slate-400" />
+          <p className="text-slate-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Only show login prompt if auth is loaded and user is not logged in
+  if (!user) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
           <p className="text-slate-500 mb-4">Please log in first</p>
           <Button onClick={() => navigate('/auth')}>Log In</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is logged in but profile is still loading, show loading state
+  if (!profile) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-slate-400" />
+          <p className="text-slate-500">Loading profile...</p>
         </div>
       </div>
     );
