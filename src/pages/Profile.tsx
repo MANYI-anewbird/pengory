@@ -18,6 +18,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [hasTriedRefresh, setHasTriedRefresh] = useState(false);
   
   const [displayName, setDisplayName] = useState(profile?.display_name || '');
   const [bio, setBio] = useState(profile?.bio || '');
@@ -29,6 +30,14 @@ export default function Profile() {
       setBio(profile.bio || '');
     }
   }, [profile]);
+
+  // Try to refresh profile once when component mounts if profile is missing
+  useEffect(() => {
+    if (user && !profile && !authLoading && !hasTriedRefresh) {
+      setHasTriedRefresh(true);
+      refreshProfile().catch(console.error);
+    }
+  }, [user, profile, authLoading, hasTriedRefresh]);
 
   const handleCopyCode = async () => {
     if (profile?.unique_code) {
@@ -144,13 +153,8 @@ export default function Profile() {
     );
   }
 
-  // If user is logged in but profile is still loading, try to refresh or show basic profile
+  // If user is logged in but profile is still loading, show loading state
   if (!profile) {
-    // Try to refresh profile once
-    if (user && !loading) {
-      refreshProfile();
-    }
-    
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
@@ -159,7 +163,10 @@ export default function Profile() {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => refreshProfile()}
+            onClick={() => {
+              setHasTriedRefresh(false);
+              refreshProfile();
+            }}
             className="text-xs"
           >
             Retry

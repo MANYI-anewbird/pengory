@@ -32,20 +32,32 @@ interface PendingRequest {
 }
 
 export default function Friends() {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [friends, setFriends] = useState<FriendData[]>([]);
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [searchCode, setSearchCode] = useState('');
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [hasTriedRefresh, setHasTriedRefresh] = useState(false);
+
+  // Try to refresh profile once when component mounts if profile is missing
+  useEffect(() => {
+    if (user && !profile && !authLoading && !hasTriedRefresh) {
+      setHasTriedRefresh(true);
+      refreshProfile().catch(console.error);
+    }
+  }, [user, profile, authLoading, hasTriedRefresh, refreshProfile]);
 
   useEffect(() => {
     if (profile) {
       loadFriends();
       loadPendingRequests();
+    } else if (user && !authLoading) {
+      // If user exists but profile doesn't, set loading to false to show retry option
+      setLoading(false);
     }
-  }, [profile]);
+  }, [profile, user, authLoading]);
 
   const loadFriends = async () => {
     if (!profile) return;
@@ -114,6 +126,7 @@ export default function Friends() {
       setFriends(friendsWithProgress);
     } catch (error) {
       console.error('Error loading friends:', error);
+      toast.error('Failed to load friends');
     } finally {
       setLoading(false);
     }
@@ -282,13 +295,24 @@ export default function Friends() {
     );
   }
 
-  // If user is logged in but profile is still loading, show loading state
+  // If user is logged in but profile is still loading, show loading state with retry
   if (!profile) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-slate-400" />
-          <p className="text-slate-500">Loading profile...</p>
+          <p className="text-slate-500 mb-4">Loading profile...</p>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setHasTriedRefresh(false);
+              refreshProfile();
+            }}
+            className="text-xs"
+          >
+            Retry
+          </Button>
         </div>
       </div>
     );
