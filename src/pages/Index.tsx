@@ -13,8 +13,6 @@ import { Home } from './Home';
 import { PersonalGrowth } from './PersonalGrowth';
 import { Links } from './Links';
 import { Learn } from './Learn';
-import Profile from './Profile';
-import Friends from './Friends';
 import { toast as sonnerToast } from '@/components/ui/sonner';
 import { getBostonNow } from '@/lib/timezone';
 const TASKS_STORAGE_KEY = 'pompom_tasks_v1';
@@ -277,10 +275,6 @@ const Index = () => {
           <div className="flex-1 flex flex-col overflow-hidden">
             <Notes />
           </div>
-        ) : activePage === 'profile' ? (
-          <Profile />
-        ) : activePage === 'friends' ? (
-          <Friends />
         ) : activePage === 'calendar' ? (
           <div className="flex-1 flex flex-col overflow-hidden bg-background">
             <CompactHeader
