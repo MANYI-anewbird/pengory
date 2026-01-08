@@ -1,4 +1,4 @@
-import { Home, TrendingUp, Calendar, StickyNote, Link, BookOpen, User, Users, LogIn } from 'lucide-react';
+import { Home, TrendingUp, Calendar, StickyNote, Link, BookOpen, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
 import penguinLogo from '@/assets/penguin-logo.png';
-import penguinCharacter from '@/assets/penguin-character.png';
 
 interface SidebarProps {
   denseMode: boolean;
@@ -26,38 +25,31 @@ const mainItems = [
 ];
 
 export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => {
-  const { user, profile, loading } = useAuth();
+  const { user } = useAuth();
 
   const bottomItems = user 
-    ? [
-        { icon: User, label: profile?.display_name || profile?.username || 'Profile', page: 'profile' },
-        { icon: Users, label: 'Friends', page: 'friends' },
-      ]
+    ? []
     : [
         { icon: LogIn, label: 'Login/Register', page: 'login' },
-        { icon: Users, label: 'Friends', page: 'friends' },
       ];
 
   const renderItem = (item: { icon: any; label: string; page: string }) => {
     const Icon = item.icon;
     const isActive = activePage === item.page;
     const isHome = item.page === 'home';
-    const isProfile = item.page === 'profile' && user;
     
     return (
       <Tooltip key={item.label}>
         <TooltipTrigger asChild>
-            <button
+          <button
             onClick={() => onNavigate(item.page)}
             className={cn(
               "flex items-center justify-center transition-all duration-200 mx-2 rounded-lg h-12",
               isHome
-                ? "bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none" // No effects for penguin
-                : isProfile
-                  ? "bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent"
-                  : isActive 
-                    ? "bg-gray-900 text-white shadow-md scale-105" 
-                    : "text-gray-600 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
+                ? "bg-transparent hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none"
+                : isActive 
+                  ? "bg-gray-900 text-white shadow-md scale-105" 
+                  : "text-gray-600 hover:bg-gray-100 hover:shadow-sm hover:scale-105"
             )}
           >
             {isHome ? (
@@ -69,27 +61,6 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
                 )}
                 style={{ mixBlendMode: 'multiply' }}
               />
-            ) : isProfile ? (
-              <div className={cn(
-                "w-8 h-8 rounded-full overflow-hidden flex items-center justify-center transition-all",
-                isActive 
-                  ? "ring-2 ring-blue-800" 
-                  : "hover:scale-105"
-              )}>
-                {profile?.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <img
-                    src={penguinCharacter}
-                    alt="Penguin Avatar"
-                    className="w-full h-full object-contain"
-                  />
-                )}
-              </div>
             ) : (
               <Icon className="h-5 w-5" strokeWidth={isActive ? 2 : 1.5} />
             )}
