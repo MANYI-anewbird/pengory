@@ -192,13 +192,41 @@ const Index = () => {
 
     const originalId = getOriginalTaskId(pendingDeleteTaskId);
     
+    // Extract the date from the instance ID
+    const underscoreIndex = pendingDeleteTaskId.lastIndexOf('_');
+    const instanceDate = pendingDeleteTaskId.substring(underscoreIndex + 1);
+    
+    // Calculate the day before the instance date to set as new repeatEndDate
+    const instanceDateObj = new Date(instanceDate + 'T00:00:00');
+    const dayBefore = new Date(instanceDateObj);
+    dayBefore.setDate(dayBefore.getDate() - 1);
+    const newEndDate = dayBefore.toISOString().split('T')[0];
+    
+    // Check if the new end date is before the start date - if so, delete the task entirely
+    const startDate = pendingDeleteTask.repeatStartDate || pendingDeleteTask.date;
+    
     (document.activeElement as HTMLElement | null)?.blur?.();
     requestAnimationFrame(() => {
-      setTasks((prev) => prev.filter((t) => t.id !== originalId));
-      toast({
-        title: 'All instances deleted',
-        description: pendingDeleteTask.title,
-      });
+      if (newEndDate < startDate) {
+        // If trying to delete from the first instance, delete the entire task
+        setTasks((prev) => prev.filter((t) => t.id !== originalId));
+        toast({
+          title: 'Task deleted',
+          description: pendingDeleteTask.title,
+        });
+      } else {
+        // Update the repeatEndDate to preserve past instances
+        setTasks((prev) => prev.map((t) => {
+          if (t.id === originalId) {
+            return { ...t, repeatEndDate: newEndDate };
+          }
+          return t;
+        }));
+        toast({
+          title: 'Future instances deleted',
+          description: `"${pendingDeleteTask.title}" will end on ${newEndDate}`,
+        });
+      }
     });
 
     setDeleteDialogOpen(false);
