@@ -1,8 +1,9 @@
 import { Task } from '@/types/task';
 import { CompactDayCell } from './CompactDayCell';
 import { cn } from '@/lib/utils';
-import { getBostonNow, formatInBoston } from '@/lib/timezone';
+import { BOSTON_TIMEZONE, getBostonNow, formatInBoston } from '@/lib/timezone';
 import { useMemo } from 'react';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 
 interface CompactCalendarGridProps {
   currentDate: Date;
@@ -50,7 +51,22 @@ const formatDateKey = (date: Date) => {
   return formatInBoston(date, 'yyyy-MM-dd');
 };
 
+const formatYmdUtc = (date: Date) => {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(date.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
+const addDaysToYmd = (ymd: string, days: number) => {
+  const [y, m, d] = ymd.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  dt.setUTCDate(dt.getUTCDate() + days);
+  return formatYmdUtc(dt);
+};
+
 // Expand repeat tasks into individual task instances for each applicable date
+// NOTE: We iterate using YYYY-MM-DD strings to avoid timezone/DST off-by-one issues.
 const expandRepeatTasks = (tasks: Task[]): Task[] => {
   const expandedTasks: Task[] = [];
   
@@ -60,18 +76,20 @@ const expandRepeatTasks = (tasks: Task[]): Task[] => {
       expandedTasks.push(task);
       continue;
     }
-    
-    const startDate = new Date(task.repeatStartDate);
-    const endDate = new Date(task.repeatEndDate);
-    
-    // Iterate through date range
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      const dayOfWeek = currentDate.getDay(); // 0 = Sunday, 6 = Saturday
-      const dayOfMonth = currentDate.getDate();
-      
+
+    let cursor = task.repeatStartDate;
+    const end = task.repeatEndDate;
+
+    while (cursor <= end) {
+      // Create a stable "midday" instant for the Boston calendar day, so weekday/monthday checks are correct.
+      const cursorInstant = fromZonedTime(`${cursor}T12:00:00`, BOSTON_TIMEZONE);
+      const cursorBoston = toZonedTime(cursorInstant, BOSTON_TIMEZONE);
+
+      const dayOfWeek = cursorBoston.getDay(); // 0 = Sunday, 6 = Saturday
+      const dayOfMonth = cursorBoston.getDate();
+
       let shouldInclude = false;
-      
+
       if (task.repeatType === 'daily') {
         shouldInclude = true;
       } else if (task.repeatType === 'weekly' && task.repeatWeekdays) {
@@ -79,9 +97,9 @@ const expandRepeatTasks = (tasks: Task[]): Task[] => {
       } else if (task.repeatType === 'monthly' && task.repeatMonthDays) {
         shouldInclude = task.repeatMonthDays.includes(dayOfMonth);
       }
-      
+
       if (shouldInclude) {
-        const dateKey = formatDateKey(currentDate);
+        const dateKey = cursor;
         // Check if this date is excluded
         if (!task.excludedDates?.includes(dateKey)) {
           expandedTasks.push({
@@ -91,8 +109,8 @@ const expandRepeatTasks = (tasks: Task[]): Task[] => {
           });
         }
       }
-      
-      currentDate.setDate(currentDate.getDate() + 1);
+
+      cursor = addDaysToYmd(cursor, 1);
     }
   }
   
