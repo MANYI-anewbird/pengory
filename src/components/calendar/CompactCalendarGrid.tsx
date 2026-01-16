@@ -126,8 +126,8 @@ export const CompactCalendarGrid = ({
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (
-    <div className="flex-1 bg-background overflow-hidden flex flex-col">
-      <div className="grid grid-cols-7 border-l border-gray-200/40 shrink-0">
+    <div className="flex-1 bg-background overflow-y-auto flex flex-col">
+      <div className="grid grid-cols-7 border-l border-gray-200/40 shrink-0 sticky top-0 z-10 bg-background">
         {weekDays.map((day) => (
           <div
             key={day}
@@ -140,7 +140,7 @@ export const CompactCalendarGrid = ({
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-7 border-l border-gray-200/40 flex-1">
+      <div className="grid grid-cols-7 border-l border-gray-200/40">
         {days.map((day, index) => {
           const dateKey = formatDateKey(day);
           const dayTasks = tasksByDate[dateKey] || [];

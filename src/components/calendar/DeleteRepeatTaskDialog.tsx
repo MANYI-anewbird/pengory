@@ -33,7 +33,7 @@ export const DeleteRepeatTaskDialog = ({
             "{taskTitle}" is a repeating task. What would you like to delete?
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+        <AlertDialogFooter className="flex-col gap-2">
           <AlertDialogAction
             onClick={onDeleteSingle}
             className="w-full bg-stone-800 hover:bg-stone-900 text-sm"
@@ -44,7 +44,7 @@ export const DeleteRepeatTaskDialog = ({
             onClick={onDeleteAll}
             className="w-full bg-rose-600 hover:bg-rose-700 text-sm"
           >
-            Delete all instances
+            Delete this task and all future tasks
           </AlertDialogAction>
           <AlertDialogCancel onClick={onClose} className="w-full text-sm mt-0">
             Cancel
