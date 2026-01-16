@@ -197,11 +197,11 @@ const Index = () => {
     const instanceDate = pendingDeleteTaskId.substring(underscoreIndex + 1);
     
     // Calculate the day before the instance date to set as new repeatEndDate
-    // IMPORTANT: Avoid toISOString() here (timezone can shift the date and delete an extra day).
-    const instanceDateObj = new Date(instanceDate + 'T00:00:00');
-    const dayBefore = new Date(instanceDateObj);
-    dayBefore.setDate(dayBefore.getDate() - 1);
-    const newEndDate = `${dayBefore.getFullYear()}-${String(dayBefore.getMonth() + 1).padStart(2, '0')}-${String(dayBefore.getDate()).padStart(2, '0')}`;
+    // Use UTC calendar math to avoid timezone/DST shifting.
+    const [y, m, d] = instanceDate.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m - 1, d));
+    dt.setUTCDate(dt.getUTCDate() - 1);
+    const newEndDate = `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, '0')}-${String(dt.getUTCDate()).padStart(2, '0')}`;
     
     // Check if the new end date is before the start date - if so, delete the task entirely
     const startDate = pendingDeleteTask.repeatStartDate || pendingDeleteTask.date;
