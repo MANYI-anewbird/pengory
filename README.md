@@ -4,6 +4,59 @@
 
 **URL**: https://lovable.dev/projects/8482f807-8a0d-443a-9ff6-b05e6b97b4b8
 
+## Local Setup
+
+### Prerequisites
+
+- **Node.js**: Version 18 or higher (recommended: use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) to manage Node versions)
+- **npm**: Comes with Node.js
+
+### Installation Steps
+
+1. **Clone the repository**
+   ```sh
+   git clone <YOUR_GIT_URL>
+   cd <YOUR_PROJECT_NAME>
+   ```
+
+2. **Install dependencies**
+   ```sh
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:
+   ```sh
+   cp .env.example .env
+   ```
+   
+   Then edit `.env` and fill in the required values:
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`: Your Supabase anon/public key
+   
+   **Where to get these values:**
+   - Go to your [Supabase Dashboard](https://app.supabase.com)
+   - Select your project
+   - Navigate to Settings → API
+   - Copy the "Project URL" for `VITE_SUPABASE_URL`
+   - Copy the "anon public" key for `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+4. **Start the development server**
+   ```sh
+   npm run dev
+   ```
+   
+   The app will be available at **http://localhost:8080**
+
+### Available Scripts
+
+- `npm run dev` - Start development server (port 8080)
+- `npm run build` - Build for production
+- `npm run build:dev` - Build in development mode
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
@@ -17,24 +70,6 @@ Changes made via Lovable will be committed automatically to this repo.
 **Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
 
 **Edit a file directly in GitHub**
 
