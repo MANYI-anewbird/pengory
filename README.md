@@ -1,8 +1,8 @@
-# Welcome to your Lovable project
+# Pengory
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/8482f807-8a0d-443a-9ff6-b05e6b97b4b8
+Pengory is a beautiful, minimal calendar dashboard to manage your tasks and schedule with ease.
 
 ## Local Setup
 
@@ -59,17 +59,11 @@
 
 ## How can I edit this code?
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/8482f807-8a0d-443a-9ff6-b05e6b97b4b8) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+You can edit this code using your preferred IDE or text editor.
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repo and make changes locally. Push changes to update the repository.
 
 **Edit a file directly in GitHub**
 
@@ -97,12 +91,10 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/8482f807-8a0d-443a-9ff6-b05e6b97b4b8) and click on Share -> Publish.
+This project can be deployed to any static hosting service such as:
+- Cloudflare Pages
+- Vercel
+- Netlify
+- GitHub Pages
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Simply connect your repository and configure the build command: `npm run build`

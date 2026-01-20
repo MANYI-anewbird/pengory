@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Snowflake, ArrowLeft } from 'lucide-react';
-import penguinLogo from '@/assets/penguin-logo.png';
 import { z } from 'zod';
 
 const signUpSchema = z.object({
@@ -143,7 +142,7 @@ export default function Auth() {
           <div className="text-center mb-8">
             <div className="relative">
               <img 
-                src={penguinLogo} 
+                src="/pengory-logo.png" 
                 alt="Pengory Logo" 
                 className="h-40 w-40 mx-auto object-contain relative z-10"
                 style={{ mixBlendMode: 'multiply' }}

@@ -7,7 +7,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
-import penguinLogo from '@/assets/penguin-logo.png';
 
 interface SidebarProps {
   denseMode: boolean;
@@ -54,7 +53,7 @@ export const Sidebar = ({ denseMode, onNavigate, activePage }: SidebarProps) => 
           >
             {isHome ? (
               <img 
-                src={penguinLogo} 
+                src="/pengory-logo.png" 
                 alt="Pengory Logo" 
                 className={cn(
                   "h-16 w-16 object-contain transition-all duration-200"
