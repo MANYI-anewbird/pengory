@@ -1,100 +1,59 @@
 # Pengory
 
-## Project info
+A minimal calendar + task dashboard for planning the week without the usual clutter.
 
-Pengory is a beautiful, minimal calendar dashboard to manage your tasks and schedule with ease.
+Calendar, tasks, notes, links, and a small personal-growth board in one quiet surface — built after a ~20-person pilot as customer discovery.
 
-## Local Setup
+---
 
-### Prerequisites
+## What’s in it
 
-- **Node.js**: Version 18 or higher (recommended: use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) to manage Node versions)
-- **npm**: Comes with Node.js
+- **Calendar** — month view with repeating tasks
+- **Home** — today / tomorrow, reminders, a compact week
+- **Notes, links, learn, growth** — lightweight side rooms, not another all-in-one suite
+- **Auth** — optional Supabase login so the same plan can follow you
 
-### Installation Steps
+---
 
-1. **Clone the repository**
-   ```sh
-   git clone <YOUR_GIT_URL>
-   cd <YOUR_PROJECT_NAME>
-   ```
+## Stack
 
-2. **Install dependencies**
-   ```sh
-   npm install
-   ```
+Vite · React · TypeScript · Tailwind · shadcn/ui · Framer Motion · Supabase
 
-3. **Set up environment variables**
-   
-   Create a `.env` file in the root directory:
-   ```sh
-   cp .env.example .env
-   ```
-   
-   Then edit `.env` and fill in the required values:
-   - `VITE_SUPABASE_URL`: Your Supabase project URL
-   - `VITE_SUPABASE_PUBLISHABLE_KEY`: Your Supabase anon/public key
-   
-   **Where to get these values:**
-   - Go to your [Supabase Dashboard](https://app.supabase.com)
-   - Select your project
-   - Navigate to Settings → API
-   - Copy the "Project URL" for `VITE_SUPABASE_URL`
-   - Copy the "anon public" key for `VITE_SUPABASE_PUBLISHABLE_KEY`
+---
 
-4. **Start the development server**
-   ```sh
-   npm run dev
-   ```
-   
-   The app will be available at **http://localhost:8080**
+## Local setup
 
-### Available Scripts
+```sh
+git clone https://github.com/MANYI-anewbird/pengory.git
+cd pengory
+npm install
+cp .env.example .env
+```
 
-- `npm run dev` - Start development server (port 8080)
-- `npm run build` - Build for production
-- `npm run build:dev` - Build in development mode
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+Fill in `.env` from your [Supabase](https://app.supabase.com) project (**Settings → API**):
 
-## How can I edit this code?
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY` (anon / publishable key)
 
-You can edit this code using your preferred IDE or text editor.
+```sh
+npm run dev
+```
 
-**Use your preferred IDE**
+App runs at [http://localhost:8080](http://localhost:8080).
 
-Clone this repo and make changes locally. Push changes to update the repository.
+---
 
-**Edit a file directly in GitHub**
+## Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+| Command | |
+|---|---|
+| `npm run dev` | Dev server (port 8080) |
+| `npm run build` | Production build |
+| `npm run preview` | Preview the build |
+| `npm run lint` | ESLint |
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## License
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-This project can be deployed to any static hosting service such as:
-- Cloudflare Pages
-- Vercel
-- Netlify
-- GitHub Pages
-
-Simply connect your repository and configure the build command: `npm run build`
+MIT. See [LICENSE](LICENSE).
